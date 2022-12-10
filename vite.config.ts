@@ -12,6 +12,7 @@ export default defineConfig({
         alias: {
             'ui': path.join(__dirname, 'ui'),
             'assets': path.join(__dirname, 'ui/assets'),
+            'common': path.join(__dirname, 'common'),
         },
     },
     plugins: [

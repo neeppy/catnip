@@ -1,15 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchConnections } from 'ui/data/connections';
-import SideButton from 'ui/components/atoms/SideButton';
 import ConnectionDrawer from 'ui/components/organisms/ConnectionDrawer';
-import { useState } from 'react';
+import useBoolean from 'ui/hooks/useBoolean';
+import { Typography, Button } from 'ui/components/atoms';
+import { ConnectionForm } from 'ui/components/organisms/ConnectionForm';
 
 export default function Connections() {
     const { data, isLoading } = useQuery(['connections'], {
-        queryFn: fetchConnections,
+        queryFn: fetchConnections
     });
 
-    const [isOpen, toggleDrawer] = useState(false);
+    const { boolean: isOpen, on, off } = useBoolean(false);
 
     return (
         <>
@@ -17,15 +18,20 @@ export default function Connections() {
                 <div className="flex flex-col flex-1">
                     {data && !isLoading && data.length > 0 && data.map(connection => (
                         <button key={connection.id}>
-                            {connection.displayName}
+                            {connection.name}
                         </button>
                     ))}
                 </div>
-                <SideButton className="bg-accent-500 m-1.5 mt-auto text-xl font-bold align-text-top" onClick={() => toggleDrawer(true)}>
+                <Button scheme="accent" shape="square" className="m-1.5 mt-auto font-bold" onClick={on}>
                     +
-                </SideButton>
-                <ConnectionDrawer isOpen={isOpen} />
+                </Button>
             </aside>
+            <ConnectionDrawer isOpen={isOpen} onClose={off}>
+                <Typography as="h2" intent="h1">
+                    Add connection
+                </Typography>
+                <ConnectionForm/>
+            </ConnectionDrawer>
         </>
     );
 }

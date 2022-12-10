@@ -10,16 +10,19 @@ export default async function createWindow() {
         title: 'Catnip',
         icon: join(process.env.PUBLIC, 'favicon.svg'),
         frame: false,
+        titleBarStyle: 'hiddenInset',
+        minWidth: 800,
+        minHeight: 600,
+        width: 1280,
+        height: 720,
         webPreferences: {
             preload,
-            nodeIntegration: true,
             contextIsolation: false,
         },
     });
 
     if (process.env.VITE_DEV_SERVER_URL) {
         win.loadURL(url);
-        win.webContents.openDevTools();
     } else {
         win.loadFile(indexHtml);
     }

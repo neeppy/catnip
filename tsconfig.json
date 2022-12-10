@@ -6,7 +6,8 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "paths": {
             "ui/*": ["ui/*"],
-            "assets/*": ["ui/assets/*"]
+            "assets/*": ["ui/assets/*"],
+            "common/*": ["common/*"]
         },
         "allowJs": false,
         "skipLibCheck": true,

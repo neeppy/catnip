@@ -4,7 +4,7 @@ module.exports = {
     theme: {
         extend: {
             gridTemplateRows: {
-                layout: '2rem minmax(0, 1fr)',
+                layout: '2.5rem minmax(0, 1fr)',
             },
             gridTemplateColumns: {
                 layout: '2.5rem minmax(0, 1fr)',
@@ -12,6 +12,22 @@ module.exports = {
             gridColumn: {
                 'span-24': 'span 24 / span 24',
                 'span-23': 'span 23 / span 23',
+            },
+            fontSize: {
+                '2xs': '.65rem',
+            },
+            textColor: {
+                scene: {
+                    default: '#dfe0e0',
+                    dark: '#6a7b7b',
+                    darker: '#4f5454',
+                },
+                surface: '#faffff',
+            },
+            boxShadow: {
+                'glow-sm': '0 0 4px 0',
+                'glow-md': '0 0 10px 0',
+                'glow-lg': '0 0 20px 0',
             },
             colors: {
                 scene: {
@@ -26,9 +42,9 @@ module.exports = {
                     900: '#a4a4a4',
                 },
                 surface: {
-                    100: '',
-                    200: '',
-                    300: '',
+                    100: '#1c1a1a',
+                    200: '#2d2c2c',
+                    300: '#3a3a3a',
                     400: '',
                     500: '',
                     600: '',
@@ -47,6 +63,7 @@ module.exports = {
             animation: {
                 'slide-in-left': 'slide-in-left 0.5s ease-out forwards',
                 'fade-in-transparent': 'fade-in-transparent 1s ease-out forwards',
+                'slide-fade-bottom': 'slide-fade-bottom 250ms ease-out forwards',
             },
             keyframes: {
                 'slide-in-left': {
@@ -56,6 +73,16 @@ module.exports = {
                 'fade-in-transparent': {
                     '0%': { opacity: 0 },
                     '100%': { opacity: 70 },
+                },
+                'slide-fade-bottom': {
+                    '0%': {
+                        translate: '0 -18px',
+                        opacity: '20%'
+                    },
+                    '100%': {
+                        translate: '0 -14px',
+                        opacity: '100%',
+                    }
                 },
             },
         },
