@@ -8,7 +8,7 @@ import { getInputClassName, getLabelClassName } from 'ui/components/atoms/Input'
 const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-20 inset-x-0 max-h-40 overflow-y-auto', {
     variants: {
         variant: {
-            default: 'bg-scene-500'
+            default: 'bg-scene-500 shadow-lg shadow-scene-200'
         }
     },
     defaultVariants: {
@@ -16,7 +16,7 @@ const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-
     }
 });
 
-const getOptionClassName = cva('', {
+const getOptionClassName = cva('cursor-pointer', {
     variants: {
         variant: {
             default: 'text-scene-default text-xs py-1'

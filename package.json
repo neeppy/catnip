@@ -24,6 +24,8 @@
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.40.0",
         "react-modal": "^3.16.1",
+        "ssh2": "^1.11.0",
+        "tunnel-ssh": "^4.1.6",
         "zustand": "^4.1.4"
     },
     "devDependencies": {
@@ -31,6 +33,8 @@
         "@types/react": "^18.0.25",
         "@types/react-dom": "^18.0.9",
         "@types/react-modal": "^3.13.1",
+        "@types/ssh2": "^1.11.6",
+        "@types/tunnel-ssh": "^4.1.1",
         "@vitejs/plugin-react": "^2.2.0",
         "autoprefixer": "^10.4.13",
         "electron": "^21.3.1",

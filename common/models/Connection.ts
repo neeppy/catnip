@@ -7,7 +7,7 @@ interface SSHTunnelConfiguration {
     port: number;
     username: string;
     password: string;
-    jumpConfiguration: Omit<SSHTunnelConfiguration, 'jumpConfiguration'>;
+    jumpConfiguration: Omit<SSHTunnelConfiguration, 'jumpConfiguration'> | null;
 }
 
 export interface Connection {
@@ -18,5 +18,5 @@ export interface Connection {
     port: number;
     username: string;
     password: string;
-    sshTunnelConfiguration: SSHTunnelConfiguration;
+    sshTunnelConfiguration: SSHTunnelConfiguration | null;
 }

@@ -17,7 +17,7 @@ export default async function createWindow() {
         height: 720,
         webPreferences: {
             preload,
-            contextIsolation: false,
+            contextIsolation: true,
         },
     });
 

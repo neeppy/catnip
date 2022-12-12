@@ -1,3 +1,15 @@
+import { contextBridge, ipcRenderer } from 'electron';
+import { Connection } from 'common/models/Connection';
+
+contextBridge.exposeInMainWorld('interop', {
+    dialog: {
+        file: () => ipcRenderer.invoke('dialog:file')
+    },
+    databases: {
+        openConnection: (connection: Connection) => ipcRenderer.invoke('init-db-connection', connection)
+    }
+});
+
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
     return new Promise(resolve => {
         if (condition.includes(document.readyState)) {
@@ -22,7 +34,7 @@ const safeDOM = {
         if (Array.from(parent.children).find(e => e === child)) {
             return parent.removeChild(child);
         }
-    },
+    }
 };
 
 function useLoading() {
@@ -70,7 +82,7 @@ function useLoading() {
         removeLoading() {
             safeDOM.remove(document.head, oStyle);
             safeDOM.remove(document.body, oDiv);
-        },
+        }
     };
 }
 

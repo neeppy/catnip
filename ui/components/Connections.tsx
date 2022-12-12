@@ -22,7 +22,7 @@ export default function Connections() {
                         </button>
                     ))}
                 </div>
-                <Button scheme="accent" shape="square" className="m-1.5 mt-auto font-bold" onClick={on}>
+                <Button scheme="accent" shape="square" size="none" className="m-1.5 mt-auto font-bold" onClick={on}>
                     +
                 </Button>
             </aside>
