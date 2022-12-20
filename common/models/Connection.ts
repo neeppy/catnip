@@ -2,7 +2,7 @@ export enum ConnectionDriver {
     MySQL = 'mysql',
 }
 
-interface SSHTunnelConfiguration {
+export interface SSHTunnelConfiguration {
     hostname: string;
     port: number;
     username: string;

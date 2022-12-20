@@ -3,16 +3,8 @@ import { Button } from 'ui/components/atoms';
 import { ConnectionDriver } from 'common/models/Connection';
 
 function connect() {
-    return window.interop.databases.openConnection({
-        id: 1,
-        name: 'test',
-        driver: ConnectionDriver.MySQL,
-        hostname: '127.0.0.1',
-        port: 22,
-        username: 'test',
-        password: 'test',
-        sshTunnelConfiguration: null
-    });
+    // @ts-ignore: todo
+    return window.interop.databases.openConnection({});
 }
 
 const App = () => {

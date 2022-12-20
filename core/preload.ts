@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld('interop', {
         file: () => ipcRenderer.invoke('dialog:file')
     },
     databases: {
-        openConnection: (connection: Connection) => ipcRenderer.invoke('init-db-connection', connection)
+        openConnection: (connection: Connection) => ipcRenderer.invoke('@@connection/init', connection)
     }
 });
 
