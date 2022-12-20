@@ -1,5 +1,4 @@
 import { Connection } from 'common/models/Connection';
-import tunnel from 'tunnel-ssh';
 
 export default [
     {
@@ -12,14 +11,7 @@ export default [
                 password,
             } = connection;
 
-            tunnel({
-                host: hostname,
-                dstPort: port ?? 22,
-                username,
-                password,
-            }, (err, args) => {
-                console.log(err, args);
-            });
+            // create SSH tunnel
         },
     },
 ];
