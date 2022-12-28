@@ -6,15 +6,22 @@ import 'assets/global.css';
 import { Connection } from 'common/models/Connection';
 
 declare global {
-    interface Window {
-        interop: {
-            dialog: {
-                file: () => unknown;
-            };
-            databases: {
-                openConnection: (conn: Connection) => Promise<unknown>;
-            };
+    const interop: {
+        control: {
+            close: () => unknown;
+            minimize: () => unknown;
+            maximize: () => unknown;
         };
+        dialog: {
+            file: () => unknown;
+        };
+        databases: {
+            openConnection: (conn: Connection) => Promise<unknown>;
+        };
+    };
+
+    interface Window {
+        interop: typeof interop;
     }
 }
 

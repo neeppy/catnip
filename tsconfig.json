@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
-        "target": "ESNext",
+        "target": "ES5",
         "useDefineForClassFields": true,
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "paths": {
             "ui/*": ["ui/*"],
+            "ui-kit": ["ui/components/ui-kit"],
+            "ui-kit/*": ["ui/components/ui-kit/*"],
             "assets/*": ["ui/assets/*"],
             "common/*": ["common/*"]
         },

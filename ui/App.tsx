@@ -1,6 +1,6 @@
 import Connections from 'ui/components/Connections';
-import { Button } from 'ui/components/atoms';
-import { ConnectionDriver } from 'common/models/Connection';
+import { Button } from 'ui/components/ui-kit';
+import Header from 'ui/components/layout/header';
 
 function connect() {
     // @ts-ignore: todo
@@ -10,9 +10,7 @@ function connect() {
 const App = () => {
     return (
         <div className="bg-scene-100 h-screen grid grid-cols-layout grid-rows-layout">
-            <header id="title-bar" className="h-8 col-span-2">
-
-            </header>
+            <Header/>
             <Connections/>
             <main className="bg-scene-200 rounded-tl-lg relative overflow-hidden p-5">
                 <Button onClick={connect}>

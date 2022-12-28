@@ -11,6 +11,7 @@ export default defineConfig({
     resolve: {
         alias: {
             'ui': path.join(__dirname, 'ui'),
+            'ui-kit': path.join(__dirname, 'ui/components/ui-kit'),
             'assets': path.join(__dirname, 'ui/assets'),
             'common': path.join(__dirname, 'common'),
         },
@@ -18,6 +19,21 @@ export default defineConfig({
     plugins: [
         react(),
         electron({
+            vite: {
+                build: {
+                    target: 'esnext',
+                },
+                resolve: {
+                    alias: {
+                        'core': path.join(__dirname, 'core'),
+                    },
+                },
+                optimizeDeps: {
+                    esbuildOptions: {
+                        target: 'esnext',
+                    },
+                },
+            },
             entry: [
                 'core/main.ts',
                 'core/preload.ts',

@@ -1,4 +1,4 @@
-import { IOption } from 'ui/components/atoms/Select';
+import { IOption } from 'ui/components/ui-kit/Select';
 
 export default function enum2opt(e: any): IOption[] {
     return Object.entries(e).map(entry => ({

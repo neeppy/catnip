@@ -3,8 +3,8 @@ import { useState } from 'react';
 export default function useBoolean(defaultValue = false) {
     const [boolean, setBoolean] = useState(defaultValue);
 
-    function toggle(value?: boolean) {
-        setBoolean(value ?? !boolean);
+    function toggle() {
+        setBoolean(!boolean);
     }
 
     function on() {

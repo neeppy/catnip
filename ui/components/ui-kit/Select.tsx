@@ -1,9 +1,9 @@
 import { forwardRef, Fragment, useId, useState } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import classnames from 'classnames';
-import { Typography } from 'ui/components/atoms/Typography';
+import { Typography } from 'ui/components/ui-kit/Typography';
 import { Combobox } from '@headlessui/react';
-import { getInputClassName, getLabelClassName } from 'ui/components/atoms/Input';
+import { getInputClassName, getLabelClassName } from 'ui/components/ui-kit/Input';
 
 const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-20 inset-x-0 max-h-40 overflow-y-auto', {
     variants: {

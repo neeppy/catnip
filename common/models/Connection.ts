@@ -2,12 +2,15 @@ export enum ConnectionDriver {
     MySQL = 'mysql',
 }
 
-export interface SSHTunnelConfiguration {
+export interface SSHConnection {
     hostname: string;
     port: number;
     username: string;
     password: string;
-    jumpConfiguration: Omit<SSHTunnelConfiguration, 'jumpConfiguration'> | null;
+}
+
+export interface TunnelConfiguration extends SSHConnection {
+    jumpConfiguration?: SSHConnection;
 }
 
 export interface Connection {
@@ -18,5 +21,5 @@ export interface Connection {
     port: number;
     username: string;
     password: string;
-    sshTunnelConfiguration: SSHTunnelConfiguration | null;
+    sshTunnelConfiguration?: TunnelConfiguration;
 }

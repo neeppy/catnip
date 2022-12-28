@@ -2,6 +2,11 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { Connection } from 'common/models/Connection';
 
 contextBridge.exposeInMainWorld('interop', {
+    control: {
+        close: () => ipcRenderer.invoke('@@app/close'),
+        minimize: () => ipcRenderer.invoke('@@app/minimize'),
+        maximize: () => ipcRenderer.invoke('@@app/maximize'),
+    },
     dialog: {
         file: () => ipcRenderer.invoke('dialog:file')
     },

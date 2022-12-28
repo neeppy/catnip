@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchConnections } from 'ui/data/connections';
-import ConnectionDrawer from 'ui/components/organisms/ConnectionDrawer';
+import ConnectionDrawer from 'ui/components/connections/form';
 import useBoolean from 'ui/hooks/useBoolean';
-import { Typography, Button } from 'ui/components/atoms';
-import { ConnectionForm } from 'ui/components/organisms/ConnectionForm';
+import { Button } from 'ui-kit';
 
+// @todo - the sidebar version of this will be dropped
 export default function Connections() {
     const { data, isLoading } = useQuery(['connections'], {
         queryFn: fetchConnections
@@ -26,12 +26,7 @@ export default function Connections() {
                     +
                 </Button>
             </aside>
-            <ConnectionDrawer isOpen={isOpen} onClose={off}>
-                <Typography as="h2" intent="h1">
-                    Add connection
-                </Typography>
-                <ConnectionForm/>
-            </ConnectionDrawer>
+            <ConnectionDrawer isOpen={isOpen} onClose={off}/>
         </>
     );
 }

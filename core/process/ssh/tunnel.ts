@@ -1,8 +1,15 @@
 import net from 'net';
 import { Client } from 'ssh2';
-import { SSHTunnelConfiguration } from 'common/models/Connection';
+import { TunnelConfiguration } from 'common/models/Connection';
 
-function createSSHConnection(configuration: SSHTunnelConfiguration, bindingServer: net.Socket) {
+interface SSHConnectionConfig {
+    host: string;
+    port: number;
+    username: string;
+    password: string;
+}
+
+function createSSHConnection(configuration: SSHConnectionConfig, bindingServer: net.Socket) {
     const connection = new Client();
 
     bindingServer.on('close', connection.end.bind(connection));
@@ -10,8 +17,8 @@ function createSSHConnection(configuration: SSHTunnelConfiguration, bindingServe
     connection.on('ready', () => {
         connection.forwardOut(
             'localhost',
-            configuration.port ?? 22,
-            configuration.hostname,
+            configuration.port,
+            configuration.host,
             configuration.port,
             (err, sshStream) => {
                 if (err) {
@@ -28,7 +35,7 @@ function createSSHConnection(configuration: SSHTunnelConfiguration, bindingServe
     return connection;
 }
 
-function createSSHServer(configuration: SSHTunnelConfiguration) {
+function createSSHServer(configuration: SSHConnectionConfig): net.Server {
     const connections = [];
 
     const server = net.createServer(emptyServer => {
@@ -57,8 +64,18 @@ function createSSHServer(configuration: SSHTunnelConfiguration) {
     return server;
 }
 
-export function createSSHTunnel(configuration: SSHTunnelConfiguration) {
+export function createSSHTunnel(configuration: TunnelConfiguration) {
     return new Promise((resolve, reject) => {
+        const server = createSSHServer({
+            host: configuration.hostname,
+            port: configuration.port,
+            username: configuration.username,
+            password: configuration.password,
+        });
 
+        server.listen(configuration.port, configuration.hostname, () => {
+            console.log('SSH Server Running...');
+            resolve(server);
+        });
     });
 }

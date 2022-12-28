@@ -1,4 +1,5 @@
 import { Connection } from 'common/models/Connection';
+import { createSSHTunnel } from 'core/process/ssh';
 
 export default [
     {
@@ -10,8 +11,7 @@ export default [
                 username,
                 password,
             } = connection;
-
-            // create SSH tunnel
+            await createSSHTunnel(connection.sshTunnelConfiguration);
         },
     },
 ];

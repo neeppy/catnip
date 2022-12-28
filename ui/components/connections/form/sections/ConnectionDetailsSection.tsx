@@ -1,10 +1,10 @@
-import { Input } from 'ui/components/atoms';
+import { Input } from 'ui/components/ui-kit';
 import { useFormContext } from 'react-hook-form';
-import { Select } from 'ui/components/atoms/Select';
+import { Select } from 'ui/components/ui-kit/Select';
 import enum2opt from 'ui/utils/enum2opt';
 import { ConnectionDriver } from 'common/models/Connection';
 
-export const ConnectionDetailsSection = ({ }) => {
+export const ConnectionDetailsSection = () => {
     const { register } = useFormContext();
 
     return (

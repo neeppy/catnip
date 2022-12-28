@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 import { release } from 'os';
 import { join } from 'path';
 import registerInteropMessages from './routes';
@@ -23,4 +23,21 @@ if (!app.requestSingleInstanceLock()) {
 app.whenReady()
     .then(createWindow)
     .then(registerAppEventListeners)
-    .then(registerInteropMessages);
+    .then(registerInteropMessages)
+    .then(window => {
+        ipcMain.handle('@@app/close', () => {
+            app.quit();
+        });
+
+        ipcMain.handle('@@app/minimize', () => {
+            window.minimize();
+        });
+
+        ipcMain.handle('@@app/maximize', () => {
+            if (window.isMaximized()) {
+                window.unmaximize();
+            } else {
+                window.maximize();
+            }
+        });
+    });
