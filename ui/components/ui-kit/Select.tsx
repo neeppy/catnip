@@ -1,11 +1,11 @@
-import { forwardRef, Fragment, useId, useState } from 'react';
+import { forwardRef, Fragment, useEffect, useId, useState } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import classnames from 'classnames';
 import { Typography } from 'ui/components/ui-kit/Typography';
 import { Combobox } from '@headlessui/react';
 import { getInputClassName, getLabelClassName } from 'ui/components/ui-kit/Input';
 
-const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-20 inset-x-0 max-h-40 overflow-y-auto', {
+const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-[4.75rem] inset-x-0 max-h-40 overflow-y-auto', {
     variants: {
         variant: {
             default: 'bg-scene-500 shadow-lg shadow-scene-200'
@@ -41,10 +41,13 @@ const getOptionClassName = cva('cursor-pointer', {
 
 interface OwnProps {
     className?: string;
+    containerClassName?: string;
     dropdownClassName?: string;
     optionClassName?: string;
     options: IOption[];
     label: string;
+    value: any;
+    onChange: (value: any) => unknown;
 }
 
 export interface IOption {
@@ -56,7 +59,10 @@ export interface IOption {
 type Props = OwnProps & VariantProps<typeof getInputClassName>;
 
 export const Select = forwardRef<HTMLDivElement, Props>(({
+    value,
+    onChange,
     className,
+    containerClassName,
     dropdownClassName,
     optionClassName,
     label,
@@ -64,7 +70,7 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
     ...rest
 }: Props, ref) => {
     const id = useId();
-    const [value, setValue] = useState(null);
+    const [currentValue, setCurrentValue] = useState(value ?? null);
     const [query, setQuery] = useState('');
 
     let filteredOptions = options;
@@ -76,9 +82,22 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
         });
     }
 
+    useEffect(() => {
+        if (value !== currentValue) {
+            const option = options.find(opt => opt.value === value);
+
+            setCurrentValue(option ?? null);
+        }
+    }, [value]);
+
+    function handleChange(newValue: IOption) {
+        setCurrentValue(newValue);
+        onChange(newValue.value);
+    }
+
     return (
-        <Combobox value={value} onChange={setValue}>
-            <div className="flex flex-col-reverse gap-1 relative" ref={ref}>
+        <Combobox value={currentValue} onChange={handleChange}>
+            <div className={classnames(containerClassName, 'flex flex-col-reverse gap-1 relative')} ref={ref}>
                 <Combobox.Button as="div">
                     <Combobox.Input<'input', IOption>
                         onChange={(e: any) => setQuery(e.target.value)}

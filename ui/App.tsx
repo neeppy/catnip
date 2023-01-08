@@ -3,8 +3,7 @@ import { Button } from 'ui/components/ui-kit';
 import Header from 'ui/components/layout/header';
 
 function connect() {
-    // @ts-ignore: todo
-    return window.interop.databases.openConnection({});
+
 }
 
 const App = () => {
@@ -12,9 +11,9 @@ const App = () => {
         <div className="bg-scene-100 h-screen grid grid-cols-layout grid-rows-layout">
             <Header/>
             <Connections/>
-            <main className="bg-scene-200 rounded-tl-lg relative overflow-hidden p-5">
+            <main className="bg-scene-200 rounded-tl-lg relative overflow-hidden p-5 flex items-end justify-end">
                 <Button onClick={connect}>
-                    Connect to CloudMargin
+                    Test Button
                 </Button>
                 <div id="modals-root"/>
             </main>

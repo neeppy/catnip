@@ -29,6 +29,7 @@ export function SSHTunnelSection({ name }: OwnProps) {
             <Input
                 {...register(`${name}.password`)}
                 label="Password"
+                type="password"
                 containerClassName="col-span-4"
             />
         </div>

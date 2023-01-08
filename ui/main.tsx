@@ -12,6 +12,9 @@ declare global {
             minimize: () => unknown;
             maximize: () => unknown;
         };
+        data: {
+            encrypt: (data: string) => Promise<string>;
+        },
         dialog: {
             file: () => unknown;
         };

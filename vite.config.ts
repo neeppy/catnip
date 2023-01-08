@@ -21,16 +21,13 @@ export default defineConfig({
         electron({
             vite: {
                 build: {
-                    target: 'esnext',
+                    rollupOptions: {
+                        external: ['ssh2'],
+                    },
                 },
                 resolve: {
                     alias: {
                         'core': path.join(__dirname, 'core'),
-                    },
-                },
-                optimizeDeps: {
-                    esbuildOptions: {
-                        target: 'esnext',
                     },
                 },
             },

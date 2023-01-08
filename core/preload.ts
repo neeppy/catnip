@@ -7,12 +7,15 @@ contextBridge.exposeInMainWorld('interop', {
         minimize: () => ipcRenderer.invoke('@@app/minimize'),
         maximize: () => ipcRenderer.invoke('@@app/maximize'),
     },
+    data: {
+        encrypt: (data: string) => ipcRenderer.invoke('@@data/encrypt', data),
+    },
     dialog: {
-        file: () => ipcRenderer.invoke('dialog:file')
+        file: () => ipcRenderer.invoke('dialog:file'),
     },
     databases: {
         openConnection: (connection: Connection) => ipcRenderer.invoke('@@connection/init', connection)
-    }
+    },
 });
 
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {

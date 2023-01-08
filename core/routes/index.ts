@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
-import safeStorage from './safeStorage';
 import connections from './connections';
+import security from './security';
 
 interface Route {
     channel: string;
@@ -8,8 +8,8 @@ interface Route {
 }
 
 const routes: Route[] = [
-    ...safeStorage,
     ...connections,
+    ...security,
 ];
 
 export default function registerInteropMessages(window: BrowserWindow) {

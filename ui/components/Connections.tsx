@@ -1,8 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchConnections } from 'ui/data/connections';
-import ConnectionDrawer from 'ui/components/connections/form';
+import ConnectionDrawer, { fetchConnections } from 'ui/components/connections/form';
 import useBoolean from 'ui/hooks/useBoolean';
 import { Button } from 'ui-kit';
+import { ConnectionDriver } from 'common/models/Connection';
+
+const CONNECTION_DRIVER_LOGOS = {
+    [ConnectionDriver.MySQL]: '/mysql.svg',
+};
 
 // @todo - the sidebar version of this will be dropped
 export default function Connections() {
@@ -18,7 +22,7 @@ export default function Connections() {
                 <div className="flex flex-col flex-1">
                     {data && !isLoading && data.length > 0 && data.map(connection => (
                         <button key={connection.id}>
-                            {connection.name}
+                            <img src={CONNECTION_DRIVER_LOGOS[connection.driver]} alt="" />
                         </button>
                     ))}
                 </div>

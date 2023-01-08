@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, useId } from 'react';
+import { forwardRef, HTMLProps, useId } from 'react';
 import { Typography } from 'ui/components/ui-kit/Typography';
 import { cva, VariantProps } from 'class-variance-authority';
 import classnames from 'classnames';
@@ -32,17 +32,15 @@ export const getLabelClassName = cva('', {
 });
 
 interface OwnProps {
-    name: string;
     label: string;
     className?: string;
     labelClassName?: string;
     containerClassName?: string;
 }
 
-type Props = OwnProps & HTMLAttributes<HTMLInputElement> & VariantProps<typeof getInputClassName>;
+type Props = OwnProps & HTMLProps<HTMLInputElement> & VariantProps<typeof getInputClassName>;
 
 export const Input = forwardRef<HTMLInputElement, Props>(({
-    name,
     label,
     className,
     labelClassName,
@@ -55,7 +53,12 @@ export const Input = forwardRef<HTMLInputElement, Props>(({
 
     return (
         <div className={classnames(containerClassName, 'flex flex-col-reverse gap-1')}>
-            <input id={id} ref={ref} className={classnames(className, getInputClassName({ variant, size }))} {...rest} />
+            <input
+                id={id}
+                ref={ref}
+                className={classnames(className, getInputClassName({ variant, size }))}
+                {...rest}
+            />
             <Typography
                 as="label" intent="label" htmlFor={id}
                 className={classnames(labelClassName, getLabelClassName({ size }))}

@@ -10,7 +10,7 @@ export interface SSHConnection {
 }
 
 export interface TunnelConfiguration extends SSHConnection {
-    jumpConfiguration?: SSHConnection;
+    jumpConfiguration: SSHConnection;
 }
 
 export interface Connection {
@@ -21,5 +21,5 @@ export interface Connection {
     port: number;
     username: string;
     password: string;
-    sshTunnelConfiguration?: TunnelConfiguration;
+    sshTunnelConfiguration: TunnelConfiguration;
 }
