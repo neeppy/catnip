@@ -1,10 +1,20 @@
 import Connections from 'ui/components/Connections';
 import { Button } from 'ui/components/ui-kit';
 import Header from 'ui/components/layout/header';
+import { DataTable } from 'ui-kit/DataTable';
 
 function connect() {
 
 }
+
+const rows = [
+    {
+        firstName: 'Cosmin',
+        lastName: 'Stoica',
+        age: 44,
+        createdAt: new Date(),
+    },
+];
 
 const App = () => {
     return (
@@ -12,6 +22,9 @@ const App = () => {
             <Header/>
             <Connections/>
             <main className="bg-scene-200 rounded-tl-lg relative overflow-hidden p-5 flex items-end justify-end">
+                <div className="h-full flex-1">
+                    <DataTable rows={rows} />
+                </div>
                 <Button onClick={connect}>
                     Test Button
                 </Button>

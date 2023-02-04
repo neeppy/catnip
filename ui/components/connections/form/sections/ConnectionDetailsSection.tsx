@@ -24,6 +24,7 @@ export const ConnectionDetailsSection = () => {
                 />
                 <Input label="Hostname" containerClassName="col-span-3" {...register('hostname')} />
                 <Input label="Port" placeholder="3306" {...register('port')} />
+                <Input label="Database Name" containerClassName="col-span-4" {...register('databaseName')} />
             </div>
             <Input label="Username" {...register('username')} />
             <Input label="Password" type="password" {...register('password')} />

@@ -28,6 +28,7 @@ export default defineConfig({
                 resolve: {
                     alias: {
                         'core': path.join(__dirname, 'core'),
+                        'common': path.join(__dirname, 'common'),
                     },
                 },
             },

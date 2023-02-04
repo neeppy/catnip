@@ -18,8 +18,8 @@ declare global {
         dialog: {
             file: () => unknown;
         };
-        databases: {
-            openConnection: (conn: Connection) => Promise<unknown>;
+        connections: {
+            open: (conn: Connection) => Promise<unknown>;
         };
     };
 
@@ -31,11 +31,9 @@ declare global {
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <App/>
-        </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+        <App/>
+    </QueryClientProvider>
 );
 
 postMessage({ payload: 'removeLoading' }, '*');

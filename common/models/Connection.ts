@@ -21,5 +21,6 @@ export interface Connection {
     port: number;
     username: string;
     password: string;
+    databaseName?: string;
     sshTunnelConfiguration: TunnelConfiguration;
 }

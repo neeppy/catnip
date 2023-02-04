@@ -13,8 +13,8 @@ contextBridge.exposeInMainWorld('interop', {
     dialog: {
         file: () => ipcRenderer.invoke('dialog:file'),
     },
-    databases: {
-        openConnection: (connection: Connection) => ipcRenderer.invoke('@@connection/init', connection)
+    connections: {
+        open: (connection: Connection) => ipcRenderer.invoke('@@connection/init', connection)
     },
 });
 

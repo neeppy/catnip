@@ -1,7 +1,7 @@
 import IndexedDB from 'ui/utils/IndexedDB';
 import { Connection } from 'common/models/Connection';
 
-export async function fetchConnections() {
+export async function fetchConnections(): Promise<Connection[]> {
     const idb = await IndexedDB.getInstance();
 
     return idb.get<Connection>('connections');
