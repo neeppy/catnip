@@ -4,24 +4,10 @@ import { join } from 'path';
 import registerInteropMessages from './routes';
 import createWindow from './window';
 import registerAppEventListeners from './events';
-import contextMenu from 'electron-context-menu';
 
 process.env.DIST_ELECTRON = join(__dirname, '../..');
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist');
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public');
-
-contextMenu({
-    showInspectElement: true,
-    prepend: (defaultActions, parameters, window) => {
-        console.log(parameters);
-
-        return [
-            {
-                label: 'Test'
-            }
-        ];
-    },
-});
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration();

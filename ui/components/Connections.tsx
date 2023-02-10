@@ -3,6 +3,7 @@ import ConnectionDrawer, { fetchConnections } from 'ui/components/connections/fo
 import useBoolean from 'ui/hooks/useBoolean';
 import { Button } from 'ui-kit';
 import { Connection, ConnectionDriver } from 'common/models/Connection';
+import useMainPanel from 'ui/state/panel';
 
 const CONNECTION_DRIVER_LOGOS = {
     [ConnectionDriver.MySQL]: '/mysql.svg',
@@ -10,6 +11,7 @@ const CONNECTION_DRIVER_LOGOS = {
 
 // @todo - the sidebar version of this will be dropped
 export default function Connections() {
+    const initialiseMainPanel = useMainPanel(state => state.connect);
     const { data, isLoading } = useQuery(['connections'], {
         queryFn: fetchConnections
     });
@@ -17,9 +19,14 @@ export default function Connections() {
     const { boolean: isOpen, on, off } = useBoolean(false);
 
     async function onConnectionClick(connection: Connection) {
-        const tables = await window.interop.connections.open(connection);
+        const metadata = await window.interop.connections.open(connection);
 
-        console.log(tables);
+        initialiseMainPanel({
+            connection,
+            databaseNames: metadata.databases,
+            tableNames: metadata.tables,
+            currentDatabase: connection.databaseName,
+        });
     }
 
     return (

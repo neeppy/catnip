@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { Connection } from 'common/models/Connection';
+import { Interop } from 'common/models/Interop';
 
 contextBridge.exposeInMainWorld('interop', {
     control: {
@@ -8,15 +8,19 @@ contextBridge.exposeInMainWorld('interop', {
         maximize: () => ipcRenderer.invoke('@@app/maximize'),
     },
     data: {
-        encrypt: (data: string) => ipcRenderer.invoke('@@data/encrypt', data),
+        encrypt: (data) => ipcRenderer.invoke('@@data/encrypt', data),
     },
     dialog: {
         file: () => ipcRenderer.invoke('dialog:file'),
     },
     connections: {
-        open: (connection: Connection) => ipcRenderer.invoke('@@connection/init', connection)
+        open: (connection) => ipcRenderer.invoke('@@connection/init', connection),
     },
-});
+    database: {
+        fetchTableNames: (connectionId, database) => ipcRenderer.invoke('@@db/tables', connectionId, database),
+        fetchTableContent: (connectionId, table) => ipcRenderer.invoke('@@db/table-initial', connectionId, table),
+    },
+} as Interop);
 
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
     return new Promise(resolve => {

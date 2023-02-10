@@ -43,11 +43,13 @@ interface OwnProps {
     className?: string;
     containerClassName?: string;
     dropdownClassName?: string;
+    inputClassName?: string;
     optionClassName?: string;
     options: IOption[];
-    label: string;
-    value: any;
-    onChange: (value: any) => unknown;
+    label?: string;
+    placeholder?: string;
+    value?: any;
+    onChange?: (value: any) => unknown;
 }
 
 export interface IOption {
@@ -64,8 +66,10 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
     className,
     containerClassName,
     dropdownClassName,
+    inputClassName,
     optionClassName,
     label,
+    placeholder,
     options = [],
     ...rest
 }: Props, ref) => {
@@ -92,7 +96,7 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
 
     function handleChange(newValue: IOption) {
         setCurrentValue(newValue);
-        onChange(newValue.value);
+        onChange?.(newValue.value);
     }
 
     return (
@@ -100,14 +104,17 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
             <div className={classnames(containerClassName, 'flex flex-col-reverse gap-1 relative')} ref={ref}>
                 <Combobox.Button as="div">
                     <Combobox.Input<'input', IOption>
+                        placeholder={placeholder}
                         onChange={(e: any) => setQuery(e.target.value)}
-                        className={classnames('w-full', getInputClassName(rest))}
+                        className={classnames(inputClassName, 'w-full', getInputClassName(rest))}
                         displayValue={value => value?.label}
                     />
                 </Combobox.Button>
-                <Typography as="label" intent="label" htmlFor={id} className={getLabelClassName(rest)}>
-                    {label}
-                </Typography>
+                {label && (
+                    <Typography as="label" intent="label" htmlFor={id} className={getLabelClassName(rest)}>
+                        {label}
+                    </Typography>
+                )}
                 <Combobox.Options className={classnames(dropdownClassName, getDropdownClassName(rest))}>
                     {filteredOptions.map(option => (
                         <Combobox.Option key={option.value} value={option} as={Fragment}>

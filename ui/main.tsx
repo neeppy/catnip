@@ -3,28 +3,13 @@ import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import 'assets/global.css';
-import { Connection } from 'common/models/Connection';
+import { Interop } from 'common/models/Interop';
 
 declare global {
-    const interop: {
-        control: {
-            close: () => unknown;
-            minimize: () => unknown;
-            maximize: () => unknown;
-        };
-        data: {
-            encrypt: (data: string) => Promise<string>;
-        },
-        dialog: {
-            file: () => unknown;
-        };
-        connections: {
-            open: (conn: Connection) => Promise<unknown>;
-        };
-    };
+    const interop: Interop;
 
     interface Window {
-        interop: typeof interop;
+        interop: Interop;
     }
 }
 

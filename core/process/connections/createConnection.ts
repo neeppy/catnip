@@ -1,8 +1,14 @@
 import { Connection, ConnectionDriver } from 'common/models/Connection';
 import createMySQLAdapter from './createMySQLAdapter';
 
-interface ConnectionLike {
-    query: <T>(query: string, asArray: boolean) => Promise<T>;
+export interface QueryOptions {
+    asArray?: boolean;
+    preparedValues?: any[];
+}
+
+export interface ConnectionLike {
+    use: (dbName: string) => Promise<void>;
+    query: <T>(query: string, options: QueryOptions) => Promise<T>;
 }
 
 const connectionDriverFactories = {

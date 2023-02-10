@@ -14,7 +14,7 @@ export interface TunnelConfiguration extends SSHConnection {
 }
 
 export interface Connection {
-    id: number;
+    id: string;
     name: string;
     driver: ConnectionDriver;
     hostname: string;

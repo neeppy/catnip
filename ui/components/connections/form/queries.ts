@@ -10,6 +10,8 @@ export async function fetchConnections(): Promise<Connection[]> {
 export async function insertConnection(connection: Connection) {
     const idb = await IndexedDB.getInstance();
 
+    connection.id = window.crypto.randomUUID();
+
     const [passwordHash, sshPasswordHash, sshJumpPasswordHash] = await Promise.all([
         interop.data.encrypt(connection.password),
         connection.sshTunnelConfiguration?.password && interop.data.encrypt(connection.sshTunnelConfiguration.password),

@@ -6,7 +6,7 @@ import classnames from 'classnames';
 export const getInputClassName = cva('peer rounded-md transition-all duration-500', {
     variants: {
         variant: {
-            default: 'bg-scene-400 focus:bg-scene-700 hover:bg-scene-500 text-scene-default shadow-sm shadow-scene-200 text-sm'
+            default: 'bg-scene-400 focus:bg-scene-700 hover:bg-scene-500 text-scene-default shadow-sm shadow-scene-200 text-sm',
         },
         size: {
             sm: 'px-2',

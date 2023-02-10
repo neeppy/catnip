@@ -1,20 +1,18 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import connections from './connections';
 import security from './security';
-
-interface Route {
-    channel: string;
-    handle(data: any, event: IpcMainInvokeEvent): Promise<unknown>;
-}
+import database from './database';
+import { Route } from './types';
 
 const routes: Route[] = [
     ...connections,
+    ...database,
     ...security,
 ];
 
 export default function registerInteropMessages(window: BrowserWindow) {
     for (const route of routes) {
-        ipcMain.handle(route.channel, (event, params: any) => route.handle(params, event));
+        ipcMain.handle(route.channel, (event, ...args) => route.handle({ event, window }, ...args));
     }
 
     return window;

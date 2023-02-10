@@ -1,24 +1,12 @@
-.reactgrid .rg-pane .rg-cell {
-    @apply border-scene-400;
+.Spreadsheet {
+    --background-color: #101010;
+    --border-color: #2a2a2a;
+    --text-color: #bfc0c0;
+    --readonly-text-color: #6a7b7b;
+    --outline-color: #ec363688;
+    --outline-background-color: #ec363666;
 }
 
-.reactgrid .rg-pane .rg-cell.rg-header-cell {
-    @apply text-scene-default;
-    @apply bg-scene-300 !important;
-}
-
-.reactgrid .rg-cell:not(.rg-header-cell) {
-    @apply bg-scene-200 text-scene-default;
-}
-
-.reactgrid .rg-pane .rg-cell-focus {
-    @apply border-accent-600 bg-accent-600 opacity-40;
-}
-
-.reactgrid .rg-pane .rg-partial-area.rg-partial-area-selected-range {
-    @apply border-accent-800 bg-accent-600 opacity-25;
-}
-
-.reactgrid .rg-celleditor {
-    @apply border-accent-600;
+.Spreadsheet__header {
+    background-color: #0a0a0a;
 }

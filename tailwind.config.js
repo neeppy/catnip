@@ -5,9 +5,11 @@ module.exports = {
         extend: {
             gridTemplateRows: {
                 layout: '2.5rem minmax(0, 1fr)',
+                table: 'auto 1fr',
             },
             gridTemplateColumns: {
                 layout: '2.5rem minmax(0, 1fr)',
+                table: '10rem 1fr',
             },
             gridColumn: {
                 'span-24': 'span 24 / span 24',
