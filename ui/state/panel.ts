@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { Connection } from 'common/models/Connection';
 import { DatabaseRow } from 'common/models/Database';
 

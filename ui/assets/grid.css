@@ -10,3 +10,8 @@
 .Spreadsheet__header {
     background-color: #0a0a0a;
 }
+
+.Spreadsheet__header:first-child {
+    min-width: 0;
+    width: 40px;
+}

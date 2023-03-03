@@ -2,6 +2,7 @@ import { Connection } from './Connection';
 import { DatabaseMetadata, TableInitialisationData } from './Database';
 
 export interface Interop {
+    platform: string;
     control: {
         close: () => unknown;
         minimize: () => unknown;

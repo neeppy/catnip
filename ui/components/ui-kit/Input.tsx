@@ -57,6 +57,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(({
                 id={id}
                 ref={ref}
                 className={classnames(className, getInputClassName({ variant, size }))}
+                onKeyDown={e => e.stopPropagation()}
                 {...rest}
             />
             <Typography

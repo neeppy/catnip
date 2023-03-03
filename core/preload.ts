@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { Interop } from 'common/models/Interop';
 
 contextBridge.exposeInMainWorld('interop', {
+    platform: process.platform,
     control: {
         close: () => ipcRenderer.invoke('@@app/close'),
         minimize: () => ipcRenderer.invoke('@@app/minimize'),

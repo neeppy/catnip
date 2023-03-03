@@ -4,13 +4,13 @@ import MainScreen from 'ui/components/screen/MainScreen';
 
 const App = () => {
     return (
-        <div className="bg-scene-100 h-screen w-screen grid grid-cols-layout grid-rows-layout">
+        <div className="bg-scene-100 h-screen w-screen flex flex-col">
             <Header/>
-            <Connections/>
-            <main className="bg-scene-200 rounded-tl-lg relative overflow-hidden">
+            <main className="bg-scene-200 flex-1 relative overflow-hidden">
                 <MainScreen/>
                 <div id="modals-root"/>
             </main>
+            <Connections/>
         </div>
     );
 };

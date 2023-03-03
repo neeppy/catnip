@@ -21,6 +21,8 @@ export default async function createWindow() {
         },
     });
 
+    win.menuBarVisible = false;
+
     if (process.env.VITE_DEV_SERVER_URL) {
         win.loadURL(url);
     } else {

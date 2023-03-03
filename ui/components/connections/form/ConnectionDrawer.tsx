@@ -22,7 +22,7 @@ export function ConnectionDrawer({ isOpen, onClose }: OwnProps) {
             onRequestClose={onClose}
             parentSelector={() => modalRoot}
             overlayClassName="absolute inset-0 bg-white bg-opacity-10"
-            className="absolute left-0 top-0 w-[26rem] h-full bg-surface-100 animate-slide-in-left overflow-y-auto"
+            className="absolute right-0 top-0 w-[26rem] h-full bg-surface-100 animate-slide-in-right overflow-y-auto"
         >
             <ConnectionForm/>
         </Modal>

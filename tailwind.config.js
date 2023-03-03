@@ -64,12 +64,17 @@ module.exports = {
             },
             animation: {
                 'slide-in-left': 'slide-in-left 0.5s ease-out forwards',
+                'slide-in-right': 'slide-in-right 0.5s ease-out forwards',
                 'fade-in-transparent': 'fade-in-transparent 1s ease-out forwards',
                 'slide-fade-bottom': 'slide-fade-bottom 250ms ease-out forwards',
             },
             keyframes: {
                 'slide-in-left': {
                     '0%': { translate: '-100% 0' },
+                    '100%': { translate: 0 },
+                },
+                'slide-in-right': {
+                    '0%': { translate: '100% 0' },
                     '100%': { translate: 0 },
                 },
                 'fade-in-transparent': {

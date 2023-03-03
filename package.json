@@ -16,11 +16,13 @@
     },
     "dependencies": {
         "@headlessui/react": "^1.7.5",
+        "@monaco-editor/react": "^4.4.6",
         "@tanstack/react-query": "^4.19.1",
         "class-variance-authority": "^0.4.0",
         "classnames": "^2.3.2",
         "electron-context-menu": "^3.6.1",
         "jotai": "^1.11.0",
+        "monaco-editor": "^0.36.1",
         "mysql2": "^2.3.3",
         "react": "^18.2.0",
         "react-contexify": "^6.0.0",

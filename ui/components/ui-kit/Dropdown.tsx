@@ -70,7 +70,7 @@ export function Dropdown({
     return (
         <Combobox value={currentValue} onChange={handleValueChange}>
             <div className="relative">
-                <Combobox.Button as={Button} scheme="transparent">
+                <Combobox.Button as={Button} size="sm" scheme="transparent">
                     <span className={placeholderClassName}>
                         {currentValue || placeholder || 'Dropdown'}
                     </span>

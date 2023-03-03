@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import shallow from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import { Dropdown } from 'ui-kit';
 import { appModeState } from 'ui/state/global';
 import useMainPanel from 'ui/state/panel';
@@ -63,7 +63,7 @@ export default function Breadcrumbs() {
     }
 
     return (
-        <div className="inline-flex items-center gap-2 bg-accent-700 p-2 rounded-br-2xl shadow-lg">
+        <div className="inline-flex items-center gap-2 p-2 rounded-br-2xl">
             <div className="px-4">
                 {connection.name}
             </div>

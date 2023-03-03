@@ -12,17 +12,20 @@ function ColumnIndicator({ label, column, onSelect }: ColumnIndicatorProps) {
     }
 
     return (
-        <th className="Spreadsheet__header" onClick={() => onSelect(column, false)} onContextMenu={handleContextMenu}>
+        <th
+            className="Spreadsheet__header first-child:min-w-0 first-child:w-[40px]"
+            onClick={() => onSelect(column, false)} onContextMenu={handleContextMenu}
+        >
             {label}
         </th>
     );
-};
+}
 
 export function Spreadsheet({ rows }: OwnProps) {
     const columns = Object.keys(rows[0] ?? {});
     const dataToRender = rows.map(row => {
         return columns.map(column => ({
-            value: row[column] ?? ''
+            value: String(row[column]) ?? ''
         }));
     });
 
@@ -36,6 +39,7 @@ export function Spreadsheet({ rows }: OwnProps) {
             columnLabels={columns}
             onSelect={handleSelect}
             ColumnIndicator={ColumnIndicator}
+            onKeyDown={e => e.stopPropagation()}
         />
     );
 }
