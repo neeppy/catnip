@@ -8,6 +8,7 @@
             "ui-kit": ["ui/components/ui-kit"],
             "ui-kit/*": ["ui/components/ui-kit/*"],
             "assets/*": ["ui/assets/*"],
+            "$storage": ["ui/utils/storage"],
             "common/*": ["common/*"]
         },
         "allowJs": false,

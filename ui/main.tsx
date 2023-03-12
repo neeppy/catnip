@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import 'assets/global.css';
 import { Interop } from 'common/models/Interop';
+import '$storage';
 
 declare global {
     const interop: Interop;

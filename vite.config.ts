@@ -14,6 +14,7 @@ export default defineConfig({
             'ui-kit': path.join(__dirname, 'ui/components/ui-kit'),
             'assets': path.join(__dirname, 'ui/assets'),
             'common': path.join(__dirname, 'common'),
+            '$storage': path.join(__dirname, 'ui/utils/storage'),
         },
     },
     plugins: [

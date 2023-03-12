@@ -1,15 +1,11 @@
-import IndexedDB from 'ui/utils/IndexedDB';
 import { Connection } from 'common/models/Connection';
+import storage from '$storage';
 
 export async function fetchConnections(): Promise<Connection[]> {
-    const idb = await IndexedDB.getInstance();
-
-    return idb.get<Connection>('connections');
+    return storage.connections.toArray();
 }
 
 export async function insertConnection(connection: Connection) {
-    const idb = await IndexedDB.getInstance();
-
     connection.id = window.crypto.randomUUID();
 
     const [passwordHash, sshPasswordHash, sshJumpPasswordHash] = await Promise.all([
@@ -28,5 +24,5 @@ export async function insertConnection(connection: Connection) {
         connection.sshTunnelConfiguration.jumpConfiguration.password = sshJumpPasswordHash;
     }
 
-    return idb.insert('connections', connection);
+    return storage.connections.add(connection);
 }
