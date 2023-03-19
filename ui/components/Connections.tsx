@@ -1,29 +1,30 @@
-import { useQuery } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ConnectionDrawer, { fetchConnections } from 'ui/components/connections/form';
 import useBoolean from 'ui/hooks/useBoolean';
 import { Button } from 'ui-kit';
 import { Connection } from 'common/models/Connection';
-import useMainPanel from 'ui/state/panel';
 import { randomColor } from 'ui/utils/random';
+import { activeConnection, createEmptyTab, getConnectionTabs } from 'ui/components/tabs';
 
-// @todo - the sidebar version of this will be dropped
 export default function Connections() {
-    const initialiseMainPanel = useMainPanel(state => state.connect);
-    const { data, isLoading } = useQuery(['connections'], {
-        queryFn: fetchConnections
-    });
-
+    const queryClient = useQueryClient();
+    const [, setActiveConnection] = useAtom(activeConnection);
     const { boolean: isOpen, on, off } = useBoolean(false);
+    const { data, isLoading } = useQuery(['connections'], fetchConnections);
 
     async function onConnectionClick(connection: Connection) {
-        const metadata = await window.interop.connections.open(connection);
+        const [tabs] = await Promise.all([
+            queryClient.fetchQuery(['tabs', connection.id], () => getConnectionTabs(connection.id)),
+            window.interop.connections.open(connection)
+        ]);
 
-        initialiseMainPanel({
-            connection,
-            databaseNames: metadata.databases,
-            tableNames: metadata.tables,
-            currentDatabase: connection.databaseName,
-        });
+        setActiveConnection(connection);
+
+        if (tabs.length === 0) {
+            await createEmptyTab(connection.id, connection.databaseName);
+            await queryClient.refetchQueries(['tabs', connection.id]);
+        }
     }
 
     return (

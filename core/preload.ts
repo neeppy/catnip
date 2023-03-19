@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld('interop', {
     },
     connections: {
         open: (connection) => ipcRenderer.invoke('@@connection/init', connection),
+        listDatabases: (connectionId: string) => ipcRenderer.invoke('@@connection/databases', connectionId),
     },
     database: {
         fetchTableNames: (connectionId, database) => ipcRenderer.invoke('@@db/tables', connectionId, database),

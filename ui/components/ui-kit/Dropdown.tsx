@@ -7,7 +7,7 @@ import { cva } from 'class-variance-authority';
 
 interface OwnProps {
     placeholder?: string;
-    value?: string;
+    initialValue?: string | null;
     options: IOption[];
     onChange?: (value: string) => void;
 }
@@ -48,13 +48,17 @@ const getOptionClassName = cva('cursor-pointer', {
 
 export function Dropdown({
     placeholder,
-    value,
+    initialValue,
     options = [],
     onChange
 }: OwnProps) {
-    const [currentValue, setCurrentValue] = useState(value ?? null);
+    const [currentValue, setCurrentValue] = useState(initialValue ?? null);
 
     function handleValueChange(value: string) {
+        if (value === currentValue) return;
+
+        console.debug('Dropdown value change:', currentValue, '=>', value);
+
         if (typeof onChange === 'function') {
             onChange(value);
         }

@@ -38,5 +38,19 @@ export default [
                 tables: tableNames,
             };
         }
-    }
+    },
+    {
+        channel: '@@connection/databases',
+        async handle(args, connectionId: string): Promise<string[]> {
+            if (!ConnectionRegistry.has(connectionId)) {
+                console.debug(`Connection "${connectionId}" was not initialised.`);
+                return;
+            }
+
+            const connection = ConnectionRegistry.get(connectionId);
+
+            const databasesRows = await connection.query<string[][]>('SHOW DATABASES', { asArray: true });
+            return databasesRows.map(row => row[0]);
+        }
+    },
 ] as Route[];

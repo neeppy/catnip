@@ -16,6 +16,7 @@ export interface Interop {
     };
     connections: {
         open: (conn: Connection) => Promise<DatabaseMetadata>;
+        listDatabases: (connectionId: string) => Promise<string[]>;
     };
     database: {
         fetchTableNames: (connectionId: string, database: string) => Promise<string[]>;
