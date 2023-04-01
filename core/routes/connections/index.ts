@@ -8,14 +8,20 @@ export default [
     {
         channel: '@@connection/init',
         async handle(args, connection: Connection): Promise<DatabaseMetadata> {
+            if (ConnectionRegistry.has(connection.id)) {
+                console.debug('Connection already live - using the old one!');
+            }
+
+            let sshTunnel = null;
+
             if (connection.sshTunnelConfiguration?.hostname) {
                 console.debug('SSH Configuration detected... Creating SSH tunnel.');
-                await createSSHTunnel(connection.sshTunnelConfiguration);
+                sshTunnel = await createSSHTunnel(connection.hostname, connection.port, connection.sshTunnelConfiguration);
                 console.debug('Successfully created SSH tunnel.');
             }
 
             console.debug('Attempting database connection.');
-            const databaseConnection = await createConnection(connection);
+            const databaseConnection = await createConnection(connection, sshTunnel);
 
             if (!ConnectionRegistry.has(connection.id)) {
                 ConnectionRegistry.set(connection.id, databaseConnection);

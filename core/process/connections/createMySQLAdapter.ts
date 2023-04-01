@@ -3,18 +3,19 @@ import { Connection } from 'common/models/Connection';
 import { safeStorage } from 'electron';
 import { QueryOptions } from './createConnection';
 
-export default async function createMySQLAdapter(parameters: Connection) {
-    const password = safeStorage.decryptString(Buffer.from(parameters.password, 'base64'));
+export default async function createMySQLAdapter(parameters: Connection, tunnel: ReadableStream) {
+    const password = parameters.password ? safeStorage.decryptString(Buffer.from(parameters.password, 'base64')) : '';
 
     const connection = await mysql.createConnection({
-        host: parameters.hostname,
+        host: parameters.hostname ?? '',
         port: parameters.port ?? 3306,
-        user: parameters.username,
+        user: parameters.username ?? '',
         password,
+        stream: tunnel,
         // database: parameters.databaseName,
-        ssl: {
-            rejectUnauthorized: false
-        }
+        // ssl: {
+        //     rejectUnauthorized: false
+        // }
     });
 
     return {

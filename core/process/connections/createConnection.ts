@@ -15,8 +15,8 @@ const connectionDriverFactories = {
     [ConnectionDriver.MySQL]: createMySQLAdapter,
 };
 
-export default async function createConnection(connection: Connection): Promise<ConnectionLike> {
+export default async function createConnection(connection: Connection, tunnel?: ReadableStream): Promise<ConnectionLike> {
     const factory = connectionDriverFactories[connection.driver];
 
-    return factory(connection);
+    return factory(connection, tunnel);
 }
