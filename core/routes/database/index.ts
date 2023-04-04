@@ -1,6 +1,6 @@
 import { ConnectionRegistry } from '../../process/connections';
 import { Route } from '../types';
-import { DatabaseRow, TableInitialisationData } from 'common/models/Database';
+import { DatabaseRow } from 'common/models/Database';
 
 export default [
     {
@@ -11,37 +11,35 @@ export default [
             }
 
             const connection = ConnectionRegistry.get(connectionId);
+            const tables = await connection.getTableNames(dbName);
 
-            await connection.use(dbName);
-
-            const tablesRows = await connection.query<string[][]>('SHOW TABLES', { asArray: true });
-
-            return tablesRows.map(row => row[0]);
+            return tables.map(table => table.name);
         }
     },
     {
-        channel: '@@db/table-initial',
-        async handle(args, connectionId: string, table: string): Promise<TableInitialisationData> {
+        channel: '@@db/table-columns',
+        async handle(args, connectionId: string, database: string, table: string) {
             if (!ConnectionRegistry.has(connectionId)) {
                 throw new Error('Invalid request "@@db/table-initial" for connection ID: ' + connectionId);
             }
 
             const connection = ConnectionRegistry.get(connectionId);
 
-            const initialData = await connection.query<DatabaseRow[]>(`SELECT * FROM \`${table}\` LIMIT ?`, {
+            return connection.getTableColumns(database, table);
+        },
+    },
+    {
+        channel: '@@db/table-initial',
+        async handle(args, connectionId: string, database: string, table: string) {
+            if (!ConnectionRegistry.has(connectionId)) {
+                throw new Error('Invalid request "@@db/table-initial" for connection ID: ' + connectionId);
+            }
+
+            const connection = ConnectionRegistry.get(connectionId);
+
+            return connection.query<DatabaseRow>(`SELECT * FROM \`${database}\`.\`${table}\` LIMIT ?`, {
                 preparedValues: [100],
             });
-
-            const tableColumnRows = await connection.query<string[][]>(`SHOW COLUMNS FROM \`${table}\``, {
-                asArray: true
-            });
-
-            const tableColumns = tableColumnRows.map(column => column[0]);
-
-            return {
-                rows: initialData,
-                columns: tableColumns
-            };
         }
     },
 ] as Route[];

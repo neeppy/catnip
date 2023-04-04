@@ -1,5 +1,6 @@
 import { Connection } from './Connection';
-import { DatabaseMetadata, TableInitialisationData } from './Database';
+import { DatabaseColumn, DatabaseMetadata, DatabaseRow, TableInitialisationData } from './Database';
+import connections from '../../core/routes/connections';
 
 export interface Interop {
     platform: string;
@@ -20,6 +21,7 @@ export interface Interop {
     };
     database: {
         fetchTableNames: (connectionId: string, database: string) => Promise<string[]>;
-        fetchTableContent: (connectionId: string, table: string) => Promise<TableInitialisationData>;
+        fetchTableColumns: (connectionId: string, database: string, table: string) => Promise<DatabaseColumn[]>;
+        fetchTableContent: (connectionId: string, database: string, table: string) => Promise<DatabaseRow[]>;
     };
 }

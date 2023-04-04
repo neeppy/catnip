@@ -28,14 +28,14 @@ export default [
                 console.debug(`Connection successful. Added "${connection.name}" (${connection.id}) to registry.`);
             }
 
-            const databasesRows = await databaseConnection.query<string[][]>('SHOW DATABASES', { asArray: true });
+            const databasesRows = await databaseConnection.query<string[]>('SHOW DATABASES', { asArray: true });
             const databaseNames = databasesRows.map(row => row[0]);
 
             const isDatabaseUsed = databaseNames.includes(connection.databaseName);
             let tableNames = [];
 
             if (isDatabaseUsed) {
-                const tablesRows = await databaseConnection.query<string[][]>('SHOW TABLES', { asArray: true });
+                const tablesRows = await databaseConnection.query<string[]>('SHOW TABLES', { asArray: true });
                 tableNames = tablesRows.map(row => row[0]);
             }
 
@@ -55,7 +55,7 @@ export default [
 
             const connection = ConnectionRegistry.get(connectionId);
 
-            const databasesRows = await connection.query<string[][]>('SHOW DATABASES', { asArray: true });
+            const databasesRows = await connection.query<string[]>('SHOW DATABASES', { asArray: true });
             return databasesRows.map(row => row[0]);
         }
     },

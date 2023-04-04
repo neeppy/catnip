@@ -2,12 +2,12 @@ import storage from '$storage';
 import { AnyTab, TableView } from './state';
 import client from 'ui/utils/query';
 
-export async function getTableRows(connectionId: string, table: string | null) {
-    if (!table) {
-        return { rows: [], columns: [] };
-    }
+export async function getTableColumns(connectionId: string, database: string, table: string) {
+    return interop.database.fetchTableColumns(connectionId, database, table);
+}
 
-    return interop.database.fetchTableContent(connectionId, table);
+export async function getTableRows(connectionId: string, database: string, table: string) {
+    return interop.database.fetchTableContent(connectionId, database, table);
 }
 
 export async function getConnectionTabs(connectionId: string) {

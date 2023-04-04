@@ -20,7 +20,8 @@ contextBridge.exposeInMainWorld('interop', {
     },
     database: {
         fetchTableNames: (connectionId, database) => ipcRenderer.invoke('@@db/tables', connectionId, database),
-        fetchTableContent: (connectionId, table) => ipcRenderer.invoke('@@db/table-initial', connectionId, table),
+        fetchTableColumns: (connectionId, database, table) => ipcRenderer.invoke('@@db/table-columns', connectionId, database, table),
+        fetchTableContent: (connectionId, database, table) => ipcRenderer.invoke('@@db/table-initial', connectionId, database, table),
     },
 } as Interop);
 
