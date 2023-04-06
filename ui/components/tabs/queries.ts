@@ -1,6 +1,13 @@
 import storage from '$storage';
-import { AnyTab, TableView } from './state';
+import { AnyTab, EditorView, TableView } from './state';
 import client from 'ui/utils/query';
+
+const advancedDbNames = [
+    'information_schema',
+    'mysql',
+    'performance_schema',
+    'sys'
+];
 
 export async function getTableColumns(connectionId: string, database: string, table: string) {
     return interop.database.fetchTableColumns(connectionId, database, table);
@@ -16,7 +23,7 @@ export async function getConnectionTabs(connectionId: string) {
         .toArray();
 }
 
-export async function createEmptyTab(connectionId: string, initialDatabase?: string) {
+export async function createEmptyTableView(connectionId: string, initialDatabase?: string) {
     const tab: TableView = {
         id: window.crypto.randomUUID(),
         connectionId: connectionId,
@@ -32,12 +39,34 @@ export async function createEmptyTab(connectionId: string, initialDatabase?: str
     return tab;
 }
 
-export async function getDatabaseList(connectionId: string) {
+export async function createEditorViewFromQuery(connectionId: string, database: string, query: string) {
+    const tab: EditorView = {
+        id: window.crypto.randomUUID(),
+        connectionId,
+        name: 'New Tab',
+        type: 'editor',
+        isActive: true,
+        currentDatabase: database,
+        currentQuery: query
+    };
+
+    await storage.tabs.add(tab);
+
+    return tab;
+}
+
+export async function getDatabaseList(connectionId: string, isAdvanced: boolean = false) {
     if (!connectionId) {
         return [];
     }
 
-    return interop.connections.listDatabases(connectionId);
+    const databases = await interop.connections.listDatabases(connectionId);
+
+    if (!isAdvanced) {
+        return databases.filter(db => !advancedDbNames.includes(db));
+    }
+
+    return databases;
 }
 
 export async function getTablesList(connectionId: string, database: string) {
@@ -75,9 +104,13 @@ export async function closeTabs(connectionId: string, tabs: string[]) {
             isActive: true
         }]);
     } else if (currentTabs.length === 1) {
-        await createEmptyTab(connectionId);
+        await createEmptyTableView(connectionId);
         await client.refetchQueries(['tabs', connectionId]);
     } else {
         await client.refetchQueries(['tabs', connectionId]);
     }
+}
+
+export async function runUserQuery(connectionId: string, database: string, query: string) {
+    return interop.database.runUserQuery(connectionId, database, query);
 }

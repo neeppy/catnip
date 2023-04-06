@@ -1,21 +1,15 @@
-import { DatabaseColumn, DatabaseRow } from 'common/models/Database';
-import { IRangePoint } from 'ui-kit/spreadsheet/Spreadsheet';
-
-type Direction = 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown';
+import { IRangePoint, SpreadSheetProps } from 'ui-kit/spreadsheet/Spreadsheet';
+import { DatabaseRow } from 'common/models/Database';
 
 interface OwnProps {
     index: number;
-    columns: DatabaseColumn[];
+    columns: SpreadSheetProps['columns'];
     row: DatabaseRow;
     activeRangeStart: IRangePoint | null;
     activeRangeEnd: IRangePoint | null;
     headerClasses?: string;
     cellClasses?: string;
     activeCellClasses?: string;
-    onCellClick: (t: IRangePoint) => void;
-    onRangeCaptureStart: (t: IRangePoint) => void;
-    onRangeCapture: (t: IRangePoint) => void;
-    onKeyboardNavigate: (direction: Direction) => void;
 }
 
 const isBetween = (num: number, bounds: [number, number]) => num >= Math.min(...bounds) && num <= Math.max(...bounds);
@@ -28,11 +22,7 @@ export default function Row({
     activeRangeEnd,
     headerClasses,
     activeCellClasses,
-    cellClasses,
-    onCellClick,
-    onRangeCapture,
-    onRangeCaptureStart,
-    onKeyboardNavigate
+    cellClasses
 }: OwnProps) {
     const isActiveRow = activeRangeStart && activeRangeEnd &&
         isBetween(index, [activeRangeStart.rowIndex, activeRangeEnd.rowIndex]);
@@ -48,33 +38,14 @@ export default function Row({
 
                 const isActive = isActiveRow && isActiveColumn;
 
-                const rangePoint = {
-                    rowIndex: index,
-                    colIndex: columnIndex,
-                    column: column.name,
-                    row: row
-                };
-
                 return (
                     <div
                         key={`${index + 1}-${column.name}`}
                         tabIndex={0}
                         className={isActive ? activeCellClasses : cellClasses}
                         draggable
-                        onClick={e => {
-                            onCellClick(rangePoint);
-                        }}
-                        onKeyDown={e => {
-                            if (e.key.startsWith('Arrow')) {
-                                onKeyboardNavigate(e.key as Direction);
-                            }
-                        }}
-                        onDragStart={e => {
-                            e.dataTransfer.setDragImage(new Image(), 0, 0);
-
-                            onRangeCaptureStart(rangePoint);
-                        }}
-                        onDragOver={() => onRangeCapture(rangePoint)}
+                        data-row-index={index}
+                        data-col-name={column.name}
                     >
                         {String(row[column.name])}
                     </div>

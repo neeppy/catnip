@@ -21,7 +21,13 @@ export function TableViewTab({ connectionId, currentDatabase, currentTable, ...r
 
     return (
         <div className="text-scene-default grid grid-cols-table grid-rows-table h-full">
-            <FloatingEditor className="w-96 h-20"/>
+            {currentDatabase && (
+                <FloatingEditor
+                    connectionId={connectionId}
+                    currentDatabase={currentDatabase}
+                    className="w-96 h-20"
+                />
+            )}
             <div className="col-span-2">
                 <Breadcrumbs
                     connectionId={connectionId}

@@ -19,7 +19,6 @@ export interface EditorView extends Tab {
     type: 'editor';
     currentDatabase: string | null;
     currentQuery: string | null;
-    content: string | null;
 }
 
 export type AnyTab = TableView | EditorView;

@@ -1,13 +1,11 @@
-export interface DatabaseMetadata {
-    databases: string[];
-    tables: string[];
-}
-
 export type DatabaseRow = Record<string, unknown>;
 
-export interface DatabaseColumn {
+export interface QueryField {
     name: string;
     type: string;
+}
+
+export interface DatabaseColumn extends QueryField {
     defaultValue: unknown;
     isNullable: boolean;
     isPrimaryKey: boolean;
@@ -21,7 +19,7 @@ export interface DatabaseTable {
     comment: string;
 }
 
-export interface TableInitialisationData {
+export interface QueryResult {
+    columns: QueryField[];
     rows: DatabaseRow[];
-    columns: unknown[];
 }

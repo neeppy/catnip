@@ -5,7 +5,7 @@ import useBoolean from 'ui/hooks/useBoolean';
 import { Button } from 'ui-kit';
 import { Connection } from 'common/models/Connection';
 import { randomColor } from 'ui/utils/random';
-import { activeConnection, createEmptyTab, getConnectionTabs } from 'ui/components/tabs';
+import { activeConnection, createEmptyTableView, getConnectionTabs } from 'ui/components/tabs';
 
 export default function Connections() {
     const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export default function Connections() {
         setActiveConnection(connection);
 
         if (tabs.length === 0) {
-            await createEmptyTab(connection.id, connection.databaseName);
+            await createEmptyTableView(connection.id, connection.databaseName);
             await queryClient.refetchQueries(['tabs', connection.id]);
         }
     }

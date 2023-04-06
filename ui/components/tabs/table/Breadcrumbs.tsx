@@ -7,27 +7,19 @@ import { activeConnection, TableView } from '../state';
 import { getDatabaseList, getTablesList, updateTabs } from 'ui/components/tabs';
 import useNullableAtom from 'ui/hooks/useNullableAtom';
 
-const advancedDbNames = [
-    'information_schema',
-    'mysql',
-    'performance_schema',
-    'sys'
-];
-
 export default function Breadcrumbs(tab: TableView) {
     const queryClient = useQueryClient();
     const [isAdvanced] = useAtom(appModeState);
     const [connection] = useNullableAtom(activeConnection);
 
-    const { data: databases } = useQuery<string[]>(['databases', connection.id], () => getDatabaseList(connection.id));
+    const { data: databases } = useQuery<string[]>(['databases', connection.id, isAdvanced], () => getDatabaseList(connection.id, isAdvanced));
     const { data: tables } = useQuery<string[]>(
         ['tables', connection.id, tab.currentDatabase],
         () => getTablesList(connection.id, tab.currentDatabase as string),
         { enabled: !!tab.currentDatabase }
     );
 
-    const databaseOptions = databases?.filter(dbName => isAdvanced || !advancedDbNames.includes(dbName))
-        .map(dbName => ({
+    const databaseOptions = databases?.map(dbName => ({
             label: dbName,
             value: dbName
         })) ?? [];

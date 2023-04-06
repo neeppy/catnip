@@ -1,5 +1,5 @@
 export * from './table/TableViewTab';
-export * from './EditorViewTab';
+export * from './editor/EditorViewTab';
 export * from './EmptyTab';
 export * from './queries';
 export * from './state';

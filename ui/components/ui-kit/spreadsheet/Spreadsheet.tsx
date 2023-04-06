@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { DragEvent, KeyboardEvent, SyntheticEvent, useState } from 'react';
 import classnames from 'classnames';
-import { DatabaseColumn, DatabaseRow } from 'common/models/Database';
+import { DatabaseColumn, DatabaseRow, QueryField } from 'common/models/Database';
 import Row from './Row';
-
-type Direction = 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown';
+import { arrowNavigationMap, focusCell, getCellRowAndColumnFromEvent, throttleByEventTarget } from './utils';
 
 export interface IRangePoint {
     rowIndex: number;
@@ -12,12 +11,12 @@ export interface IRangePoint {
     row: DatabaseRow;
 }
 
-interface OwnProps {
-    columns: DatabaseColumn[];
+export interface SpreadSheetProps {
+    columns: Array<QueryField | DatabaseColumn>;
     rows: DatabaseRow[];
 }
 
-export function Spreadsheet({ rows, columns }: OwnProps) {
+export function Spreadsheet({ rows, columns }: SpreadSheetProps) {
     const [rangeStart, setRangeStart] = useState<IRangePoint | null>(null);
     const [rangeEnd, setRangeEnd] = useState<IRangePoint | null>(null);
 
@@ -26,59 +25,17 @@ export function Spreadsheet({ rows, columns }: OwnProps) {
 
     const cellClasses = classnames('truncate', spacingClasses, colorClasses);
     const activeCellClasses = classnames('truncate bg-accent-900', spacingClasses);
-    const headerClasses = classnames('text-center font-bold text-sm', cellClasses);
-
-    function onCellClick(t: IRangePoint) {
-        console.log(t);
-
-        setRangeStart(t);
-        setRangeEnd(t);
-    }
-
-    function onMouseDragOver(t: IRangePoint) {
-        setRangeEnd(t);
-    }
-
-    function handleKeyboardNavigation(direction: Direction) {
-        if (!rangeStart) return;
-
-        const { rowIndex, colIndex } = rangeStart;
-
-        switch (direction) {
-            case 'ArrowDown':
-                if (rowIndex === rows.length - 1) return;
-                return onCellClick({
-                    ...rangeStart,
-                    rowIndex: rowIndex + 1,
-                    row: rows[rowIndex + 1]
-                });
-            case 'ArrowUp':
-                if (rowIndex === 0) return;
-                return onCellClick({
-                    ...rangeStart,
-                    rowIndex: rowIndex - 1,
-                    row: rows[rowIndex - 1]
-                });
-            case 'ArrowLeft':
-                if (colIndex === 0) return;
-                return onCellClick({
-                    ...rangeStart,
-                    colIndex: colIndex - 1,
-                    column: columns[colIndex - 1].name
-                });
-            case 'ArrowRight':
-                if (colIndex === columns.length - 1) return;
-                return onCellClick({
-                    ...rangeStart,
-                    colIndex: colIndex + 1,
-                    column: columns[colIndex + 1].name
-                });
-        }
-    }
+    const headerClasses = classnames('text-center font-bold text-sm select-none', cellClasses);
 
     return (
         <>
-            <div className="inline-grid bg-scene-400 gap-[1px] border-scene-400 border-[1px]" style={{ gridTemplateColumns: `repeat(${columns.length + 1}, max-content)` }}>
+            <div
+                className="inline-grid text-scene-default bg-scene-400 gap-[1px] border-scene-400 border-[1px]" style={{ gridTemplateColumns: `repeat(${columns.length + 1}, max-content)` }}
+                onClick={handleCellClick}
+                onKeyDown={handleKeyboardNavigation}
+                onDragStart={handleCellClick}
+                onDragOver={throttleByEventTarget(handleDragOver)}
+            >
                 <div className={classnames('min-w-[50px]', headerClasses)} />
                 {columns.map(column => (
                     <div key={column.name} className={headerClasses}>
@@ -95,13 +52,70 @@ export function Spreadsheet({ rows, columns }: OwnProps) {
                         activeRangeEnd={rangeEnd}
                         cellClasses={cellClasses}
                         activeCellClasses={activeCellClasses}
-                        onCellClick={onCellClick}
-                        onRangeCaptureStart={onCellClick}
-                        onRangeCapture={onMouseDragOver}
-                        onKeyboardNavigate={handleKeyboardNavigation}
                     />
                 ))}
             </div>
         </>
     );
+
+    function setSelectedCell(rowIndex: number, colIndex: number) {
+        const rangePoint: IRangePoint = {
+            rowIndex: rowIndex,
+            colIndex: colIndex,
+            row: rows[rowIndex],
+            column: columns[colIndex].name
+        };
+
+        setRangeStart(rangePoint);
+        setRangeEnd(rangePoint);
+    }
+
+    function handleDragOver(e: DragEvent, target: HTMLElement) {
+        if (!rangeStart) return;
+
+        const [rowIndex, colName] = getCellRowAndColumnFromEvent(e);
+
+        if (rowIndex === null || colName === null) return;
+
+        const row = Number(rowIndex);
+        const colIndex = columns.findIndex(col => col.name === colName);
+
+        setRangeEnd({
+            rowIndex: row,
+            colIndex: colIndex,
+            row: rows[row],
+            column: columns[colIndex].name
+        });
+    }
+
+    function handleKeyboardNavigation(event: KeyboardEvent) {
+        if (!rangeStart) return;
+        if (!event.key.startsWith('Arrow')) return;
+
+        const [rowIndex, colName] = getCellRowAndColumnFromEvent(event);
+
+        if (rowIndex === null || colName === null) return;
+
+        const colIndex = columns.findIndex(col => col.name === colName);
+        const [newCol, newRow] = arrowNavigationMap[event.key as keyof typeof arrowNavigationMap]({
+            x: colIndex,
+            y: Number(rowIndex),
+            maxX: columns.length - 1,
+            maxY: rows.length - 1
+        });
+
+        setSelectedCell(newRow, newCol);
+
+        focusCell(newRow, columns[newCol].name);
+    }
+
+    function handleCellClick(event: SyntheticEvent) {
+        const [rowIndex, colName] = getCellRowAndColumnFromEvent(event);
+
+        if (rowIndex === null || colName === null) return;
+
+        const colIndex = columns.findIndex(column => column.name === colName);
+
+        setSelectedCell(Number(rowIndex), colIndex);
+    }
 }

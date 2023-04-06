@@ -1,6 +1,6 @@
 import { Connection, ConnectionDriver } from 'common/models/Connection';
 import createMySQLAdapter from './createMySQLAdapter';
-import { DatabaseColumn, DatabaseTable } from 'common/models/Database';
+import { DatabaseColumn, DatabaseTable, QueryResult } from 'common/models/Database';
 
 export interface QueryOptions {
     asArray?: boolean;
@@ -8,9 +8,10 @@ export interface QueryOptions {
 }
 
 export interface ConnectionLike {
-    query: <T>(query: string, options: QueryOptions) => Promise<T[]>;
     getTableNames: (dbName: string) => Promise<DatabaseTable[]>;
     getTableColumns: (dbName: string, tableName: string) => Promise<DatabaseColumn[]>;
+    query: <T>(query: string, options?: QueryOptions) => Promise<T[]>;
+    runUserQuery: (database: string, query: string) => Promise<QueryResult>;
 }
 
 const connectionDriverFactories = {

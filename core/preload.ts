@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('interop', {
         fetchTableNames: (connectionId, database) => ipcRenderer.invoke('@@db/tables', connectionId, database),
         fetchTableColumns: (connectionId, database, table) => ipcRenderer.invoke('@@db/table-columns', connectionId, database, table),
         fetchTableContent: (connectionId, database, table) => ipcRenderer.invoke('@@db/table-initial', connectionId, database, table),
+        runUserQuery: (connectionId, database, query) => ipcRenderer.invoke('@@db/user-query', connectionId, database, query),
     },
 } as Interop);
 

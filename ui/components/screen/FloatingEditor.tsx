@@ -1,8 +1,12 @@
 import { DragEvent, useEffect, useState } from 'react';
 import classnames from 'classnames';
-import { Editor } from 'ui-kit';
+import Editor from 'ui-kit/editor';
+import { createEditorViewFromQuery, updateTabs } from 'ui/components/tabs';
+import { useActiveTab } from 'ui/hooks/useActiveTab';
 
 interface OwnProps {
+    connectionId: string;
+    currentDatabase: string | null;
     className?: string;
 }
 
@@ -40,9 +44,12 @@ function getDragDropProps() {
 
 export default function FloatingEditor({ className }: OwnProps) {
     const [defaultValue, setDefaultValue] = useState('');
+    const activeTab = useActiveTab();
 
     useEffect(() => {
         function handler(event: KeyboardEvent) {
+            if (event.ctrlKey || event.altKey || event.metaKey) return;
+
             if (event.key.length === 1) {
                 setDefaultValue(event.key);
 
@@ -57,8 +64,14 @@ export default function FloatingEditor({ className }: OwnProps) {
         }
     }, [defaultValue]);
 
-    function handleQuerySubmit(query: string) {
-        console.log(query);
+    async function handleQuerySubmit(query: string) {
+        if (!activeTab) return;
+
+        await createEditorViewFromQuery(activeTab.connectionId, activeTab.currentDatabase as string, query);
+        await updateTabs([{
+            ...activeTab,
+            isActive: false
+        }]);
     }
 
     if (!defaultValue) {
@@ -70,6 +83,7 @@ export default function FloatingEditor({ className }: OwnProps) {
             <div className="h-full pl-6 py-1 pr-1 rounded-md bg-scene-100">
                 <Editor
                     defaultValue={defaultValue}
+                    submitOnEnter
                     onSubmit={handleQuerySubmit}
                     onEscape={() => setDefaultValue('')}
                 />

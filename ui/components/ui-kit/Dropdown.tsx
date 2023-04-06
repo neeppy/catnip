@@ -10,6 +10,7 @@ interface OwnProps {
     initialValue?: string | null;
     options: IOption[];
     onChange?: (value: string) => void;
+    format?: (value: string) => string;
 }
 
 const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-14 max-h-64 min-w-[10rem] overflow-y-auto z-10', {
@@ -50,7 +51,8 @@ export function Dropdown({
     placeholder,
     initialValue,
     options = [],
-    onChange
+    onChange,
+    format,
 }: OwnProps) {
     const [currentValue, setCurrentValue] = useState(initialValue ?? null);
 
@@ -66,6 +68,11 @@ export function Dropdown({
         setCurrentValue(value);
     }
 
+    const currentLabel = options.find(opt => opt.value === currentValue)?.label;
+    const rawDisplayValue = currentLabel || currentValue || placeholder || 'Dropdown';
+
+    const formattedDisplayValue = format?.(rawDisplayValue) ?? rawDisplayValue;
+
     const placeholderClassName = classnames({
         'text-scene-default': !!currentValue,
         'text-scene-darker hover:text-scene-dark': !currentValue
@@ -76,7 +83,7 @@ export function Dropdown({
             <div className="relative">
                 <Combobox.Button as={Button} size="sm" scheme="transparent">
                     <span className={placeholderClassName}>
-                        {currentValue || placeholder || 'Dropdown'}
+                        {formattedDisplayValue}
                     </span>
                 </Combobox.Button>
                 <Combobox.Options className={getDropdownClassName({})}>

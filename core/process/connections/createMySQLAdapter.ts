@@ -1,8 +1,11 @@
+// @ts-ignore - it exists
+import { Types } from 'mysql2';
 import mysql from 'mysql2/promise';
 import { Connection } from 'common/models/Connection';
 import { safeStorage } from 'electron';
-import { QueryOptions } from './createConnection';
-import { DatabaseColumn, DatabaseTable } from 'common/models/Database';
+import { ConnectionLike, QueryOptions } from './createConnection';
+import { DatabaseColumn, DatabaseRow, DatabaseTable, QueryField, QueryResult } from 'common/models/Database';
+import { COLUMN_TYPES } from './mysql/types';
 
 interface ColumnRow {
     COLUMN_NAME: string;
@@ -66,10 +69,28 @@ export default async function createMySQLAdapter(parameters: Connection, tunnel:
             }));
         },
 
-        async query<T>(sql: string, options: QueryOptions): Promise<T[]> {
-            const [rows] = await connection.query({ sql, rowsAsArray: options.asArray ?? false }, options.preparedValues);
+        async query<T>(sql: string, options?: QueryOptions): Promise<T[]> {
+            options = options ?? {};
+
+            const [rows] = await connection.query({ sql, rowsAsArray: options.asArray ?? false }, options.preparedValues ?? []);
 
             return rows as T[];
+        },
+
+        async runUserQuery(database: string, sql: string): Promise<QueryResult> {
+            await connection.query(`USE ${database}`);
+
+            const [result, fields] = await connection.query(sql);
+
+            const responseFields: QueryField[] = fields.map(field => ({
+                name: field.name,
+                type: COLUMN_TYPES[field.type]
+            }));
+
+            return {
+                columns: responseFields,
+                rows: result as DatabaseRow[],
+            };
         }
-    };
+    } as ConnectionLike;
 }

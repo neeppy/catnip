@@ -20,7 +20,7 @@ export default [
         channel: '@@db/table-columns',
         async handle(args, connectionId: string, database: string, table: string) {
             if (!ConnectionRegistry.has(connectionId)) {
-                throw new Error('Invalid request "@@db/table-initial" for connection ID: ' + connectionId);
+                throw new Error('Invalid request "@@db/table-columns" for connection ID: ' + connectionId);
             }
 
             const connection = ConnectionRegistry.get(connectionId);
@@ -40,6 +40,18 @@ export default [
             return connection.query<DatabaseRow>(`SELECT * FROM \`${database}\`.\`${table}\` LIMIT ?`, {
                 preparedValues: [100],
             });
+        }
+    },
+    {
+        channel: '@@db/user-query',
+        async handle(args, connectionId: string, database: string, query: string) {
+            if (!ConnectionRegistry.has(connectionId)) {
+                throw new Error('Invalid request "@@db/user-query" for connection ID: ' + connectionId);
+            }
+
+            const connection = ConnectionRegistry.get(connectionId);
+
+            return connection.runUserQuery(database, query);
         }
     },
 ] as Route[];

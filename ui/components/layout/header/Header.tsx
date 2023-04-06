@@ -7,7 +7,7 @@ import { Button } from 'ui/components/ui-kit';
 import { appModeState } from 'ui/state/global';
 import {
     activeConnection,
-    AnyTab, createEmptyTab,
+    AnyTab, createEmptyTableView,
     EditorTabHeader,
     getConnectionTabs,
     TableTabHeader,
@@ -40,14 +40,14 @@ export function Header() {
     async function onNewTab() {
         if (!connection) return;
 
-        await createEmptyTab(connection.id);
+        await createEmptyTableView(connection.id);
 
         if (activeTab) {
             await updateTabs([{ ...activeTab, isActive: false }]);
         }
     }
 
-    const tabContainerClass = classnames('flex gap-2', {
+    const tabContainerClass = classnames('flex gap-2 select-none', {
         'ml-24': interop.platform === 'darwin',
     });
 
