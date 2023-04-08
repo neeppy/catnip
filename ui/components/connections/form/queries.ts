@@ -5,6 +5,10 @@ export async function fetchConnections(): Promise<Connection[]> {
     return storage.connections.toArray();
 }
 
+export async function getConnectionById(connectionId: string): Promise<Connection | undefined> {
+    return storage.connections.get(connectionId);
+}
+
 export async function insertConnection(connection: Connection) {
     connection.id = window.crypto.randomUUID();
 

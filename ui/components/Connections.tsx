@@ -1,17 +1,33 @@
 import { useAtom } from 'jotai';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import ConnectionDrawer, { fetchConnections } from 'ui/components/connections/form';
+import ConnectionDrawer, { fetchConnections, getConnectionById } from 'ui/components/connections/form';
 import useBoolean from 'ui/hooks/useBoolean';
 import { Button } from 'ui-kit';
 import { Connection } from 'common/models/Connection';
 import { randomColor } from 'ui/utils/random';
 import { activeConnection, createEmptyTableView, getConnectionTabs } from 'ui/components/tabs';
+import { useEffect } from 'react';
 
 export default function Connections() {
     const queryClient = useQueryClient();
     const [, setActiveConnection] = useAtom(activeConnection);
     const { boolean: isOpen, on, off } = useBoolean(false);
     const { data, isLoading } = useQuery(['connections'], fetchConnections);
+
+    useEffect(() => {
+        const activeConnection = localStorage.getItem('activeConnection');
+
+        if (activeConnection) {
+            getConnectionById(activeConnection)
+                .then(connection => {
+                    if (connection) {
+                        setActiveConnection(connection);
+
+                        return window.interop.connections.open(connection as Connection);
+                    }
+                });
+        }
+    }, []);
 
     async function onConnectionClick(connection: Connection) {
         const [tabs] = await Promise.all([
@@ -25,6 +41,8 @@ export default function Connections() {
             await createEmptyTableView(connection.id, connection.databaseName);
             await queryClient.refetchQueries(['tabs', connection.id]);
         }
+
+        localStorage.setItem('activeConnection', connection.id);
     }
 
     return (

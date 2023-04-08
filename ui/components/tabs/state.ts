@@ -24,4 +24,3 @@ export interface EditorView extends Tab {
 export type AnyTab = TableView | EditorView;
 
 export const activeConnection = atom<Connection | null>(null);
-export const connectionTabs = atom<AnyTab[]>([]);
