@@ -1,77 +1,45 @@
+import { MouseEvent } from 'react';
 import classnames from 'classnames';
 import { VscChromeClose } from 'react-icons/vsc';
-import { closeTabs, EditorView, TableView } from 'ui/components/tabs';
+import { closeTabs } from '../queries';
 
-interface OwnProps<T> {
-    tab: T;
-    onClick: () => Promise<unknown>;
+interface TabProps {
+    isActive: boolean;
+    tabId: string;
+    connectionId: string;
+    labelTop: string | null;
+    labelBottom: string | null;
+    onClick: () => unknown;
+    onContextMenu: (event: MouseEvent) => unknown;
 }
 
-export function TableTabHeader({ tab, onClick }: OwnProps<TableView>) {
+export function TabHeader({ isActive, connectionId, tabId, labelTop, labelBottom, onClick, onContextMenu }: TabProps) {
     const tabClassName = classnames('flex items-center w-[168px] transition-colors px-2 py-1', {
-        'text-[#fff6] hover:text-[#fffa] hover:bg-[#fff1]': !tab.isActive,
-        'text-scene-default bg-accent-900': tab.isActive
+        'text-[#fff6] hover:text-[#fffa] hover:bg-[#fff1]': !isActive,
+        'text-scene-default bg-accent-900': isActive
     });
 
-    function closeTab(event: any) {
-        event.stopPropagation();
-
-        return closeTabs(tab.connectionId, [tab.id]);
+    function closeTab() {
+        return closeTabs(connectionId, [tabId]);
     }
 
     return (
-        <div
-            className={tabClassName}
-            onClick={onClick}
-        >
-            <span className="flex flex-col flex-1 items-start justify-center text-left overflow-hidden">
-                {tab.currentDatabase && tab.currentTable ? (
+        <div className={tabClassName} onContextMenu={onContextMenu}>
+            <div
+                onClick={onClick}
+                className="flex flex-col flex-1 items-start justify-center text-left overflow-hidden"
+            >
+                {labelTop && labelBottom ? (
                     <>
-                        <span className="text-2xs max-w-full truncate">{tab.currentDatabase}</span>
-                        <span className="text-2xs max-w-full truncate">{tab.currentTable}</span>
+                        <span className="text-2xs max-w-full truncate">{labelTop}</span>
+                        <span className="text-2xs max-w-full truncate">{labelBottom}</span>
                     </>
                 ) : (
                     <span className="text-2xs">
-                        (New Tab)
+                        (Empty Tab)
                     </span>
                 )}
-            </span>
-            <button className="text-xs text-scene-default hover:bg-[#fff2] p-1 ml-2" onClick={closeTab}>
-                <VscChromeClose/>
-            </button>
-        </div>
-    );
-}
-
-export function EditorTabHeader({ tab, onClick }: OwnProps<EditorView>) {
-    const tabClassName = classnames('flex items-center w-[168px] transition-colors px-2 py-1', {
-        'text-[#fff6] hover:text-[#fffa] hover:bg-[#fff1]': !tab.isActive,
-        'text-scene-default bg-accent-900': tab.isActive
-    });
-
-    function closeTab(event: any) {
-        event.stopPropagation();
-
-        return closeTabs(tab.connectionId, [tab.id]);
-    }
-
-    return (
-        <div
-            className={tabClassName}
-            onClick={onClick}
-        >
-            <span className="flex flex-col flex-1 items-start justify-center text-left overflow-hidden">
-                {tab.currentDatabase && tab.currentQuery ? (
-                    <>
-                        <span className="text-2xs max-w-full truncate">{tab.currentDatabase}</span>
-                        <span className="text-2xs max-w-full truncate">{tab.currentQuery}</span>
-                    </>
-                ) : (
-                    <span className="text-2xs">
-                        (New Tab)
-                    </span>
-                )}
-            </span>
+            </div>
             <button className="text-xs text-scene-default hover:bg-[#fff2] p-1 ml-2" onClick={closeTab}>
                 <VscChromeClose/>
             </button>

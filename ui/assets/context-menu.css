@@ -1,0 +1,16 @@
+.contexify {
+    @apply text-scene-default;
+    @apply bg-scene-600 border border-scene-700;
+}
+
+.contexify .contexify_separator {
+    @apply bg-scene-700;
+}
+
+.contexify_item {
+    @apply text-sm;
+}
+
+.contexify .contexify_item:not(.contexify_item-disabled):hover > .contexify_itemContent {
+    @apply bg-accent-transparent;
+}

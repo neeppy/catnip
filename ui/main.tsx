@@ -6,6 +6,7 @@ import 'assets/global.css';
 import { Interop } from 'common/models/Interop';
 import '$storage';
 import client from 'ui/utils/query';
+import AppContextMenu from 'ui/components/context-menu';
 
 declare global {
     const interop: Interop;
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={client}>
             <App/>
+            <AppContextMenu/>
         </QueryClientProvider>
     </React.StrictMode>
 );

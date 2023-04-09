@@ -1,103 +1,82 @@
-import { Combobox } from '@headlessui/react';
-import { Button } from 'ui-kit/Button';
-import classnames from 'classnames';
-import { IOption } from './Select';
-import { Fragment, useState } from 'react';
-import { cva } from 'class-variance-authority';
+import { cloneElement, ElementType, MouseEvent, ReactElement, useId } from 'react';
+import { Item, ItemParams, Menu, Separator, Submenu, useContextMenu } from 'react-contexify';
+
+type Separator = 'separator';
+
+interface Option<T = any> {
+    key: string;
+    icon?: ElementType,
+    label: string;
+    value?: T;
+    onClick: (params: ItemParams, value?: T) => void;
+}
+
+interface Submenu {
+    key: string;
+    icon?: ElementType,
+    label: string;
+    options: Array<Option | Separator | Submenu>;
+}
+
+export type OptionType = Option | Separator | Submenu;
 
 interface OwnProps {
-    placeholder?: string;
-    initialValue?: string | null;
-    options: IOption[];
-    onChange?: (value: string) => void;
-    format?: (value: string) => string;
+    id?: string;
+    label?: string;
+    dropdownData?: any;
+    trigger: ReactElement;
+    options?: OptionType[];
 }
-
-const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-14 max-h-64 min-w-[10rem] overflow-y-auto z-10', {
-    variants: {
-        variant: {
-            default: 'bg-scene-400 shadow-lg shadow-scene-200'
-        }
-    },
-    defaultVariants: {
-        variant: 'default'
-    }
-});
-
-const getOptionClassName = cva('cursor-pointer', {
-    variants: {
-        variant: {
-            default: 'text-scene-default text-xs py-1'
-        },
-        size: {
-            sm: 'px-2 py-1',
-            md: 'px-4 py-3'
-        },
-        active: {
-            true: 'bg-scene-500',
-            false: null
-        },
-        selected: {
-            true: 'bg-scene-600 font-bold'
-        }
-    },
-    defaultVariants: {
-        variant: 'default',
-        size: 'md'
-    }
-});
 
 export function Dropdown({
-    placeholder,
-    initialValue,
-    options = [],
-    onChange,
-    format,
+    id,
+    label,
+    dropdownData,
+    trigger: rawTrigger,
+    options = []
 }: OwnProps) {
-    const [currentValue, setCurrentValue] = useState(initialValue ?? null);
+    const defaultId = useId();
+    const menuId = useId();
+    const { show } = useContextMenu({ id: menuId });
 
-    function handleValueChange(value: string) {
-        if (value === currentValue) return;
+    const onClick = (event: MouseEvent) => show({ event, props: dropdownData });
 
-        console.debug('Dropdown value change:', currentValue, '=>', value);
-
-        if (typeof onChange === 'function') {
-            onChange(value);
-        }
-
-        setCurrentValue(value);
-    }
-
-    const currentLabel = options.find(opt => opt.value === currentValue)?.label;
-    const rawDisplayValue = currentLabel || currentValue || placeholder || 'Dropdown';
-
-    const formattedDisplayValue = format?.(rawDisplayValue) ?? rawDisplayValue;
-
-    const placeholderClassName = classnames({
-        'text-scene-default': !!currentValue,
-        'text-scene-darker hover:text-scene-dark': !currentValue
-    });
+    const trigger = cloneElement(rawTrigger, { onClick });
 
     return (
-        <Combobox value={currentValue} onChange={handleValueChange}>
-            <div className="relative">
-                <Combobox.Button as={Button} size="sm" scheme="transparent">
-                    <span className={placeholderClassName}>
-                        {formattedDisplayValue}
-                    </span>
-                </Combobox.Button>
-                <Combobox.Options className={getDropdownClassName({})}>
-                    {options.map(option => (
-                        <Combobox.Option key={option.value} value={option.value} as={Fragment}>
-                            {({ active, selected }) => (
-                                <li className={getOptionClassName({ active, selected })}>
-                                    {option.label}
-                                </li>
-                            )}
-                        </Combobox.Option>
-                    ))}
-                </Combobox.Options>
-            </div>
-        </Combobox>
+        <>
+            {label && <label htmlFor={id ?? defaultId}>{label}</label>}
+            {trigger}
+            <Menu theme="dark" id={menuId} animation="scale">
+                {options.map(renderOption)}
+            </Menu>
+        </>
     );
 }
+
+const renderLabel = (option: Option | Submenu) => (
+    <span className="inline-flex gap-3 items-center">
+        {option.icon && <option.icon />}
+        {option.label}
+    </span>
+);
+
+const renderOption = (option: OptionType, idx: number): ReactElement => {
+    if (option === 'separator') {
+        return <Separator key={idx} />;
+    }
+
+    if ('options' in option) {
+        return (
+            <Submenu key={option.key} label={renderLabel(option)}>
+                {option.options.map(renderOption)}
+            </Submenu>
+        );
+    }
+
+    return (
+        <Item key={option.key} onClick={params => option.onClick(params, option.value)}>
+            {renderLabel(option)}
+        </Item>
+    );
+};

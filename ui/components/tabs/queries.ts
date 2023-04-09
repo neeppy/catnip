@@ -1,5 +1,5 @@
 import storage from '$storage';
-import { AnyTab, EditorView, TableView } from './state';
+import { AnyTab, EditorView, TableView, useTabActivity } from './state';
 import client from 'ui/utils/query';
 
 const advancedDbNames = [
@@ -29,12 +29,13 @@ export async function createEmptyTableView(connectionId: string, initialDatabase
         connectionId: connectionId,
         name: 'New Tab',
         type: 'table',
-        isActive: true,
         currentDatabase: initialDatabase ?? null,
         currentTable: null,
     };
 
     await storage.tabs.add(tab);
+    await client.refetchQueries(['tabs', connectionId]);
+    useTabActivity.getState().setCurrentTab(tab);
 
     return tab;
 }
@@ -45,12 +46,13 @@ export async function createEditorViewFromQuery(connectionId: string, database: 
         connectionId,
         name: 'New Tab',
         type: 'editor',
-        isActive: true,
         currentDatabase: database,
         currentQuery: query
     };
 
     await storage.tabs.add(tab);
+    await client.refetchQueries(['tabs', connectionId]);
+    useTabActivity.getState().setCurrentTab(tab);
 
     return tab;
 }
@@ -84,31 +86,36 @@ export async function updateTabs(tabs: AnyTab[]) {
         .then(() => client.refetchQueries(['tabs', tabs[0].connectionId]));
 }
 
+export async function resumeTabActivity() {
+    const lastActiveTab = localStorage.getItem('activeTab');
+
+    console.log('here');
+
+    if (lastActiveTab) {
+        const tab = await storage.tabs.get(lastActiveTab);
+
+        tab && useTabActivity.getState().setCurrentTab(tab);
+    }
+}
+
 export async function closeTabs(connectionId: string, tabs: string[]) {
     if (tabs.length === 0) return;
 
+    const currentActiveTab = useTabActivity.getState().currentActiveTab!;
+    const previousActiveTab = useTabActivity.getState().previousActiveTab;
+
     const currentTabs = await client.fetchQuery(['tabs', connectionId], () => getConnectionTabs(connectionId)) as AnyTab[];
-    const activeTab = currentTabs.find(tab => tab.isActive) as AnyTab;
-    const isClosingActive = tabs.includes(activeTab.id);
+    const isClosingActive = tabs.includes(currentActiveTab.id);
 
     await storage.tabs.bulkDelete(tabs);
 
     if (currentTabs.length > 1 && isClosingActive) {
-        const currentActiveIndex = currentTabs.indexOf(activeTab);
-        const newTabIndex = currentActiveIndex === 0 ? 1 : Math.max(currentActiveIndex - 1, 0);
-
-        const newActiveTab = currentTabs[newTabIndex];
-
-        await updateTabs([{
-            ...newActiveTab,
-            isActive: true
-        }]);
+        useTabActivity.getState().setCurrentTab(previousActiveTab ?? currentTabs[0], true);
     } else if (currentTabs.length === 1) {
         await createEmptyTableView(connectionId);
-        await client.refetchQueries(['tabs', connectionId]);
-    } else {
-        await client.refetchQueries(['tabs', connectionId]);
     }
+
+    await client.refetchQueries(['tabs', connectionId]);
 }
 
 export async function runUserQuery(connectionId: string, database: string, query: string) {

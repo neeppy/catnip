@@ -1,8 +1,8 @@
 import { DragEvent, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import Editor from 'ui-kit/editor';
-import { createEditorViewFromQuery, updateTabs } from 'ui/components/tabs';
-import { useActiveTab } from 'ui/hooks/useActiveTab';
+import { createEditorViewFromQuery, useTabActivity } from 'ui/components/tabs';
+import { shallow } from 'zustand/shallow';
 
 interface OwnProps {
     connectionId: string;
@@ -44,7 +44,7 @@ function getDragDropProps() {
 
 export default function FloatingEditor({ className }: OwnProps) {
     const [defaultValue, setDefaultValue] = useState('');
-    const activeTab = useActiveTab();
+    const [activeTab, setActiveTab] = useTabActivity(state => [state.currentActiveTab, state.setCurrentTab], shallow);
 
     useEffect(() => {
         function handler(event: KeyboardEvent) {
@@ -67,11 +67,9 @@ export default function FloatingEditor({ className }: OwnProps) {
     async function handleQuerySubmit(query: string) {
         if (!activeTab) return;
 
-        await createEditorViewFromQuery(activeTab.connectionId, activeTab.currentDatabase as string, query);
-        await updateTabs([{
-            ...activeTab,
-            isActive: false
-        }]);
+        const tab = await createEditorViewFromQuery(activeTab.connectionId, activeTab.currentDatabase as string, query);
+
+        setActiveTab(tab);
     }
 
     if (!defaultValue) {

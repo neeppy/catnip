@@ -8,6 +8,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 ij_javascript_force_semicolon_style = true
+max_line_length = 160
 
 [*.md]
 trim_trailing_whitespace = false

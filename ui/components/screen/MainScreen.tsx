@@ -1,6 +1,5 @@
-import { TableViewTab, EditorViewTab, EmptyTab } from 'ui/components/tabs';
+import { TableViewTab, EditorViewTab, EmptyTab, useTabActivity } from 'ui/components/tabs';
 import { ElementType } from 'react';
-import { useActiveTab } from 'ui/hooks/useActiveTab';
 
 const TAB_COMPONENTS = new Map(Object.entries({
     table: TableViewTab,
@@ -9,7 +8,7 @@ const TAB_COMPONENTS = new Map(Object.entries({
 }));
 
 export default function MainScreen() {
-    const currentTab = useActiveTab();
+    const currentTab = useTabActivity(state => state.currentActiveTab);
 
     const Component = TAB_COMPONENTS.get(currentTab?.type ?? 'default') as ElementType;
 

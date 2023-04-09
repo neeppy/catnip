@@ -5,12 +5,12 @@ import classnames from 'classnames';
 import { FaDatabase, FaPlay } from 'react-icons/fa';
 import { BiCommand } from 'react-icons/bi';
 import { BsShift } from 'react-icons/bs';
-import { Button, Dropdown, KeyCombo } from 'ui-kit';
+import { Button, DropdownSelect, KeyCombo } from 'ui-kit';
 import Editor from 'ui-kit/editor';
 import Spreadsheet from 'ui-kit/spreadsheet';
 import useBoolean from 'ui/hooks/useBoolean';
 import { appModeState } from 'ui/state/global';
-import { EditorView } from '../state';
+import { EditorView, useTabActivity } from '../state';
 import { getDatabaseList, runUserQuery, updateTabs } from '../queries';
 import { getCurrentQueries } from './utils';
 
@@ -41,6 +41,7 @@ const commands = [
 
 export function EditorViewTab(tab: EditorView) {
     const [isAdvanced] = useAtom(appModeState);
+    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
     const { boolean: isEditorFocused, on, off } = useBoolean(true);
 
     const { data: databases } = useQuery<string[]>(['databases', tab.connectionId, isAdvanced], () => getDatabaseList(tab.connectionId, isAdvanced));
@@ -64,7 +65,7 @@ export function EditorViewTab(tab: EditorView) {
             <div className="flex items-center gap-2 p-2 text-scene-default bg-scene-300 shadow-xl z-10">
                 <div className="flex items-center gap-2">
                     <FaDatabase/>
-                    <Dropdown
+                    <DropdownSelect
                         placeholder="Choose a database"
                         initialValue={tab.currentDatabase}
                         options={dbOptions}
@@ -112,6 +113,11 @@ export function EditorViewTab(tab: EditorView) {
     async function handleSave(query: string) {
         if (query === tab.currentQuery) return;
 
+        updateCurrentTab({
+            ...tab,
+            currentQuery: query
+        });
+
         await updateTabs([{
             ...tab,
             currentQuery: query
@@ -129,10 +135,7 @@ export function EditorViewTab(tab: EditorView) {
             query: queriesToExecute[0],
         });
 
-        await updateTabs([{
-            ...tab,
-            currentQuery: query
-        }]);
+        await handleSave(query);
     }
 
     async function handleSubmit(query: string) {
@@ -144,9 +147,6 @@ export function EditorViewTab(tab: EditorView) {
             query
         });
 
-        await updateTabs([{
-            ...tab,
-            currentQuery: query
-        }]);
+        await handleSave(query);
     }
 }

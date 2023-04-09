@@ -1,4 +1,4 @@
-import Connections from 'ui/components/Connections';
+import Connections from 'ui/components/connections';
 import Header from 'ui/components/layout/header';
 import MainScreen from 'ui/components/screen/MainScreen';
 

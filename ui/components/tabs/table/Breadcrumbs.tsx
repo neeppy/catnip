@@ -1,16 +1,17 @@
 import { useAtom } from 'jotai';
-import { Dropdown } from 'ui-kit';
+import { DropdownSelect } from 'ui-kit';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FaChevronRight } from 'react-icons/fa';
 import { appModeState } from 'ui/state/global';
-import { activeConnection, TableView } from '../state';
-import { getDatabaseList, getTablesList, updateTabs } from 'ui/components/tabs';
-import useNullableAtom from 'ui/hooks/useNullableAtom';
+import { useConnections } from 'ui/components/connections';
+import { getDatabaseList, getTablesList, updateTabs } from '../queries';
+import { TableView, useTabActivity } from '../state';
 
 export default function Breadcrumbs(tab: TableView) {
     const queryClient = useQueryClient();
     const [isAdvanced] = useAtom(appModeState);
-    const [connection] = useNullableAtom(activeConnection);
+    const connection = useConnections(state => state.currentActiveConnection!);
+    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
 
     const { data: databases } = useQuery<string[]>(['databases', connection.id, isAdvanced], () => getDatabaseList(connection.id, isAdvanced));
     const { data: tables } = useQuery<string[]>(
@@ -30,16 +31,22 @@ export default function Breadcrumbs(tab: TableView) {
     })) ?? [];
 
     async function onDatabaseChange(database: string) {
-        await updateTabs([{
+        const updatedTab = {
             ...tab,
             currentDatabase: database,
             currentTable: null
-        }]);
+        };
+
+        await updateTabs([updatedTab]);
+        updateCurrentTab(updatedTab);
     }
 
     async function onTableChange(table: string) {
-        await updateTabs([{ ...tab, currentTable: table }]);
+        const updatedTab = { ...tab, currentTable: table };
+
+        await updateTabs([updatedTab]);
         await queryClient.refetchQueries(['tabs', connection.id]);
+        updateCurrentTab(updatedTab);
     }
 
     return (
@@ -48,9 +55,9 @@ export default function Breadcrumbs(tab: TableView) {
                 {connection.name}
             </div>
             <FaChevronRight/>
-            <Dropdown initialValue={tab.currentDatabase} placeholder="Choose a database" options={databaseOptions} onChange={onDatabaseChange}/>
+            <DropdownSelect initialValue={tab.currentDatabase} placeholder="Choose a database" options={databaseOptions} onChange={onDatabaseChange}/>
             <FaChevronRight/>
-            <Dropdown initialValue={tab.currentTable} placeholder="Choose a table" options={tableOptions ?? []} onChange={onTableChange}/>
+            <DropdownSelect initialValue={tab.currentTable} placeholder="Choose a table" options={tableOptions ?? []} onChange={onTableChange}/>
         </div>
     );
 }

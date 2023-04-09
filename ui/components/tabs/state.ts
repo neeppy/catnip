@@ -1,12 +1,11 @@
-import { atom } from 'jotai';
-import { Connection } from 'common/models/Connection';
+import { create } from 'zustand';
+import { resumeTabActivity } from 'ui/components/tabs/queries';
 
 interface Tab {
     id: string;
     connectionId: string;
     name: string;
     type: 'table' | 'editor';
-    isActive: boolean;
 }
 
 export interface TableView extends Tab {
@@ -23,4 +22,24 @@ export interface EditorView extends Tab {
 
 export type AnyTab = TableView | EditorView;
 
-export const activeConnection = atom<Connection | null>(null);
+interface UseTabActivity {
+    currentActiveTab: AnyTab | null;
+    previousActiveTab: AnyTab | null;
+    setCurrentTab: (tab: AnyTab, reset?: boolean) => void;
+    updateCurrentTabDetails: (tab: AnyTab) => void;
+}
+
+export const useTabActivity = create<UseTabActivity>(set => ({
+    currentActiveTab: null,
+    previousActiveTab: null,
+    setCurrentTab: (tab, reset) => set(prevState => ({
+        currentActiveTab: tab,
+        previousActiveTab: reset ? null : prevState.currentActiveTab,
+    })),
+    updateCurrentTabDetails: tab => set(prevState => ({
+        currentActiveTab: {
+            ...prevState.currentActiveTab,
+            ...tab
+        },
+    })),
+}));

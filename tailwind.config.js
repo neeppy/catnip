@@ -60,6 +60,7 @@ module.exports = {
                     700: '#9f1717',
                     800: '#800e0e',
                     900: '#660202',
+                    transparent: '#ec363687',
                 },
             },
             animation: {
