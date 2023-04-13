@@ -89,8 +89,6 @@ export async function updateTabs(tabs: AnyTab[]) {
 export async function resumeTabActivity() {
     const lastActiveTab = localStorage.getItem('activeTab');
 
-    console.log('here');
-
     if (lastActiveTab) {
         const tab = await storage.tabs.get(lastActiveTab);
 

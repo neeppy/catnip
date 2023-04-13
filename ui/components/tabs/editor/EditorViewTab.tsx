@@ -8,11 +8,12 @@ import { BsShift } from 'react-icons/bs';
 import { Button, DropdownSelect, KeyCombo } from 'ui-kit';
 import Editor from 'ui-kit/editor';
 import Spreadsheet from 'ui-kit/spreadsheet';
-import useBoolean from 'ui/hooks/useBoolean';
+import { useBoolean } from 'ui/hooks';
 import { appModeState } from 'ui/state/global';
 import { EditorView, useTabActivity } from '../state';
 import { getDatabaseList, runUserQuery, updateTabs } from '../queries';
 import { getCurrentQueries } from './utils';
+import { useModalRegistry } from 'ui/components/modals';
 
 type Platform = 'win32' | 'darwin';
 
@@ -41,6 +42,7 @@ const commands = [
 
 export function EditorViewTab(tab: EditorView) {
     const [isAdvanced] = useAtom(appModeState);
+    const openModal = useModalRegistry(state => state.open);
     const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
     const { boolean: isEditorFocused, on, off } = useBoolean(true);
 
@@ -59,6 +61,22 @@ export function EditorViewTab(tab: EditorView) {
         label: db,
         value: db,
     })) ?? [];
+
+    function onClick() {
+        openModal({
+            key: 'test',
+            contentComponent: props => {
+                console.log(props);
+
+                return (
+                    <div className="bg-scene-300 w-60 h-60">
+                        hello!
+                    </div>
+                );
+            },
+            props: { test: true },
+        });
+    }
 
     return (
         <div className="flex flex-col w-full h-full">
@@ -96,6 +114,9 @@ export function EditorViewTab(tab: EditorView) {
                     </div>
                 </div>
                 <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
+                    <Button onClick={onClick}>
+                        Modal
+                    </Button>
                     {queryResult && (
                         <Spreadsheet columns={queryResult.columns} rows={queryResult.rows}/>
                     )}

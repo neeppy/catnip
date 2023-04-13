@@ -4,7 +4,7 @@ import { useContextMenu } from 'react-contexify';
 import { Connection } from 'common/models/Connection';
 import { Button } from 'ui-kit';
 import { randomColor } from 'ui/utils/random';
-import useBoolean from 'ui/hooks/useBoolean';
+import { useBoolean } from 'ui/hooks';
 import ConnectionDrawer, { fetchConnections, getConnectionById } from 'ui/components/connections/form';
 import { createEmptyTableView, getConnectionTabs } from 'ui/components/tabs';
 import { CONNECTION_CONTEXT_MENU } from 'ui/components/context-menu';
