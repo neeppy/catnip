@@ -1,4 +1,4 @@
-import { forwardRef, HTMLProps, useId } from 'react';
+import { FocusEvent, forwardRef, HTMLProps, useId } from 'react';
 import { Typography } from 'ui/components/ui-kit/Typography';
 import { cva, VariantProps } from 'class-variance-authority';
 import classnames from 'classnames';
@@ -33,6 +33,7 @@ export const getLabelClassName = cva('', {
 
 interface OwnProps {
     label: string;
+    selectOnFocus?: boolean;
     className?: string;
     labelClassName?: string;
     containerClassName?: string;
@@ -43,13 +44,23 @@ type Props = OwnProps & HTMLProps<HTMLInputElement> & VariantProps<typeof getInp
 export const Input = forwardRef<HTMLInputElement, Props>(({
     label,
     className,
+    selectOnFocus = false,
     labelClassName,
     containerClassName,
     variant,
     size,
+    onFocus,
     ...rest
 }: Props, ref) => {
     const id = useId();
+
+    function handleFocus(event: FocusEvent<HTMLInputElement>) {
+        if (selectOnFocus) {
+            event.target.select();
+        }
+
+        onFocus?.(event);
+    }
 
     return (
         <div className={classnames(containerClassName, 'flex flex-col-reverse gap-1')}>
@@ -58,6 +69,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(({
                 ref={ref}
                 className={classnames(className, getInputClassName({ variant, size }))}
                 onKeyDown={e => e.stopPropagation()}
+                onFocus={handleFocus}
                 {...rest}
             />
             <Typography

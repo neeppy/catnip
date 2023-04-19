@@ -10,7 +10,9 @@ const App = () => {
                 <MainScreen/>
                 <div id="modals-root"/>
             </main>
-            <Connections/>
+            <footer>
+                <Connections.List/>
+            </footer>
         </div>
     );
 };

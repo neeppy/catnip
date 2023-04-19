@@ -7,6 +7,7 @@ export enum ModalType {
 
 interface ModalSettings {
     closeOnBackdropClick: boolean;
+    showCloseButton: boolean;
 }
 
 export interface Modal {
@@ -32,7 +33,8 @@ interface ModalState {
 }
 
 const defaultModalSettings: ModalSettings = {
-    closeOnBackdropClick: true
+    closeOnBackdropClick: true,
+    showCloseButton: interop.platform === 'darwin',
 };
 
 export const useModalRegistry = create<ModalState>(set => ({

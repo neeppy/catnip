@@ -1,2 +1,2 @@
-export { ConnectionDrawer as default } from './ConnectionDrawer';
+export { ConnectionForm as default } from './ConnectionForm';
 export * from './queries';

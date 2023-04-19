@@ -62,22 +62,6 @@ export function EditorViewTab(tab: EditorView) {
         value: db,
     })) ?? [];
 
-    function onClick() {
-        openModal({
-            key: 'test',
-            contentComponent: props => {
-                console.log(props);
-
-                return (
-                    <div className="bg-scene-300 w-60 h-60">
-                        hello!
-                    </div>
-                );
-            },
-            props: { test: true },
-        });
-    }
-
     return (
         <div className="flex flex-col w-full h-full">
             <div className="flex items-center gap-2 p-2 text-scene-default bg-scene-300 shadow-xl z-10">
@@ -114,9 +98,6 @@ export function EditorViewTab(tab: EditorView) {
                     </div>
                 </div>
                 <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
-                    <Button onClick={onClick}>
-                        Modal
-                    </Button>
                     {queryResult && (
                         <Spreadsheet columns={queryResult.columns} rows={queryResult.rows}/>
                     )}

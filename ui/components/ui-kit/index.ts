@@ -7,3 +7,4 @@ export * from './DropdownSelect';
 export * from './Key';
 export * from './KeyCombo';
 export * from './Dropdown';
+export * from './Tabs';

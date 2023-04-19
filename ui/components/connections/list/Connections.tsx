@@ -4,16 +4,16 @@ import { useContextMenu } from 'react-contexify';
 import { Connection } from 'common/models/Connection';
 import { Button } from 'ui-kit';
 import { randomColor } from 'ui/utils/random';
-import { useBoolean } from 'ui/hooks';
-import ConnectionDrawer, { fetchConnections, getConnectionById } from 'ui/components/connections/form';
 import { createEmptyTableView, getConnectionTabs } from 'ui/components/tabs';
 import { CONNECTION_CONTEXT_MENU } from 'ui/components/context-menu';
+import { useModalRegistry } from 'ui/components/modals';
 import { useConnections } from '../state';
+import ConnectionForm, { fetchConnections, getConnectionById } from '../form';
 
 export function Connections() {
     const queryClient = useQueryClient();
+    const openModal = useModalRegistry(state => state.open);
     const setActiveConnection = useConnections(state => state.setActiveConnection);
-    const { boolean: isOpen, on, off } = useBoolean(false);
     const { data, isLoading } = useQuery(['connections'], fetchConnections);
     const { show } = useContextMenu({ id: CONNECTION_CONTEXT_MENU });
 
@@ -28,7 +28,7 @@ export function Connections() {
 
     return (
         <>
-            <aside className="flex h-[2.5rem] px-2 justify-start items-center z-20 py-1">
+            <footer className="flex h-[2.5rem] px-2 justify-start items-center z-20 py-1">
                 <div className="flex items-center gap-4">
                     {data && !isLoading && data.length > 0 && data.map(connection => (
                         <Button
@@ -45,13 +45,20 @@ export function Connections() {
                         </Button>
                     ))}
                 </div>
-                <Button scheme="accent" size="sm" className="ml-auto font-bold w-7 h-7" onClick={on}>
+                <Button scheme="accent" size="sm" className="ml-auto font-bold w-7 h-7" onClick={openModalForm}>
                     +
                 </Button>
-            </aside>
-            <ConnectionDrawer isOpen={isOpen} onClose={off}/>
+            </footer>
         </>
     );
+
+    function openModalForm() {
+        openModal({
+            key: 'connection-form',
+            contentComponent: ConnectionForm,
+            props: {},
+        });
+    }
 
     function handleContextMenu(event: MouseEvent, connection: Connection) {
         show({ event, props: connection });

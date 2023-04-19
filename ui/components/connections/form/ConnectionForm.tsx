@@ -1,38 +1,54 @@
-import { useId } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Connection } from 'common/models/Connection';
 import { ConnectionDetailsSection, SSHTunnelSection } from './sections';
-import { Button, Collapse, Typography } from 'ui-kit';
+import { Button, Tabs, Typography } from 'ui-kit';
 import { insertConnection } from './queries';
+import { useAtom } from 'jotai';
+import { appModeState } from 'ui/state/global';
 
-export const ConnectionForm = ({}) => {
-    const id = useId();
+const getTabs = (isAdvanced: boolean) => [
+    {
+        key: 'connection',
+        label: 'Connection',
+        component: ConnectionDetailsSection,
+    },
+    ...isAdvanced ? [{
+        key: 'ssh',
+        label: 'SSH',
+        component: SSHTunnelSection,
+    }] : [],
+];
+
+interface OwnProps {
+    initialValues: Connection;
+}
+
+export const ConnectionForm = ({ initialValues }: OwnProps) => {
+    const [isAdvanced] = useAtom(appModeState);
     const form = useForm<Connection>({
         mode: 'onBlur',
+        defaultValues: initialValues,
     });
 
+    const tabs = getTabs(isAdvanced);
+
     return (
-        <FormProvider {...form}>
-            <div className="flex flex-col h-full">
-                <Typography as="h2" intent="h1" className="px-6 pt-6">
-                    Add connection
-                </Typography>
-                <div className="flex flex-1 flex-col gap-5 mt-5 p-6">
-                    <input type="hidden" name="id" value={id} />
-                    <ConnectionDetailsSection/>
-                    <Collapse title="SSH Tunnel Configuration" className="mt-5">
-                        <SSHTunnelSection name="sshTunnelConfiguration"/>
-                        <Collapse title="Jump Server Configuration" className="mt-10 w-full">
-                            <SSHTunnelSection name="sshTunnelConfiguration.jumpConfiguration"/>
-                        </Collapse>
-                    </Collapse>
+        <div className="bg-scene-300 w-[48rem] rounded-xl shadow-xl">
+            <FormProvider {...form}>
+                <div className="flex flex-col">
+                    <Typography as="h2" intent="h1" className="px-6 pt-6">
+                        Add connection
+                    </Typography>
+                    <div className="p-6">
+                        <Tabs layout="horizontal" tabs={tabs} />
+                    </div>
+                    <div className="flex justify-end items-center pb-6 pr-9">
+                        <Button size="sm" onClick={form.handleSubmit(insertConnection)}>
+                            Save connection
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex justify-end items-center mt-5 p-6">
-                    <Button onClick={form.handleSubmit(insertConnection)}>
-                        Save connection
-                    </Button>
-                </div>
-            </div>
-        </FormProvider>
+            </FormProvider>
+        </div>
     );
 };
