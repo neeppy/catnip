@@ -1,9 +1,8 @@
-import { Input, Typography } from 'ui/components/ui-kit';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Select } from 'ui/components/ui-kit/Select';
-import enum2opt from 'ui/utils/enum2opt';
 import { ConnectionDriver } from 'common/models/Connection';
-import { SectionTitle } from 'ui/components/connections/form/components/SectionTitle';
+import { Input, Select } from 'ui-kit';
+import enum2opt from 'ui/utils/enum2opt';
+import { SectionTitle } from '../components/SectionTitle';
 
 export const ConnectionDetailsSection = () => {
     const { register } = useFormContext();
@@ -11,7 +10,7 @@ export const ConnectionDetailsSection = () => {
     return (
         <div className="p-3">
             <SectionTitle className="">
-                Connection details
+                Connection Details
             </SectionTitle>
             <div className="grid grid-cols-4 gap-5 p-6">
                 <Input label="Connection Name" containerClassName="col-span-2" {...register('name')} />

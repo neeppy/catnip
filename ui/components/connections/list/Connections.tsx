@@ -56,7 +56,6 @@ export function Connections() {
         openModal({
             key: 'connection-form',
             contentComponent: ConnectionForm,
-            props: {},
         });
     }
 

@@ -74,7 +74,10 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
     ...rest
 }: Props, ref) => {
     const id = useId();
-    const [currentValue, setCurrentValue] = useState(value ?? null);
+
+    const option = options.find(opt => opt.value === value);
+
+    const [currentValue, setCurrentValue] = useState(value ? option : null);
     const [query, setQuery] = useState('');
 
     let filteredOptions = options;

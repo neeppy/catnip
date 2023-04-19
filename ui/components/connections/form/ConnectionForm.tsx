@@ -2,7 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Connection } from 'common/models/Connection';
 import { ConnectionDetailsSection, SSHTunnelSection } from './sections';
 import { Button, Tabs, Typography } from 'ui-kit';
-import { insertConnection } from './queries';
+import { insertConnection, updateConnection } from './queries';
 import { useAtom } from 'jotai';
 import { appModeState } from 'ui/state/global';
 
@@ -14,7 +14,7 @@ const getTabs = (isAdvanced: boolean) => [
     },
     ...isAdvanced ? [{
         key: 'ssh',
-        label: 'SSH',
+        label: 'SSH Tunneling',
         component: SSHTunnelSection,
     }] : [],
 ];
@@ -24,6 +24,7 @@ interface OwnProps {
 }
 
 export const ConnectionForm = ({ initialValues }: OwnProps) => {
+    const isEditMode = Boolean(initialValues);
     const [isAdvanced] = useAtom(appModeState);
     const form = useForm<Connection>({
         mode: 'onBlur',
@@ -43,7 +44,7 @@ export const ConnectionForm = ({ initialValues }: OwnProps) => {
                         <Tabs layout="horizontal" tabs={tabs} />
                     </div>
                     <div className="flex justify-end items-center pb-6 pr-9">
-                        <Button size="sm" onClick={form.handleSubmit(insertConnection)}>
+                        <Button size="sm" onClick={form.handleSubmit(isEditMode ? updateConnection : insertConnection)}>
                             Save connection
                         </Button>
                     </div>

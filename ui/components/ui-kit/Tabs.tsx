@@ -31,7 +31,7 @@ export function Tabs({
     const contentClass = classnames('flex-1');
 
     const tabClass = (isActive: boolean) => classnames('text-right', {
-        'bg-[#fff2]': isActive
+        'bg-[#fff2] text-scene-default': isActive
     });
 
     return (

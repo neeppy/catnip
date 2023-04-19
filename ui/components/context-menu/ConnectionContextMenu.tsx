@@ -2,7 +2,7 @@ import { Item, ItemParams, Menu } from 'react-contexify';
 import { CONNECTION_CONTEXT_MENU } from './types';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useModalRegistry } from 'ui/components/modals';
-import ConnectionForm from 'ui/components/connections/form';
+import Connections from 'ui/components/connections';
 
 export function ConnectionContextMenu() {
     const openModal = useModalRegistry(state => state.open);
@@ -27,7 +27,7 @@ export function ConnectionContextMenu() {
     function openEditModal({ props }: ItemParams) {
         openModal({
             key: 'connection-form',
-            contentComponent: ConnectionForm,
+            contentComponent: Connections.Form,
             props: {
                 initialValues: props
             },
