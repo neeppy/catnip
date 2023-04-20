@@ -1,5 +1,7 @@
 export * from './table/TableViewTab';
+export * from './table/SingleDatabaseTableView';
 export * from './editor/EditorViewTab';
+export * from './editor/SingleDatabaseEditorTab';
 export * from './components/EmptyTab';
 export * from './components/TabList';
 export * from './queries';

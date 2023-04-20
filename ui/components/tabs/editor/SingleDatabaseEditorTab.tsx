@@ -1,36 +1,27 @@
-import * as monaco from 'monaco-editor';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useAtom } from 'jotai';
-import classnames from 'classnames';
-import { FaDatabase, FaPlay } from 'react-icons/fa';
-import { ConnectionDriver } from 'common/models/Connection';
-import { Button, DropdownSelect } from 'ui-kit';
-import Editor from 'ui-kit/editor';
-import Spreadsheet from 'ui-kit/spreadsheet';
+import { EditorView, runUserQuery, updateTabs, useTabActivity } from 'ui/components/tabs';
 import { useBoolean } from 'ui/hooks';
-import { appModeState } from 'ui/state/global';
-import { useConnections } from 'ui/components/connections';
-import { EditorView, useTabActivity } from '../state';
-import { getDatabaseList, runUserQuery, updateTabs } from '../queries';
-import { EditorCommands } from '../components/EditorCommands';
-import { getCurrentQueries } from './utils';
+import { useMutation } from '@tanstack/react-query';
+import classnames from 'classnames';
+import { FaPlay } from 'react-icons/fa';
+import { Button } from 'ui-kit';
+import Editor from 'ui-kit/editor';
+import { EditorCommands } from 'ui/components/tabs/components/EditorCommands';
+import Spreadsheet from 'ui-kit/spreadsheet';
+import * as monaco from 'monaco-editor';
+import { getCurrentQueries } from 'ui/components/tabs/editor/utils';
 
 interface IMutationData {
     connectionId: string;
-    database: string;
     query: string;
 }
 
-export function EditorViewTab(tab: EditorView) {
-    const connection = useConnections(state => state.currentActiveConnection!);
-    const [isAdvanced] = useAtom(appModeState);
+export function SingleDatabaseEditorTab(tab: EditorView) {
     const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
     const { boolean: isEditorFocused, on, off } = useBoolean(true);
 
-    const { data: databases } = useQuery<string[]>(['databases', tab.connectionId, isAdvanced], () => getDatabaseList(tab.connectionId, isAdvanced));
     const { data: queryResult, ...mutation } = useMutation({
-        mutationKey: ['query', tab.connectionId, tab.currentDatabase, tab.currentQuery],
-        mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query, data.database),
+        mutationKey: ['query', tab.connectionId, tab.currentQuery],
+        mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query),
     });
 
     const editorClasses = classnames('transition-all duration-200 relative', {
@@ -38,24 +29,9 @@ export function EditorViewTab(tab: EditorView) {
         'w-[70%]': isEditorFocused
     });
 
-    const dbOptions = databases?.map(db => ({
-        label: db,
-        value: db,
-    })) ?? [];
-
     return (
         <div className="flex flex-col w-full h-full">
             <div className="flex items-center gap-2 p-2 text-scene-default bg-scene-300 shadow-xl z-10">
-                {connection.driver !== ConnectionDriver.SQLite && (
-                    <div className="flex items-center gap-2">
-                        <FaDatabase/>
-                        <DropdownSelect
-                            placeholder="Choose a database"
-                            initialValue={tab.currentDatabase}
-                            options={dbOptions}
-                        />
-                    </div>
-                )}
                 <Button size="sm" shape="square" className="ml-auto rounded-md" onClick={handleSubmitByButton}>
                     <FaPlay/>
                 </Button>
@@ -108,7 +84,6 @@ export function EditorViewTab(tab: EditorView) {
 
         mutation.mutate({
             connectionId: tab.connectionId,
-            database: tab.currentDatabase,
             query: queriesToExecute[0],
         });
 
@@ -120,7 +95,6 @@ export function EditorViewTab(tab: EditorView) {
 
         mutation.mutate({
             connectionId: tab.connectionId,
-            database: tab.currentDatabase,
             query
         });
 

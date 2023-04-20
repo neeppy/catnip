@@ -1,10 +1,10 @@
-import { Connection } from 'common/models/Connection';
+import { AnyConnection } from 'common/models/Connection';
 import { create } from 'zustand';
 
 interface UseConnections {
-    currentActiveConnection: Connection | null;
-    activeConnections: Connection[];
-    setActiveConnection: (conn: Connection) => void;
+    currentActiveConnection: AnyConnection | null;
+    activeConnections: AnyConnection[];
+    setActiveConnection: (conn: AnyConnection) => void;
 }
 
 export const useConnections = create<UseConnections>(set => ({

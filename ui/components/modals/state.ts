@@ -1,5 +1,8 @@
-import { ElementType } from 'react';
+import { ComponentType, ElementType } from 'react';
 import { create } from 'zustand';
+
+type PropsOf<T> = T extends ComponentType<infer P> ? P : never;
+type AnyComponent = ComponentType<any>;
 
 export enum ModalType {
     Modal = 'modal',
@@ -18,17 +21,16 @@ export interface Modal {
     props: any;
 }
 
-interface OpenModal {
-    key: string;
-    contentComponent: ElementType;
+interface OpenModal<T = any> {
+    key?: string;
     type?: ModalType;
     settings?: Partial<ModalSettings>;
-    props?: any;
+    props?: Omit<T, 'close'>;
 }
 
 interface ModalState {
     registry: Modal[];
-    open: (modal: OpenModal) => void;
+    open: <T extends AnyComponent>(contentComponent: T, params?: OpenModal<PropsOf<T>>) => void;
     close: (key: string) => void;
 }
 
@@ -39,17 +41,19 @@ const defaultModalSettings: ModalSettings = {
 
 export const useModalRegistry = create<ModalState>(set => ({
     registry: [],
-    open: modal => set(prevState => ({
+    open: (contentComponent, params) => set(prevState => ({
         registry: [
             ...prevState.registry,
             {
-                ...modal,
-                type: modal.type || ModalType.Modal,
+                contentComponent,
+                ...params,
+                key: params?.key || Math.random().toString(36),
+                type: params?.type || ModalType.Modal,
                 settings: {
                     ...defaultModalSettings,
-                    ...modal.settings,
+                    ...params?.settings,
                 },
-                props: modal.props || {},
+                props: params?.props || {},
             },
         ]
     })),

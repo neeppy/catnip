@@ -21,8 +21,8 @@ const getButtonClassName = cva('transition-colors transition-200 select-none cur
         },
         size: {
             none: null,
-            sm: 'px-2 py-1 text-md',
-            md: 'px-4 py-2 text-xl'
+            sm: 'px-2 py-1 text-sm',
+            md: 'px-4 py-2 text-md'
         }
     },
     defaultVariants: {

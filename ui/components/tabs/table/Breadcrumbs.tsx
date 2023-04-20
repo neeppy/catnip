@@ -1,29 +1,35 @@
 import { useAtom } from 'jotai';
 import { DropdownSelect } from 'ui-kit';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { FaChevronRight } from 'react-icons/fa';
 import { appModeState } from 'ui/state/global';
-import { useConnections } from 'ui/components/connections';
+import { useConnections, isMultiDatabaseConnection } from 'ui/components/connections';
 import { getDatabaseList, getTablesList, updateTabs } from '../queries';
 import { TableView, useTabActivity } from '../state';
 
 export default function Breadcrumbs(tab: TableView) {
-    const queryClient = useQueryClient();
     const [isAdvanced] = useAtom(appModeState);
     const connection = useConnections(state => state.currentActiveConnection!);
     const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
 
-    const { data: databases } = useQuery<string[]>(['databases', connection.id, isAdvanced], () => getDatabaseList(connection.id, isAdvanced));
-    const { data: tables } = useQuery<string[]>(
-        ['tables', connection.id, tab.currentDatabase],
-        () => getTablesList(connection.id, tab.currentDatabase as string),
-        { enabled: !!tab.currentDatabase }
-    );
+    const isMultiDatabase = isMultiDatabaseConnection(connection);
+
+    const { data: databases } = useQuery<string[]>({
+        queryKey: ['databases', connection.id, isAdvanced],
+        queryFn: () => getDatabaseList(connection.id, isAdvanced),
+        enabled: isMultiDatabase,
+    });
+
+    const { data: tables } = useQuery<string[]>({
+        queryKey: ['tables', connection.id, tab.currentDatabase],
+        queryFn: () => getTablesList(connection.id, tab.currentDatabase as string, isMultiDatabase),
+        enabled: Boolean(tab.currentDatabase) || !isMultiDatabase,
+    });
 
     const databaseOptions = databases?.map(dbName => ({
-            label: dbName,
-            value: dbName
-        })) ?? [];
+        label: dbName,
+        value: dbName
+    })) ?? [];
 
     const tableOptions = tables?.map(table => ({
         label: table,
@@ -45,7 +51,6 @@ export default function Breadcrumbs(tab: TableView) {
         const updatedTab = { ...tab, currentTable: table };
 
         await updateTabs([updatedTab]);
-        await queryClient.refetchQueries(['tabs', connection.id]);
         updateCurrentTab(updatedTab);
     }
 
@@ -54,8 +59,12 @@ export default function Breadcrumbs(tab: TableView) {
             <div className="px-4">
                 {connection.name}
             </div>
-            <FaChevronRight/>
-            <DropdownSelect initialValue={tab.currentDatabase} placeholder="Choose a database" options={databaseOptions} onChange={onDatabaseChange}/>
+            {isMultiDatabase && (
+                <>
+                    <FaChevronRight/>
+                    <DropdownSelect initialValue={tab.currentDatabase} placeholder="Choose a database" options={databaseOptions} onChange={onDatabaseChange}/>
+                </>
+            )}
             <FaChevronRight/>
             <DropdownSelect initialValue={tab.currentTable} placeholder="Choose a table" options={tableOptions ?? []} onChange={onTableChange}/>
         </div>

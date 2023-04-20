@@ -13,8 +13,8 @@ export default async function createWindow() {
         titleBarStyle: 'hiddenInset',
         minWidth: 800,
         minHeight: 600,
-        width: 1280,
-        height: 720,
+        width: 1366,
+        height: 840,
         webPreferences: {
             preload,
             contextIsolation: true,

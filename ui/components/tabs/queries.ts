@@ -13,7 +13,7 @@ export async function getTableColumns(connectionId: string, database: string, ta
     return interop.database.fetchTableColumns(connectionId, database, table);
 }
 
-export async function getTableRows(connectionId: string, database: string, table: string) {
+export async function getTableRows(connectionId: string, database: string | null, table: string) {
     return interop.database.fetchTableContent(connectionId, database, table);
 }
 
@@ -40,13 +40,30 @@ export async function createEmptyTableView(connectionId: string, initialDatabase
     return tab;
 }
 
-export async function createEditorViewFromQuery(connectionId: string, database: string, query: string) {
+export async function createEmptyEditorView(connectionId: string, initialDatabase?: string) {
     const tab: EditorView = {
         id: window.crypto.randomUUID(),
         connectionId,
         name: 'New Tab',
         type: 'editor',
-        currentDatabase: database,
+        currentDatabase: initialDatabase || null,
+        currentQuery: null
+    };
+
+    await storage.tabs.add(tab);
+    await client.refetchQueries(['tabs', connectionId]);
+    useTabActivity.getState().setCurrentTab(tab);
+
+    return tab;
+}
+
+export async function createEditorViewFromQuery(connectionId: string, query: string, database?: string) {
+    const tab: EditorView = {
+        id: window.crypto.randomUUID(),
+        connectionId,
+        name: 'New Tab',
+        type: 'editor',
+        currentDatabase: database || null,
         currentQuery: query
     };
 
@@ -71,12 +88,11 @@ export async function getDatabaseList(connectionId: string, isAdvanced: boolean 
     return databases;
 }
 
-export async function getTablesList(connectionId: string, database: string) {
-    if (!connectionId || !database) {
-        return [];
-    }
+export async function getTablesList(connectionId: string, database?: string, isMultiDatabase?: boolean) {
+    if (!connectionId) return [];
+    if (!database && isMultiDatabase) return [];
 
-    return interop.database.fetchTableNames(connectionId, database);
+    return interop.database.fetchTableNames(connectionId, database || '');
 }
 
 export async function updateTabs(tabs: AnyTab[]) {
@@ -86,11 +102,11 @@ export async function updateTabs(tabs: AnyTab[]) {
         .then(() => client.refetchQueries(['tabs', tabs[0].connectionId]));
 }
 
-export async function resumeTabActivity() {
-    const lastActiveTab = localStorage.getItem('activeTab');
+export async function resumeTabActivity(connectionId: string) {
+    const lastActiveTabs = JSON.parse(localStorage.getItem('activeTab') ?? '{}');
 
-    if (lastActiveTab) {
-        const tab = await storage.tabs.get(lastActiveTab);
+    if (lastActiveTabs[connectionId]) {
+        const tab = await storage.tabs.get(lastActiveTabs[connectionId]);
 
         tab && useTabActivity.getState().setCurrentTab(tab);
     }
@@ -116,6 +132,6 @@ export async function closeTabs(connectionId: string, tabs: string[]) {
     await client.refetchQueries(['tabs', connectionId]);
 }
 
-export async function runUserQuery(connectionId: string, database: string, query: string) {
-    return interop.database.runUserQuery(connectionId, database, query);
+export async function runUserQuery(connectionId: string, query: string, database?: string) {
+    return interop.database.runUserQuery(connectionId, database || '', query);
 }

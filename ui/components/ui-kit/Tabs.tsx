@@ -30,8 +30,9 @@ export function Tabs({
 
     const contentClass = classnames('flex-1');
 
-    const tabClass = (isActive: boolean) => classnames('text-right', {
-        'bg-[#fff2] text-scene-default': isActive
+    const tabClass = (isActive: boolean) => classnames('text-right hover:bg-[#fff1]', {
+        'bg-[#fff2] text-scene-default': isActive,
+        'text-scene-dark': !isActive,
     });
 
     return (
@@ -40,7 +41,7 @@ export function Tabs({
                 {tabs.map((tab, idx) => (
                     <Button
                         key={tab.key}
-                        size="sm" shape="none" scheme="transparent" layout="none"
+                        size="sm" shape="none" scheme="none" layout="none"
                         className={tabClass(idx === currentTab)}
                         onClick={() => setCurrentTab(idx)}
                     >

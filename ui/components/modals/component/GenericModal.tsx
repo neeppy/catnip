@@ -60,7 +60,7 @@ export default function GenericModal({ modal }: OwnProps) {
                         <VscChromeClose/>
                     </button>
                 )}
-                <Component {...modal.props} />
+                <Component {...modal.props} close={handleAnimatedModalClose} />
             </div>
         </div>
     );

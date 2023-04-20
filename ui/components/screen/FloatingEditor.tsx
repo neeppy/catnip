@@ -5,8 +5,6 @@ import { createEditorViewFromQuery, useTabActivity } from 'ui/components/tabs';
 import { shallow } from 'zustand/shallow';
 
 interface OwnProps {
-    connectionId: string;
-    currentDatabase: string | null;
     className?: string;
 }
 
@@ -67,7 +65,7 @@ export default function FloatingEditor({ className }: OwnProps) {
     async function handleQuerySubmit(query: string) {
         if (!activeTab) return;
 
-        const tab = await createEditorViewFromQuery(activeTab.connectionId, activeTab.currentDatabase as string, query);
+        const tab = await createEditorViewFromQuery(activeTab.connectionId, activeTab.currentDatabase || '', query);
 
         setActiveTab(tab);
     }

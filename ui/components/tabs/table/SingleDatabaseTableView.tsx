@@ -1,26 +1,21 @@
+import { getTableColumns, getTableRows, TableView } from 'ui/components/tabs';
 import { useQuery } from '@tanstack/react-query';
-import FloatingEditor from 'ui/components/screen/FloatingEditor';
-import { isMultiDatabaseConnection, useConnections } from 'ui/components/connections';
 import { DatabaseColumn, DatabaseRow } from 'common/models/Database';
+import FloatingEditor from 'ui/components/screen/FloatingEditor';
 import Spreadsheet from 'ui-kit/spreadsheet';
-import { getTableColumns, getTableRows } from '../queries';
-import { TableView } from '../state';
-import Breadcrumbs from './Breadcrumbs';
+import SingleDatabaseBreadcrumbs from './SingleDatabaseBreadcrumbs';
 
-export function TableViewTab({ connectionId, currentDatabase, currentTable, ...rest }: TableView) {
-    const connection = useConnections(state => state.currentActiveConnection!);
-    const isMultiDatabase = isMultiDatabaseConnection(connection);
-
+export function SingleDatabaseTableView({ connectionId, currentDatabase, currentTable, ...rest }: TableView) {
     const { data: columns } = useQuery<DatabaseColumn[]>({
         queryKey: ['columns', currentDatabase, currentTable],
-        queryFn: () => getTableColumns(connectionId, currentDatabase as string, currentTable as string),
-        enabled: isMultiDatabase ? Boolean(currentDatabase && currentTable) : Boolean(currentTable),
+        queryFn: () => getTableColumns(connectionId, '', currentTable as string),
+        enabled: !!currentTable,
     });
 
     const { data: rows } = useQuery<DatabaseRow[]>({
         queryKey: ['rows', currentDatabase, currentTable],
-        queryFn: () => getTableRows(connectionId, currentDatabase, currentTable as string),
-        enabled: isMultiDatabase ? Boolean(currentDatabase && currentTable) : Boolean(currentTable),
+        queryFn: () => getTableRows(connectionId, '', currentTable as string),
+        enabled: !!currentTable,
     });
 
     return (
@@ -29,7 +24,7 @@ export function TableViewTab({ connectionId, currentDatabase, currentTable, ...r
                 <FloatingEditor className="w-96 h-20"/>
             )}
             <div className="col-span-2">
-                <Breadcrumbs
+                <SingleDatabaseBreadcrumbs
                     connectionId={connectionId}
                     currentDatabase={currentDatabase}
                     currentTable={currentTable}

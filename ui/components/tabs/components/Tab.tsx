@@ -27,7 +27,7 @@ export function TabHeader({ isActive, connectionId, tabId, labelTop, labelBottom
         <div className={tabClassName} onContextMenu={onContextMenu}>
             <div
                 onClick={onClick}
-                className="flex flex-col flex-1 items-start justify-center text-left overflow-hidden"
+                className="flex flex-col h-full flex-1 items-start justify-center text-left overflow-hidden"
             >
                 {labelTop && labelBottom ? (
                     <>

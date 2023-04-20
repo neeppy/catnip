@@ -30,16 +30,20 @@ export default [
     },
     {
         channel: '@@db/table-initial',
-        async handle(args, connectionId: string, database: string, table: string) {
+        async handle(args, connectionId: string, database: string | null, table: string) {
             if (!ConnectionRegistry.has(connectionId)) {
                 throw new Error('Invalid request "@@db/table-initial" for connection ID: ' + connectionId);
             }
 
             const connection = ConnectionRegistry.get(connectionId);
 
-            return connection.query<DatabaseRow>(`SELECT * FROM \`${database}\`.\`${table}\` LIMIT ?`, {
-                preparedValues: [100],
-            });
+            // @todo - needs implementation for each driver
+            const query = 'SELECT * FROM :database.:table LIMIT :limit'
+                .replace(/:database\./, database ? `${database}.` : '')
+                .replace(/:table/, table)
+                .replace(/:limit/, '100');
+
+            return connection.query<DatabaseRow>(query);
         }
     },
     {

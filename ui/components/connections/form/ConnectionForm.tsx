@@ -1,37 +1,34 @@
-import { FormProvider, useForm } from 'react-hook-form';
-import { Connection } from 'common/models/Connection';
-import { ConnectionDetailsSection, SSHTunnelSection } from './sections';
-import { Button, Tabs, Typography } from 'ui-kit';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
+import { Button, Input, Select, Tabs, Typography } from 'ui-kit';
 import { insertConnection, updateConnection } from './queries';
 import { useAtom } from 'jotai';
 import { appModeState } from 'ui/state/global';
-
-const getTabs = (isAdvanced: boolean) => [
-    {
-        key: 'connection',
-        label: 'Connection',
-        component: ConnectionDetailsSection,
-    },
-    ...isAdvanced ? [{
-        key: 'ssh',
-        label: 'SSH Tunneling',
-        component: SSHTunnelSection,
-    }] : [],
-];
+import { getMySQLTabsConfig } from './config/mysql.tabs.config';
+import { getSQLiteTabs } from './config/sqlite.tabs.config';
+import enum2opt from 'ui/utils/enum2opt';
 
 interface OwnProps {
-    initialValues: Connection;
+    initialValues?: AnyConnection;
 }
+
+const TabGetters = {
+    [ConnectionDriver.MySQL]: getMySQLTabsConfig,
+    [ConnectionDriver.SQLite]: getSQLiteTabs,
+};
 
 export const ConnectionForm = ({ initialValues }: OwnProps) => {
     const isEditMode = Boolean(initialValues);
     const [isAdvanced] = useAtom(appModeState);
-    const form = useForm<Connection>({
+    const form = useForm<AnyConnection>({
         mode: 'onBlur',
-        defaultValues: initialValues,
+        defaultValues: initialValues || {
+            driver: ConnectionDriver.MySQL,
+        },
     });
 
-    const tabs = getTabs(isAdvanced);
+    const driver = form.watch('driver');
+    const tabs = TabGetters[driver](isAdvanced);
 
     return (
         <div className="bg-scene-300 w-[48rem] rounded-xl shadow-xl">
@@ -40,8 +37,22 @@ export const ConnectionForm = ({ initialValues }: OwnProps) => {
                     <Typography as="h2" intent="h1" className="px-6 pt-6">
                         Add connection
                     </Typography>
-                    <div className="p-6">
-                        <Tabs layout="horizontal" tabs={tabs} />
+                    <div className="grid grid-cols-4 gap-5 p-6">
+                        <Input label="Connection Name" containerClassName="col-span-2" {...form.register('name')} />
+                        <Controller
+                            name="driver"
+                            render={({ field }) => (
+                                <Select
+                                    label="Driver"
+                                    containerClassName="col-span-2"
+                                    options={enum2opt(ConnectionDriver)}
+                                    {...field}
+                                />
+                            )}
+                        />
+                    </div>
+                    <div className="px-6">
+                        <Tabs key={driver} layout="horizontal" tabs={tabs} />
                     </div>
                     <div className="flex justify-end items-center pb-6 pr-9">
                         <Button size="sm" onClick={form.handleSubmit(isEditMode ? updateConnection : insertConnection)}>

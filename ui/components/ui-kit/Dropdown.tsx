@@ -11,14 +11,14 @@ interface Option<T = any> {
     onClick: (params: ItemParams, value?: T) => void;
 }
 
-interface Submenu {
+interface Submenu<T = any> {
     key: string;
     icon?: ElementType,
     label: string;
-    options: Array<Option | Separator | Submenu>;
+    options: Array<Option<T> | Separator | Submenu<T>>;
 }
 
-export type OptionType = Option | Separator | Submenu;
+export type OptionType<T = any> = Option<T> | Separator | Submenu<T>;
 
 interface OwnProps {
     id?: string;

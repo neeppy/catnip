@@ -3,11 +3,17 @@ import { FaPlus } from 'react-icons/fa';
 import classnames from 'classnames';
 import { useQuery } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
+import { AllConnections, ConnectionDriver } from 'common/models/Connection';
 import { Button, Dropdown } from 'ui-kit';
-import { createEmptyTableView, getConnectionTabs, resumeTabActivity, newTabContextMenuConfig, TabHeader, useTabActivity, AnyTab } from 'ui/components/tabs';
-import { useConnections } from 'ui/components/connections';
+import { AnyTab, createEmptyTableView, getConnectionTabs, newTabContextMenuConfig, resumeTabActivity, TabHeader, useTabActivity } from 'ui/components/tabs';
+import { isMultiDatabaseConnection, useConnections } from 'ui/components/connections';
 import { TAB_CONTEXT_MENU } from 'ui/components/context-menu';
 import { useEffect } from 'react';
+
+const DB_NAME_FIELDS: Record<ConnectionDriver, keyof AllConnections> = {
+    [ConnectionDriver.MySQL]: 'databaseName',
+    [ConnectionDriver.SQLite]: 'name'
+};
 
 export function TabList() {
     const connection = useConnections(state => state.currentActiveConnection);
@@ -19,17 +25,24 @@ export function TabList() {
 
     useEffect(() => {
         if (connection && !currentActiveTab) {
-            void resumeTabActivity();
+            void resumeTabActivity(connection.id);
         }
     }, [connection]);
 
+    if (!connection) {
+        return null;
+    }
+
+    const isMultiDatabase = isMultiDatabaseConnection(connection);
     const tabContainerClass = classnames('flex gap-2 select-none', {
         'ml-24': interop.platform === 'darwin'
     });
 
+    const connectionDbKey = DB_NAME_FIELDS[connection.driver || ConnectionDriver.SQLite] as keyof typeof connection;
+
     const newTabProps = {
-        connectionId: connection?.id ?? '',
-        databaseName: connection?.databaseName ?? ''
+        connectionId: connection.id ?? '',
+        databaseName: connection[connectionDbKey] ?? ''
     };
 
     return (
@@ -40,7 +53,7 @@ export function TabList() {
                     isActive={tab.id === currentActiveTab?.id}
                     tabId={tab.id}
                     connectionId={tab.connectionId}
-                    labelTop={tab.currentDatabase}
+                    labelTop={isMultiDatabase ? tab.currentDatabase : connection.name}
                     labelBottom={tab.type === 'editor' ? tab.currentQuery : tab.currentTable}
                     onClick={() => setActiveTab(tab)}
                     onContextMenu={event => show({ event, props: tab })}
@@ -57,7 +70,6 @@ export function TabList() {
     );
 
     function setActiveTab(tab: AnyTab) {
-        localStorage.setItem('activeTab', tab.id);
         setCurrentTab(tab);
     }
 

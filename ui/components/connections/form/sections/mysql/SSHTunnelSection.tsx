@@ -1,6 +1,6 @@
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { Collapse, Input } from 'ui-kit';
-import { SectionTitle } from '../components/SectionTitle';
+import { SectionTitle } from '../../components/SectionTitle';
 
 const getSSHFields = (name: string, register: UseFormReturn['register']) => (
     <>

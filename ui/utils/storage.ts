@@ -1,5 +1,5 @@
 import Dexie, { Table, Version } from 'dexie';
-import { Connection } from 'common/models/Connection';
+import { AnyConnection } from 'common/models/Connection';
 import { AnyTab } from 'ui/components/tabs';
 
 const versioning = [
@@ -15,7 +15,7 @@ const versioning = [
 ];
 
 class CatnipDexie extends Dexie {
-    connections!: Table<Connection>;
+    connections!: Table<AnyConnection>;
     tabs!: Table<AnyTab>;
 
     constructor() {

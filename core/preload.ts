@@ -7,12 +7,10 @@ contextBridge.exposeInMainWorld('interop', {
         close: () => ipcRenderer.invoke('@@app/close'),
         minimize: () => ipcRenderer.invoke('@@app/minimize'),
         maximize: () => ipcRenderer.invoke('@@app/maximize'),
+        fileSystemSearch: () => ipcRenderer.invoke('@@dialog/file'),
     },
     data: {
         encrypt: (data) => ipcRenderer.invoke('@@data/encrypt', data),
-    },
-    dialog: {
-        file: () => ipcRenderer.invoke('dialog:file'),
     },
     connections: {
         open: (connection) => ipcRenderer.invoke('@@connection/init', connection),

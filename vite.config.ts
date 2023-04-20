@@ -23,7 +23,7 @@ export default defineConfig({
             vite: {
                 build: {
                     rollupOptions: {
-                        external: ['ssh2'],
+                        external: ['ssh2', 'better-sqlite3'],
                     },
                 },
                 resolve: {

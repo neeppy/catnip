@@ -23,8 +23,8 @@ export function Spreadsheet({ rows, columns }: SpreadSheetProps) {
     const spacingClasses = classnames('py-2 px-3');
     const colorClasses = classnames('bg-scene-300');
 
-    const cellClasses = classnames('truncate', spacingClasses, colorClasses);
-    const activeCellClasses = classnames('truncate bg-accent-900', spacingClasses);
+    const cellClasses = classnames('truncate max-w-[300px]', spacingClasses, colorClasses);
+    const activeCellClasses = classnames('truncate bg-accent-900 max-w-[300px]', spacingClasses);
     const headerClasses = classnames('text-center font-bold text-sm select-none', cellClasses);
 
     return (

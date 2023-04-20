@@ -1,11 +1,10 @@
-// @ts-ignore - it exists
-import { Types } from 'mysql2';
 import mysql from 'mysql2/promise';
-import { Connection } from 'common/models/Connection';
 import { safeStorage } from 'electron';
-import { ConnectionLike, QueryOptions } from './createConnection';
+import { MySQLConnection } from 'common/models/Connection';
 import { DatabaseColumn, DatabaseRow, DatabaseTable, QueryField, QueryResult } from 'common/models/Database';
-import { COLUMN_TYPES } from './mysql/types';
+import { AdapterFactory, QueryOptions } from '../createConnection';
+import { COLUMN_TYPES } from './types';
+import { createSSHTunnel } from '../../ssh';
 
 interface ColumnRow {
     COLUMN_NAME: string;
@@ -23,22 +22,29 @@ interface TableRow {
     TABLE_COMMENT: string;
 }
 
-export default async function createMySQLAdapter(parameters: Connection, tunnel: ReadableStream) {
+export const createMySQLAdapter: AdapterFactory = async (parameters: MySQLConnection) => {
     const password = parameters.password ? safeStorage.decryptString(Buffer.from(parameters.password, 'base64')) : '';
+
+    let sshTunnel = null;
+
+    if (parameters.sshTunnelConfiguration.hostname) {
+        console.debug('[MySQL] SSH Configuration detected... Creating SSH tunnel.');
+        sshTunnel = await createSSHTunnel(parameters.hostname, parameters.port, parameters.sshTunnelConfiguration);
+        console.debug('[MySQL] Successfully created SSH tunnel.');
+    }
 
     const connection = await mysql.createConnection({
         host: parameters.hostname ?? '',
         port: parameters.port ?? 3306,
         user: parameters.username ?? '',
         password,
-        stream: tunnel,
-        // database: parameters.databaseName,
-        // ssl: {
-        //     rejectUnauthorized: false
-        // }
+        stream: sshTunnel,
+        database: parameters.databaseName
     });
 
     return {
+        driver: parameters.driver,
+
         async getTableColumns(dbName: string, tableName: string): Promise<DatabaseColumn[]> {
             const [rows] = await connection.query(
                 `SELECT * FROM information_schema.columns WHERE table_schema = ? AND table_name = ?`,
@@ -69,7 +75,16 @@ export default async function createMySQLAdapter(parameters: Connection, tunnel:
             }));
         },
 
-        async query<T>(sql: string, options?: QueryOptions): Promise<T[]> {
+        async getDatabases() {
+            const [databasesRows] = await connection.query({
+                sql: 'SHOW DATABASES',
+                rowsAsArray: true
+            }) as unknown as string[][];
+
+            return databasesRows.map(row => row[0]);
+        },
+
+        async query<T>(sql: string, options: QueryOptions = {}): Promise<T[]> {
             options = options ?? {};
 
             const [rows] = await connection.query({ sql, rowsAsArray: options.asArray ?? false }, options.preparedValues ?? []);
@@ -77,10 +92,10 @@ export default async function createMySQLAdapter(parameters: Connection, tunnel:
             return rows as T[];
         },
 
-        async runUserQuery(database: string, sql: string): Promise<QueryResult> {
+        async runUserQuery(database: string, query: string): Promise<QueryResult> {
             await connection.query(`USE ${database}`);
 
-            const [result, fields] = await connection.query(sql);
+            const [result, fields] = await connection.query(query);
 
             const responseFields: QueryField[] = fields.map(field => ({
                 name: field.name,
@@ -92,5 +107,5 @@ export default async function createMySQLAdapter(parameters: Connection, tunnel:
                 rows: result as DatabaseRow[],
             };
         }
-    } as ConnectionLike;
-}
+    };
+};

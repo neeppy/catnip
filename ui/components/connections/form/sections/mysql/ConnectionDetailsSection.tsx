@@ -1,10 +1,8 @@
-import { Controller, useFormContext } from 'react-hook-form';
-import { ConnectionDriver } from 'common/models/Connection';
-import { Input, Select } from 'ui-kit';
-import enum2opt from 'ui/utils/enum2opt';
-import { SectionTitle } from '../components/SectionTitle';
+import { useFormContext } from 'react-hook-form';
+import { SectionTitle } from 'ui/components/connections/form/components/SectionTitle';
+import { Input } from 'ui-kit';
 
-export const ConnectionDetailsSection = () => {
+export function ConnectionDetailsSection() {
     const { register } = useFormContext();
 
     return (
@@ -13,18 +11,6 @@ export const ConnectionDetailsSection = () => {
                 Connection Details
             </SectionTitle>
             <div className="grid grid-cols-4 gap-5 p-6">
-                <Input label="Connection Name" containerClassName="col-span-2" {...register('name')} />
-                <Controller
-                    name="driver"
-                    render={({ field }) => (
-                        <Select
-                            label="Driver"
-                            containerClassName="col-span-2"
-                            options={enum2opt(ConnectionDriver)}
-                            {...field}
-                        />
-                    )}
-                />
                 <Input label="Hostname" containerClassName="col-span-3" {...register('hostname')} />
                 <Input label="Port" placeholder="3306" {...register('port')} />
             </div>
@@ -38,4 +24,5 @@ export const ConnectionDetailsSection = () => {
             </div>
         </div>
     );
-};
+}
+

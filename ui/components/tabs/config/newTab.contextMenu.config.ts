@@ -1,13 +1,13 @@
 import { OptionType } from 'ui-kit';
 import { FaTable, FaTerminal } from 'react-icons/fa';
-import { createEditorViewFromQuery, createEmptyTableView } from 'ui/components/tabs';
+import { createEmptyEditorView, createEmptyTableView } from 'ui/components/tabs';
 
 export const newTabContextMenuConfig = [
     {
         key: 'create.editor',
         label: 'Editor Tab',
         icon: FaTerminal,
-        onClick: ({ props }) => createEditorViewFromQuery(props.connectionId, props.databaseName, ''),
+        onClick: ({ props }) => createEmptyEditorView(props.connectionId, props.databaseName),
     },
     {
         key: 'create.table',

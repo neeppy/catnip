@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { resumeTabActivity } from 'ui/components/tabs/queries';
 
 interface Tab {
     id: string;
@@ -32,10 +31,18 @@ interface UseTabActivity {
 export const useTabActivity = create<UseTabActivity>(set => ({
     currentActiveTab: null,
     previousActiveTab: null,
-    setCurrentTab: (tab, reset) => set(prevState => ({
-        currentActiveTab: tab,
-        previousActiveTab: reset ? null : prevState.currentActiveTab,
-    })),
+    setCurrentTab: (tab, reset) => {
+        const activeTabMap = JSON.parse(localStorage.getItem('activeTab') || '{}');
+
+        activeTabMap[tab.connectionId] = tab.id;
+
+        localStorage.setItem('activeTab', JSON.stringify(activeTabMap));
+
+        set(prevState => ({
+            currentActiveTab: tab,
+            previousActiveTab: reset ? null : prevState.currentActiveTab
+        }));
+    },
     updateCurrentTabDetails: tab => set(prevState => ({
         currentActiveTab: {
             ...prevState.currentActiveTab,

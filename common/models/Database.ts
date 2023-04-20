@@ -9,14 +9,12 @@ export interface DatabaseColumn extends QueryField {
     defaultValue: unknown;
     isNullable: boolean;
     isPrimaryKey: boolean;
-    comment: string;
+    comment?: string;
 }
 
 export interface DatabaseTable {
     name: string;
-    rowsCount: number;
-    size: number;
-    comment: string;
+    comment?: string;
 }
 
 export interface QueryResult {

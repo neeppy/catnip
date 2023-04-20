@@ -1,18 +1,19 @@
 import { MouseEvent, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
-import { Connection } from 'common/models/Connection';
+import { AnyConnection } from 'common/models/Connection';
 import { Button } from 'ui-kit';
 import { randomColor } from 'ui/utils/random';
-import { createEmptyTableView, getConnectionTabs } from 'ui/components/tabs';
+import { createEmptyTableView, getConnectionTabs, resumeTabActivity } from 'ui/components/tabs';
 import { CONNECTION_CONTEXT_MENU } from 'ui/components/context-menu';
 import { useModalRegistry } from 'ui/components/modals';
 import { useConnections } from '../state';
-import ConnectionForm, { fetchConnections, getConnectionById } from '../form';
+import ConnectionForm, { fetchConnections } from '../form';
+import storage from '$storage';
 
 export function Connections() {
     const queryClient = useQueryClient();
-    const openModal = useModalRegistry(state => state.open);
+    const open = useModalRegistry(state => state.open);
     const setActiveConnection = useConnections(state => state.setActiveConnection);
     const { data, isLoading } = useQuery(['connections'], fetchConnections);
     const { show } = useContextMenu({ id: CONNECTION_CONTEXT_MENU });
@@ -21,7 +22,7 @@ export function Connections() {
         const lastActiveConnection = localStorage.getItem('activeConnection');
 
         if (lastActiveConnection) {
-            getConnectionById(lastActiveConnection)
+            storage.connections.get(lastActiveConnection)
                 .then(connection => connection && onConnectionClick(connection));
         }
     }, []);
@@ -53,17 +54,14 @@ export function Connections() {
     );
 
     function openModalForm() {
-        openModal({
-            key: 'connection-form',
-            contentComponent: ConnectionForm,
-        });
+        open(ConnectionForm);
     }
 
-    function handleContextMenu(event: MouseEvent, connection: Connection) {
+    function handleContextMenu(event: MouseEvent, connection: AnyConnection) {
         show({ event, props: connection });
     }
 
-    async function onConnectionClick(connection: Connection) {
+    async function onConnectionClick(connection: AnyConnection) {
         const [tabs] = await Promise.all([
             queryClient.fetchQuery(['tabs', connection.id], () => getConnectionTabs(connection.id)),
             window.interop.connections.open(connection)
@@ -72,8 +70,9 @@ export function Connections() {
         setActiveConnection(connection);
 
         if (tabs.length === 0) {
-            await createEmptyTableView(connection.id, connection.databaseName);
-            await queryClient.refetchQueries(['tabs', connection.id]);
+            await createEmptyTableView(connection.id);
+        } else {
+            await resumeTabActivity(connection.id);
         }
 
         localStorage.setItem('activeConnection', connection.id);

@@ -5,7 +5,7 @@ import { useModalRegistry } from 'ui/components/modals';
 import Connections from 'ui/components/connections';
 
 export function ConnectionContextMenu() {
-    const openModal = useModalRegistry(state => state.open);
+    const open = useModalRegistry(state => state.open);
 
     return (
         <Menu id={CONNECTION_CONTEXT_MENU} theme="dark" animation="scale" className="ml-4">
@@ -25,12 +25,8 @@ export function ConnectionContextMenu() {
     );
 
     function openEditModal({ props }: ItemParams) {
-        openModal({
-            key: 'connection-form',
-            contentComponent: Connections.Form,
-            props: {
-                initialValues: props
-            },
+        open(Connections.Form, {
+            props: { initialValues: props },
         });
     }
 }
