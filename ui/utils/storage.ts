@@ -1,6 +1,6 @@
 import Dexie, { Table, Version } from 'dexie';
 import { AnyConnection } from 'common/models/Connection';
-import { AnyTab } from 'ui/components/tabs';
+import { AnyTab } from '$module:tabs';
 
 const versioning = [
     {

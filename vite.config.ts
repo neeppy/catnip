@@ -9,13 +9,13 @@ rmSync(path.join(__dirname, 'dist-electron'), { recursive: true, force: true });
 
 export default defineConfig({
     resolve: {
-        alias: {
-            'ui': path.join(__dirname, 'ui'),
-            'ui-kit': path.join(__dirname, 'ui/components/ui-kit'),
-            'assets': path.join(__dirname, 'ui/assets'),
-            'common': path.join(__dirname, 'common'),
-            '$storage': path.join(__dirname, 'ui/utils/storage'),
-        },
+        alias: [
+            { find: 'ui', replacement: path.join(__dirname, 'ui') },
+            { find: 'common', replacement: path.join(__dirname, 'common') },
+            { find: '$components', replacement: path.join(__dirname, 'ui/components') },
+            { find: '$storage', replacement: path.join(__dirname, 'ui/utils/storage') },
+            { find: /\$module:(\w+)/, replacement: path.join(__dirname, 'ui/modules/$1') }
+        ],
     },
     plugins: [
         react(),

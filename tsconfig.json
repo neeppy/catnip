@@ -5,10 +5,10 @@
         "useDefineForClassFields": true,
         "paths": {
             "ui/*": ["ui/*"],
-            "ui-kit": ["ui/components/ui-kit"],
-            "ui-kit/*": ["ui/components/ui-kit/*"],
-            "assets/*": ["ui/assets/*"],
+            "$components": ["ui/components"],
+            "$components/*": ["ui/components/*"],
             "$storage": ["ui/utils/storage"],
+            "$module:*": ["ui/modules/*"],
             "common/*": ["common/*"]
         },
         "allowJs": false,

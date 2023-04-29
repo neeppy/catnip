@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
-import App from './App';
-import 'assets/global.css';
 import { Interop } from 'common/models/Interop';
+import { AppModals, AppContextMenu } from '$module:globals';
+import { App } from '$module:layout';
 import '$storage';
 import client from 'ui/utils/query';
-import AppContextMenu from 'ui/components/context-menu';
-import AppModals from 'ui/components/modals';
 
 declare global {
     const interop: Interop;

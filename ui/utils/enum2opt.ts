@@ -1,4 +1,4 @@
-import { IOption } from 'ui/components/ui-kit/Select';
+import { IOption } from '$components/Select';
 
 export default function enum2opt(e: any): IOption[] {
     return Object.entries(e).map(entry => ({
