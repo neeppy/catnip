@@ -1,6 +1,7 @@
 import { MouseEvent, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
+import { FaPlus } from 'react-icons/fa';
 import { AnyConnection } from 'common/models/Connection';
 import { Button } from '$components';
 import { randomColor } from 'ui/utils/random';
@@ -45,8 +46,8 @@ export function Connections() {
                         </Button>
                     ))}
                 </div>
-                <Button scheme="accent" size="sm" className="ml-auto font-bold w-7 h-7" onClick={openModalForm}>
-                    +
+                <Button size="sm" shape="square" className="ml-auto font-bold" onClick={openModalForm}>
+                    <FaPlus/>
                 </Button>
             </footer>
         </>

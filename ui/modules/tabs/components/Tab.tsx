@@ -16,7 +16,7 @@ interface TabProps {
 export function TabHeader({ isActive, connectionId, tabId, labelTop, labelBottom, onClick, onContextMenu }: TabProps) {
     const tabClassName = classnames('flex items-center w-[168px] transition-colors px-2 py-1', {
         'text-[#fff6] hover:text-[#fffa] hover:bg-[#fff1]': !isActive,
-        'text-scene-default bg-accent-900': isActive
+        'text-primary-text bg-primary-200': isActive
     });
 
     function closeTab() {

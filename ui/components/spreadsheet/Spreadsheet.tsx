@@ -24,7 +24,7 @@ export function Spreadsheet({ rows, columns }: SpreadSheetProps) {
     const colorClasses = classnames('bg-scene-300');
 
     const cellClasses = classnames('truncate max-w-[300px]', spacingClasses, colorClasses);
-    const activeCellClasses = classnames('truncate bg-accent-900 max-w-[300px]', spacingClasses);
+    const activeCellClasses = classnames('truncate bg-primary-200 max-w-[300px]', spacingClasses);
     const headerClasses = classnames('text-center font-bold text-sm select-none', cellClasses);
 
     return (

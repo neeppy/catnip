@@ -1,33 +1,43 @@
-import { cva, VariantProps } from 'class-variance-authority';
 import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react';
+import { cva, VariantProps } from 'class-variance-authority';
 
-const getButtonClassName = cva('transition-colors transition-200 select-none cursor-pointer', {
+const intentSchemeCompound = (intent: any, scheme: any, className: string) => ({ intent, scheme, className });
+
+const getButtonClassName = cva('transition-colors duration-200 select-none cursor-pointer capitalize font-semibold', {
     variants: {
-        layout: {
-            none: null,
-            centered: 'flex items-center justify-center',
+        intent: {
+            solid: null,
+            ghost: null
         },
         scheme: {
-            none: null,
-            accent: 'bg-accent-500 text-sm text-white hover:bg-accent-600 active:bg-accent-700',
-            'ghost-accent': 'bg-transparent border-accent-500 text-accent-500 border-[1px]',
-            transparent: 'bg-transparent text-[#fff6] hover:bg-[#fff1] hover:text-[#fffa]'
+            custom: null,
+            primary: null,
+            secondary: null,
+            transparent: 'bg-transparent-500 hover:bg-transparent-400 active:bg-transparent-300 text-transparent-text'
         },
         shape: {
-            none: null,
+            flat: 'rounded-none',
             default: 'rounded-md',
-            square: 'aspect-square',
+            square: 'aspect-square rounded-md',
             round: 'rounded-full'
         },
         size: {
-            none: null,
-            sm: 'px-2 py-1 text-sm',
-            md: 'px-4 py-2 text-md'
+            xs: 'p-1 text-xs',
+            sm: 'p-1 text-sm',
+            md: 'p-2',
+            lg: 'px-3 py-2 text-lg',
+            xl: 'px-4 py-3 text-xl'
         }
     },
+    compoundVariants: [
+        intentSchemeCompound('solid', 'primary', 'bg-primary-500 hover:bg-primary-400 active:bg-primary-300 text-primary-text'),
+        intentSchemeCompound('solid', 'secondary', 'bg-secondary-500 hover:bg-secondary-400 active:bg-secondary-300 text-secondary-text'),
+        intentSchemeCompound('ghost', 'primary', 'border bg-transparent border-primary-500 hover:bg-primary-500 text-primary-text'),
+        intentSchemeCompound('ghost', 'secondary', 'border bg-transparent border-secondary-500 hover:bg-secondary-500 text-secondary-text')
+    ],
     defaultVariants: {
-        layout: 'centered',
-        scheme: 'accent',
+        intent: 'solid',
+        scheme: 'primary',
         shape: 'default',
         size: 'md'
     }
@@ -38,12 +48,8 @@ interface OwnProps extends VariantProps<typeof getButtonClassName>, HTMLAttribut
 }
 
 export const Button = forwardRef<HTMLButtonElement, OwnProps>((
-    { className, scheme, shape, size, layout, ...rest }: PropsWithChildren<OwnProps>,
+    { className, scheme, shape, size, intent, ...rest }: PropsWithChildren<OwnProps>,
     ref
 ) => (
-    <button
-        ref={ref}
-        className={[className, getButtonClassName({ scheme, shape, size, layout })].join(' ')}
-        {...rest}
-    />
+    <button ref={ref} className={getButtonClassName({ scheme, shape, size, intent, className })} {...rest}/>
 ));

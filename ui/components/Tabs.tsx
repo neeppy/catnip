@@ -41,7 +41,7 @@ export function Tabs({
                 {tabs.map((tab, idx) => (
                     <Button
                         key={tab.key}
-                        size="sm" shape="none" scheme="none" layout="none"
+                        size="sm" scheme="custom" shape="flat"
                         className={tabClass(idx === currentTab)}
                         onClick={() => setCurrentTab(idx)}
                     >

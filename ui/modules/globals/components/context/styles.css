@@ -12,5 +12,5 @@
 }
 
 .contexify .contexify_item:not(.contexify_item-disabled):hover > .contexify_itemContent {
-    @apply bg-accent-transparent;
+    @apply bg-primary-transparent;
 }

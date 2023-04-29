@@ -10,8 +10,7 @@ export function Header() {
     return (
         <header id="title-bar" className="flex pl-4 h-[2.5rem]">
             <TabList/>
-            <Button scheme={isAdvancedMode ? 'accent' : 'ghost-accent'} size="sm"
-                    className="px-2 ml-auto mr-4 text-xs self-center" onClick={toggleAppMode}>
+            <Button scheme={isAdvancedMode ? 'primary' : 'secondary'} size="xs" className="border border-primary-500 ml-auto mr-4 self-center" onClick={toggleAppMode}>
                 {isAdvancedMode ? 'Advanced View' : 'Simplified View'}
             </Button>
             {interop.platform === 'win32' && (
