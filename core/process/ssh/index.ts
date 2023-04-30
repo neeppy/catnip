@@ -7,7 +7,7 @@ interface DatabaseTunnelConfiguration {
     port: number;
 }
 
-function connectToServer(serverConfiguration: SSHConnection, useStream?: ClientChannel) {
+function connectToServer(serverConfiguration: SSHConnection, useStream?: ClientChannel): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
         const client = new Client();
 
@@ -41,7 +41,6 @@ function forwardSSHConnection(client: Client, configuration: SSHConnection) {
 
 function forwardDatabaseConnection(client: Client, configuration: DatabaseTunnelConfiguration) {
     return new Promise<ClientChannel>((resolve, reject) => {
-        console.log(configuration);
         client.forwardOut('127.0.0.1', 3306, configuration.hostname, configuration.port || 3306, (err, stream) => {
             if (err) {
                 reject(err);
@@ -64,7 +63,8 @@ export async function createSSHTunnel(dbHost: string, dbPort: number, configurat
         mainSSHConnection = await connectToServer(configuration, forwardedStream);
         console.log('Success! Hopping was successful!');
     } else {
-        mainSSHConnection = connectToServer(configuration);
+        console.log('Connecting to main server...');
+        mainSSHConnection = await connectToServer(configuration);
     }
 
     console.log('Setting up database stream for given tunnel...');

@@ -38,11 +38,12 @@ module.exports = {
                 'glow-lg': '0 0 20px 0',
             },
             animation: {
+                'fade-in': 'fade-in 200ms ease-out forwards',
+                'fade-out': 'fade-in 200ms ease-out reverse',
+                'scale-in': 'scale-in 200ms ease-out forwards',
+                'scale-out': 'scale-in 200ms ease-out reverse',
                 'slide-in-left': 'slide-in-left 0.5s ease-out forwards',
                 'slide-in-right': 'slide-in-right 0.5s ease-out forwards',
-                'fade-in-transparent': 'fade-in-transparent 1s ease-out forwards',
-                'fade-in': 'fade-in 200ms ease-out forwards',
-                'scale-in-75': 'scale-in-75 200ms ease-out forwards',
                 'slide-fade-bottom': 'slide-fade-bottom 250ms ease-out forwards',
             },
             keyframes: {
@@ -54,15 +55,11 @@ module.exports = {
                     '0%': { translate: '100% 0' },
                     '100%': { translate: '0' },
                 },
-                'fade-in-transparent': {
-                    '0%': { opacity: '0' },
-                    '100%': { opacity: '70' },
-                },
                 'fade-in': {
                     '0%': { opacity: '0' },
                     '100%': { opacity: '100' },
                 },
-                'scale-in-75': {
+                'scale-in': {
                     '0%': { scale: '75%' },
                     '100%': { scale: '100%' },
                 },

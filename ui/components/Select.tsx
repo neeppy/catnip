@@ -26,11 +26,11 @@ const getOptionClassName = cva('cursor-pointer', {
             md: 'px-4 py-3'
         },
         active: {
-            true: 'bg-surface-600',
+            true: 'bg-transparent-400',
             false: null
         },
         selected: {
-            true: 'bg-surface-700 font-bold',
+            true: 'bg-transparent-300 font-bold',
         },
     },
     defaultVariants: {
@@ -122,11 +122,7 @@ export const Select = forwardRef<HTMLDivElement, Props>(({
                     {filteredOptions.map(option => (
                         <Combobox.Option key={option.value} value={option} as={Fragment}>
                             {({ active, selected }) => (
-                                <li className={classnames(optionClassName, getOptionClassName({
-                                    ...rest,
-                                    active,
-                                    selected
-                                }))}>
+                                <li className={classnames(optionClassName, getOptionClassName({ active, selected }))}>
                                     {option.label}
                                 </li>
                             )}

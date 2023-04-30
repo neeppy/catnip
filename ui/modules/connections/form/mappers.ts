@@ -36,6 +36,8 @@ async function mysqlConnectionMappings(submittedConnection: MySQLConnection, exi
         );
     }
 
+    await Promise.all(passwordUpdatePromises);
+
     return submittedConnection;
 }
 
