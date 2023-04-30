@@ -25,14 +25,14 @@ export function Tabs({
     });
 
     const listClass = classnames('flex', {
-        'flex-col border-r border-[#fff1]': layout === 'horizontal',
+        'flex-col border-r border-transparent-300': layout === 'horizontal',
     });
 
     const contentClass = classnames('flex-1');
 
-    const tabClass = (isActive: boolean) => classnames('text-right hover:bg-[#fff1]', {
-        'bg-[#fff2] text-scene-default': isActive,
-        'text-scene-dark': !isActive,
+    const tabClass = (isActive: boolean) => classnames('text-right hover:bg-transparent-400 hover:text-foreground-subtle', {
+        'bg-transparent-300 text-foreground-default': isActive,
+        'text-foreground-subtlest': !isActive,
     });
 
     return (

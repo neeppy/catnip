@@ -23,15 +23,15 @@ export function SingleDatabaseEditorTab(tab: EditorView) {
         mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query),
     });
 
-    const editorClasses = classnames('transition-all duration-200 relative', {
+    const editorClasses = classnames('transition-all duration-200 relative shadow-right', {
         'w-[30%]': !isEditorFocused,
         'w-[70%]': isEditorFocused
     });
 
     return (
-        <div className="flex flex-col w-full h-full">
-            <div className="flex items-center gap-2 p-2 text-scene-default bg-scene-300 shadow-xl z-10">
-                <Button size="sm" shape="square" className="ml-auto rounded-md" onClick={handleSubmitByButton}>
+        <div className="flex flex-col bg-surface-400 w-full h-full">
+            <div className="flex items-center gap-2 p-2 text-foreground-default bg-surface-500 shadow-xl z-10">
+                <Button shape="square" className="ml-auto rounded-md" onClick={handleSubmitByButton}>
                     <FaPlay/>
                 </Button>
             </div>

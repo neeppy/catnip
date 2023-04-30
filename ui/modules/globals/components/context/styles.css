@@ -1,14 +1,13 @@
 .contexify {
-    @apply text-scene-default;
-    @apply bg-scene-600 border border-scene-700;
+    @apply bg-surface-600 border border-surface-800;
 }
 
 .contexify .contexify_separator {
-    @apply bg-scene-700;
+    @apply bg-foreground-subtlest;
 }
 
-.contexify_item {
-    @apply text-sm;
+.contexify_item > .contexify_itemContent {
+    @apply text-sm text-foreground-default;
 }
 
 .contexify .contexify_item:not(.contexify_item-disabled):hover > .contexify_itemContent {

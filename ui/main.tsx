@@ -12,6 +12,7 @@ declare global {
 
     interface Window {
         interop: Interop;
+        theme: (theme: any) => void;
     }
 }
 

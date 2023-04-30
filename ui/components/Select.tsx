@@ -8,7 +8,7 @@ import { Typography } from './Typography';
 const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-hidden absolute top-[4.75rem] inset-x-0 max-h-40 overflow-y-auto', {
     variants: {
         variant: {
-            default: 'bg-scene-500 shadow-lg shadow-scene-200'
+            default: 'bg-surface-500 shadow-lg shadow-surface-200'
         }
     },
     defaultVariants: {
@@ -19,18 +19,18 @@ const getDropdownClassName = cva('rounded-md animate-slide-fade-bottom overflow-
 const getOptionClassName = cva('cursor-pointer', {
     variants: {
         variant: {
-            default: 'text-scene-default text-xs py-1'
+            default: 'text-foreground-default text-xs py-1'
         },
         size: {
             sm: 'px-2 py-1',
             md: 'px-4 py-3'
         },
         active: {
-            true: 'bg-scene-600',
+            true: 'bg-surface-600',
             false: null
         },
         selected: {
-            true: 'bg-scene-600 font-bold',
+            true: 'bg-surface-700 font-bold',
         },
     },
     defaultVariants: {

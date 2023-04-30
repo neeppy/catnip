@@ -31,7 +31,7 @@ export const ConnectionForm = ({ initialValues }: OwnProps) => {
     const tabs = TabGetters[driver](isAdvanced);
 
     return (
-        <div className="bg-scene-300 w-[48rem] rounded-xl shadow-xl">
+        <div className="bg-surface-400 w-[48rem] rounded-xl shadow-xl">
             <FormProvider {...form}>
                 <div className="flex flex-col">
                     <Typography as="h2" intent="h1" className="px-6 pt-6">

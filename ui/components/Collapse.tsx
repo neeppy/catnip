@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useRef } from 'react';
+import { PropsWithChildren } from 'react';
 import { FaChevronLeft } from 'react-icons/fa';
 import { Disclosure, Transition } from '@headlessui/react';
 import classnames from 'classnames';
@@ -10,7 +10,10 @@ interface OwnProps {
 
 export function Collapse({ title, children, className }: PropsWithChildren<OwnProps>) {
     const buttonClass = classnames(className, [
-        'w-full cursor-pointer bg-scene-400 px-4 py-2 rounded-md shadow-lg flex items-center hover:bg-scene-500 active:bg-scene-600 text-sm text-scene-800 hover:text-scene-900 active:text-scene-default transition-all duration-200 select-none'
+        'flex items-center w-full px-4 py-2',
+        'transition-all duration-200 select-none cursor-pointer rounded-md shadow-lg',
+        'bg-surface-500 hover:bg-surface-600 active:bg-surface-700',
+        'text-foreground-subtlest hover:text-foreground-subtle active:text-foreground-default text-sm',
     ]);
 
     return (

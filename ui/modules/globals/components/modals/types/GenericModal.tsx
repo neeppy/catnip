@@ -33,7 +33,7 @@ export default function GenericModal({ modal }: OwnProps) {
     });
 
     const contentContainerClassName = classnames([
-        'relative text-scene-default max-h-[80%] overflow-y-auto',
+        'relative text-foreground-default max-h-[80%] overflow-y-auto',
         'transition-transform duration-200',
     ], {
         'animate-scale-in-75': isOpening,

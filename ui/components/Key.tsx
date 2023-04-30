@@ -5,7 +5,7 @@ interface OwnProps {
     className?: string;
 }
 
-const classes = 'px-2 py-1.5 text-xs font-semibold text-scene-default bg-scene-600 border border-scene-700 rounded-lg';
+const classes = 'px-2 py-1.5 text-xs font-semibold text-foreground-default bg-surface-700 border border-surface-800 rounded-lg';
 
 export const Key = ({ className, children }: PropsWithChildren<OwnProps>) => (
     <kbd className={classnames(classes, className)}>

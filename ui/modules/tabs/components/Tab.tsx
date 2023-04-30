@@ -15,7 +15,7 @@ interface TabProps {
 
 export function TabHeader({ isActive, connectionId, tabId, labelTop, labelBottom, onClick, onContextMenu }: TabProps) {
     const tabClassName = classnames('flex items-center w-[168px] transition-colors px-2 py-1', {
-        'text-[#fff6] hover:text-[#fffa] hover:bg-[#fff1]': !isActive,
+        'text-foreground-subtlest hover:text-foreground-subtle hover:bg-transparent-400': !isActive,
         'text-primary-text bg-primary-200': isActive
     });
 
@@ -40,7 +40,7 @@ export function TabHeader({ isActive, connectionId, tabId, labelTop, labelBottom
                     </span>
                 )}
             </div>
-            <button className="text-xs text-scene-default hover:bg-[#fff2] p-1 ml-2" onClick={closeTab}>
+            <button className="text-xs hover:bg-[#fff2] p-1 ml-2" onClick={closeTab}>
                 <VscChromeClose/>
             </button>
         </div>

@@ -23,7 +23,7 @@ export function TableViewTab({ connectionId, currentDatabase, currentTable, ...r
     });
 
     return (
-        <div className="text-scene-default grid grid-cols-table grid-rows-table h-full">
+        <div className="text-foreground-default grid grid-cols-table grid-rows-table w-full h-full">
             <div className="col-span-2">
                 <Breadcrumbs
                     connectionId={connectionId}

@@ -7,10 +7,10 @@ interface OwnProps {
 
 export function SectionTitle({ className, children }: PropsWithChildren<OwnProps>) {
     return (
-        <div className={classnames(className, 'col-span-4 text-neutral-400 text-sm font-bold flex items-center gap-3')}>
-            <div className="w-3 border-b border-neutral-600" />
+        <div className={classnames(className, 'col-span-4 text-foreground-subtlest text-sm font-bold flex items-center gap-3')}>
+            <div className="w-3 border-b border-foreground-subtlest" />
             {children}
-            <div className="flex-1 border-b border-neutral-600"/>
+            <div className="flex-1 border-b border-foreground-subtlest" />
         </div>
     );
 }

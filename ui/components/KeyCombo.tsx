@@ -8,7 +8,7 @@ interface OwnProps {
 
 export function KeyCombo({ description, keys }: OwnProps) {
     return (
-        <div className="flex gap-2 text-scene-default items-center select-none">
+        <div className="flex gap-2 text-foreground-default items-center select-none">
             {description && (
                 <span className="text-xs">{description}</span>
             )}

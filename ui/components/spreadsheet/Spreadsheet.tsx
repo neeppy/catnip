@@ -21,16 +21,16 @@ export function Spreadsheet({ rows, columns }: SpreadSheetProps) {
     const [rangeEnd, setRangeEnd] = useState<IRangePoint | null>(null);
 
     const spacingClasses = classnames('py-2 px-3');
-    const colorClasses = classnames('bg-scene-300');
+    const colorClasses = classnames('bg-surface-500 text-foreground-subtle');
 
     const cellClasses = classnames('truncate max-w-[300px]', spacingClasses, colorClasses);
-    const activeCellClasses = classnames('truncate bg-primary-200 max-w-[300px]', spacingClasses);
+    const activeCellClasses = classnames('truncate bg-primary-transparent max-w-[300px]', spacingClasses);
     const headerClasses = classnames('text-center font-bold text-sm select-none', cellClasses);
 
     return (
         <>
             <div
-                className="inline-grid text-scene-default bg-scene-400 gap-[1px] border-scene-400 border-[1px]" style={{ gridTemplateColumns: `repeat(${columns.length + 1}, max-content)` }}
+                className="inline-grid text-foreground-default bg-surface-600 gap-[1px] border-surface-700 border-[1px]" style={{ gridTemplateColumns: `repeat(${columns.length + 1}, max-content)` }}
                 onClick={handleCellClick}
                 onKeyDown={handleKeyboardNavigation}
                 onDragStart={handleCellClick}

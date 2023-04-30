@@ -1,5 +1,7 @@
 import { atom } from 'jotai';
 
-type Theme = 'dark';
+type Theme = 'dark' | 'skyblue';
 
-export const themeState = atom<Theme>('dark');
+const initialTheme = localStorage.getItem('theme') as Theme;
+
+export const themeState = atom<Theme>(initialTheme || 'dark');

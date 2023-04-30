@@ -1,16 +1,16 @@
 const color = require('color');
 
-const surface = color('#303030');
-const accent = color(surface.darken(0.6));
-const primary = color('#ec3636');
+const surface = color('#ced3ef');
+const accent = color('#a0a4ff');
+const primary = color('#3676ec');
 const secondary = color('#ec6736');
-const text = color('#dfe0e0ff');
+const text = color('#363636ee');
 
 module.exports = {
     transparent: {
-        300: '#fff2',
-        400: '#fff1',
-        500: '#fff0',
+        300: '#0002',
+        400: '#0001',
+        500: '#0000',
         text: text.toString(),
     },
     accent: accent.toString(),
@@ -20,14 +20,14 @@ module.exports = {
         default: text.toString(),
     },
     surface: {
-        100: surface.darken(0.8).toString(),
-        200: surface.darken(0.6).toString(),
-        300: surface.darken(0.4).toString(),
-        400: surface.darken(0.2).toString(),
+        100: surface.darken(0.2).toString(),
+        200: surface.darken(0.15).toString(),
+        300: surface.darken(0.1).toString(),
+        400: surface.darken(0.05).toString(),
         500: surface.toString(),
-        600: surface.lighten(0.3).toString(),
-        700: surface.lighten(0.5).toString(),
-        800: surface.lighten(0.8).toString(),
+        600: surface.lighten(0.05).toString(),
+        700: surface.lighten(0.1).toString(),
+        800: surface.lighten(0.15).toString(),
     },
     primary: {
         100: primary.darken(0.75).toString(),
@@ -38,7 +38,7 @@ module.exports = {
         600: primary.lighten(0.2).toString(),
         700: primary.lighten(0.35).toString(),
         transparent: primary.alpha(0.5).toString(),
-        text: text.toString(),
+        text: '#fff',
     },
     secondary: {
         200: secondary.darken(0.5).toString(),

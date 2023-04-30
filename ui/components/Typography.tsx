@@ -11,7 +11,7 @@ const getClassName = cva('', {
             label: 'text-2xs font-semibold',
         },
         background: {
-            default: 'text-scene-default',
+            default: 'text-foreground-default',
             surface: 'text-surface',
         },
     },
@@ -23,7 +23,7 @@ const getClassName = cva('', {
         {
             background: 'default',
             intent: 'label',
-            className: 'text-scene-darker peer-hover:text-scene-dark peer-focus:text-scene-default transition-colors duration-500'
+            className: 'text-foreground-subtlest peer-hover:text-foreground-subtle peer-focus:text-foreground-default transition-colors duration-500'
         }
     ],
 });

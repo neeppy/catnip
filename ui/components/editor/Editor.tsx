@@ -1,5 +1,7 @@
 import MonacoEditor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
+import { useAtomValue } from 'jotai';
+import { themeState } from '$module:globals';
 
 loader.config({ monaco });
 
@@ -26,9 +28,11 @@ export function Editor({
     onSave,
     onEscape
 }: OwnProps) {
+    const theme = useAtomValue(themeState);
+
     return (
         <MonacoEditor
-            theme="vs-dark"
+            theme={theme !== 'dark' ? 'light' : 'vs-dark'}
             language="sql"
             defaultValue={defaultValue}
             onMount={editor => {

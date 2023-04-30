@@ -6,12 +6,14 @@ import { AnyConnection } from 'common/models/Connection';
 import { Button } from '$components';
 import { randomColor } from 'ui/utils/random';
 import { createEmptyTableView, getConnectionTabs, resumeTabActivity } from '$module:tabs';
-import { useModalRegistry, CONNECTION_CONTEXT_MENU } from '$module:globals';
+import { useModalRegistry, CONNECTION_CONTEXT_MENU, themeState } from '$module:globals';
 import { useConnections } from '../state';
 import ConnectionForm, { fetchConnections } from '../form';
 import storage from '$storage';
+import { useAtomValue } from 'jotai';
 
 export function Connections() {
+    const theme = useAtomValue(themeState);
     const queryClient = useQueryClient();
     const open = useModalRegistry(state => state.open);
     const setActiveConnection = useConnections(state => state.setActiveConnection);
@@ -34,13 +36,13 @@ export function Connections() {
                     {data && !isLoading && data.length > 0 && data.map(connection => (
                         <Button
                             key={connection.id}
-                            shape="round" size="sm" scheme="none"
+                            shape="round" size="sm" scheme="custom"
                             className="w-7 h-7"
-                            style={{ backgroundColor: randomColor(connection.name) }}
+                            style={{ backgroundColor: randomColor(theme + connection.name) }}
                             onClick={() => onConnectionClick(connection)}
                             onContextMenu={event => handleContextMenu(event, connection)}
                         >
-                            <span className="text-scene-default font-bold">
+                            <span className="text-white font-bold">
                                 {connection.name.charAt(0).toUpperCase()}
                             </span>
                         </Button>

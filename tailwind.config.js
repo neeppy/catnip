@@ -32,6 +32,7 @@ module.exports = {
                 surface: '#faffff',
             },
             boxShadow: {
+                right: '2px 0 20px 0 #0004',
                 'glow-sm': '0 0 4px 0',
                 'glow-md': '0 0 10px 0',
                 'glow-lg': '0 0 20px 0',
@@ -79,8 +80,9 @@ module.exports = {
         },
     },
     plugins: [
-        createThemes(({ dark }) => ({
+        createThemes(({ dark, light }) => ({
             dark: dark(themes.dark),
+            skyblue: light(themes.skyblue),
         })),
     ],
 };
