@@ -34,6 +34,7 @@
         "react-hook-form": "^7.40.0",
         "react-icons": "^4.7.1",
         "react-scrollbars-custom": "^4.1.1",
+        "react-window": "^1.8.9",
         "ssh2": "^1.11.0",
         "zustand": "^4.1.4"
     },
@@ -43,6 +44,7 @@
         "@types/color": "^3.0.3",
         "@types/react": "^18.0.25",
         "@types/react-dom": "^18.0.9",
+        "@types/react-window": "^1.8.5",
         "@types/ssh2": "^1.11.6",
         "@vitejs/plugin-react": "^2.2.0",
         "autoprefixer": "^10.4.13",

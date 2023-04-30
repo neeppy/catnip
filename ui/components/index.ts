@@ -9,4 +9,4 @@ export * from './KeyCombo';
 export * from './Dropdown';
 export * from './Tabs';
 export { default as Editor } from './editor';
-export { default as Spreadsheet } from './spreadsheet';
+export * from './spreadsheet';

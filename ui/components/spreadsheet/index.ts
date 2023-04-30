@@ -1,1 +1,1 @@
-export { Spreadsheet as default } from './Spreadsheet';
+export * from './DynamicGrid';

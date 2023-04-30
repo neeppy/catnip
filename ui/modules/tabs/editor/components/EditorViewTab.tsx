@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import classnames from 'classnames';
 import { FaDatabase, FaPlay } from 'react-icons/fa';
 import { ConnectionDriver } from 'common/models/Connection';
-import { Button, DropdownSelect, Spreadsheet, Editor } from '$components';
+import { Button, DropdownSelect, DynamicGrid, Editor } from '$components';
 import { useBoolean } from 'ui/hooks';
 import { appModeState } from '$module:globals';
 import { useConnections } from '$module:connections';
@@ -73,7 +73,7 @@ export function EditorViewTab(tab: EditorView) {
                 </div>
                 <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
                     {queryResult && (
-                        <Spreadsheet columns={queryResult.columns} rows={queryResult.rows}/>
+                        <DynamicGrid {...queryResult} />
                     )}
                 </div>
             </div>

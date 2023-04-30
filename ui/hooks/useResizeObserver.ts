@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-export function useResizeObserver(handler: ResizeObserverCallback) {
-    const elementRef = useRef(null);
+export function useResizeObserver<T extends HTMLElement = HTMLDivElement>(handler: ResizeObserverCallback) {
+    const elementRef = useRef<T>(null);
 
     useEffect(() => {
         const observer = new ResizeObserver(handler);
@@ -11,7 +11,7 @@ export function useResizeObserver(handler: ResizeObserverCallback) {
         }
 
         return () => observer.disconnect();
-    });
+    }, []);
 
     return elementRef;
 }

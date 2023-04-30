@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import classnames from 'classnames';
 import { FaPlay } from 'react-icons/fa';
 import { useBoolean } from 'ui/hooks';
-import { Button, Editor, Spreadsheet } from '$components';
+import { Button, Editor, DynamicGrid } from '$components';
 import { EditorView, updateTabs, useTabActivity } from '$module:tabs';
 import { getCurrentQueries } from '../utils';
 import { EditorCommands } from './EditorCommands';
@@ -49,7 +49,7 @@ export function SingleDatabaseEditorTab(tab: EditorView) {
                 </div>
                 <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
                     {queryResult && (
-                        <Spreadsheet columns={queryResult.columns} rows={queryResult.rows}/>
+                        <DynamicGrid {...queryResult} />
                     )}
                 </div>
             </div>

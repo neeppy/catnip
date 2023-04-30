@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { DatabaseColumn, DatabaseRow } from 'common/models/Database';
-import Spreadsheet from '$components/spreadsheet';
 import { isMultiDatabaseConnection, useConnections } from '$module:connections';
 import { TableView } from '$module:tabs';
 import { getTableColumns, getTableRows } from '../queries';
 import Breadcrumbs from './Breadcrumbs';
+import { DynamicGrid } from '$components';
 
 export function TableViewTab({ connectionId, currentDatabase, currentTable, ...rest }: TableView) {
     const connection = useConnections(state => state.currentActiveConnection!);
@@ -35,7 +35,7 @@ export function TableViewTab({ connectionId, currentDatabase, currentTable, ...r
             {rows && columns && (
                 <div className="col-span-2 overflow-hidden">
                     <div className="w-full h-full overflow-auto">
-                        <Spreadsheet rows={rows} columns={columns}/>
+                        <DynamicGrid columns={columns} rows={rows} />
                     </div>
                 </div>
             )}

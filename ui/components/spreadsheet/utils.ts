@@ -1,39 +1,39 @@
 import { DragEvent, SyntheticEvent } from 'react';
 
-type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+export type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 type DirectionalFunction = (params: {
     x: number;
     y: number;
     maxX: number;
     maxY: number;
-}) => [number, number];
+}, toMax?: boolean) => [number, number];
 
 
 export const arrowNavigationMap: Record<Direction, DirectionalFunction> = {
-    ArrowUp({ x, y }) {
+    ArrowUp({ x, y }, toMax) {
         if (y === 0) return [x, y];
 
-        return [x, Math.max(0, y - 1)];
+        return [x, toMax ? 1 : Math.max(1, y - 1)];
     },
-    ArrowDown({ x, y, maxY }) {
+    ArrowDown({ x, y, maxY }, toMax) {
         if (y === maxY) return [x, y];
 
-        return [x, Math.min(maxY, y + 1)];
+        return [x, toMax ? maxY : Math.min(maxY, y + 1)];
     },
-    ArrowLeft({ x, y }) {
+    ArrowLeft({ x, y }, toMax) {
         if (x === 0) return [x, y];
 
-        return [Math.max(0, x - 1), y];
+        return [toMax ? 1 : Math.max(1, x - 1), y];
     },
-    ArrowRight({ x, y, maxX }) {
+    ArrowRight({ x, y, maxX }, toMax) {
         if (x === maxX) return [x, y];
 
-        return [Math.min(maxX, x + 1), y];
+        return [toMax ? maxX : Math.min(maxX, x + 1), y];
     }
 };
 
-export function focusCell(rowIndex: number, colName: string) {
-    const element = document.querySelector(`[data-row-index='${rowIndex}'][data-col-name='${colName}']`) as HTMLElement;
+export function focusCell(rowIndex: number, colIndex: number) {
+    const element = document.querySelector(`[data-row='${rowIndex}'][data-col='${colIndex}']`) as HTMLElement;
 
     element.focus();
 }
