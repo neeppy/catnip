@@ -9,3 +9,9 @@ export function debounce(duration: number, fn: Function) {
         timeoutRef = setTimeout(() => fn(...lastCallArgs), duration);
     };
 }
+
+export function fnMerge(...functions: Function[]) {
+    return function(...args: any) {
+        functions.forEach(fn => fn(...args));
+    };
+}

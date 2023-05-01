@@ -1,14 +1,23 @@
 import { KeyboardEvent } from 'react';
 import type { GridChildComponentProps } from 'react-window';
-import type { GridProps, RangePoint } from './DynamicGrid';
+import type { GridProps } from './DynamicGrid';
 import { RowHeader } from './RowHeader';
 import { ColumnHeader } from './ColumnHeader';
 import { DataCell } from './DataCell';
+import { Range } from './useRangeCollection';
 
 export interface CellProps extends GridProps {
-    rangeStart: RangePoint | null;
-    rangeEnd: RangePoint | null;
+    allRanges: Range[];
+    selectAll: () => void;
     onKeyboardNavigation: (event: KeyboardEvent) => void;
+}
+
+type SelectionType = 'row' | 'column' | 'cell';
+
+export interface SelectionData {
+    row: number;
+    column: number;
+    type: SelectionType;
 }
 
 const CELL_TYPES = [

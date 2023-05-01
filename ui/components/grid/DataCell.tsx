@@ -3,11 +3,12 @@ import { GridChildComponentProps } from 'react-window';
 import classnames from 'classnames';
 import type { CellProps } from './Cell';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-
-const isBetween = (value: number, start: number, end: number) => value >= Math.min(start, end) && value <= Math.max(start, end);
+import { fnMerge } from 'ui/utils/functions';
+import { isInRange } from '$components/grid/utils';
 
 export function DataCell({ rowIndex, columnIndex, data, style }: GridChildComponentProps<CellProps>) {
     const dndData = {
+        type: 'cell',
         row: rowIndex,
         column: columnIndex,
     };
@@ -22,16 +23,17 @@ export function DataCell({ rowIndex, columnIndex, data, style }: GridChildCompon
         data: dndData,
     });
 
-    const { rows, columns, onKeyboardNavigation, rangeStart, rangeEnd } = data;
+    const { allRanges, rows, columns, onKeyboardNavigation } = data;
     const column = columns[columnIndex - 1].name;
 
-    const isRowActive = rangeStart && rangeEnd && isBetween(rowIndex, rangeStart.row, rangeEnd.row);
-    const isColActive = rangeStart && rangeEnd && isBetween(columnIndex, rangeStart.column, rangeEnd.column);
-    const isActive = isRowActive && isColActive;
+    const isActive = allRanges.some(range => isInRange(rowIndex, columnIndex, range));
 
-    const isOnlyActive = isActive && rangeStart?.row === rangeEnd?.row && rangeStart?.column === rangeEnd?.column;
+    const firstRange = allRanges[0];
+    const isOnlyActive = isActive && allRanges.length === 1 &&
+        firstRange.start.row === firstRange.end.row &&
+        firstRange.start.column === firstRange.end.column;
 
-    const cellClass = classnames('text-sm flex items-center text-foreground-default border-surface-700 px-3 truncate border-br duration-200 ease-out', {
+    const cellClass = classnames('text-sm flex items-center text-foreground-default border-surface-700 px-3 border-br duration-200 ease-out', {
         'bg-primary-600': isActive,
         'scale-105 shadow-lg z-10 border-none': isOnlyActive,
         'bg-surface-500 border-br': !isActive,
@@ -43,25 +45,26 @@ export function DataCell({ rowIndex, columnIndex, data, style }: GridChildCompon
 
     return (
         <div
-            ref={ref => {
-                createDraggableRef(ref);
-                createDroppableRef(ref);
-            }}
+            ref={fnMerge(createDraggableRef, createDroppableRef)}
             className={cellClass} style={style}
             data-row={rowIndex}
             data-col={columnIndex}
             onKeyDown={handleKeyDown}
+            onDoubleClick={handleDoubleClick}
             {...attributes}
             {...listeners}
         >
-            {String(rows[rowIndex - 1][column])}
+            <span className="truncate">{String(rows[rowIndex - 1][column])}</span>
         </div>
     );
 
-    function handleKeyDown(e: KeyboardEvent) {
-        e.preventDefault();
+    function handleDoubleClick(e: MouseEvent) {
+        console.log('Double clicked', { rowIndex, columnIndex });
+    }
 
+    function handleKeyDown(e: KeyboardEvent) {
         if (e.key.startsWith('Arrow')) {
+            e.preventDefault();
             onKeyboardNavigation(e);
         }
     }

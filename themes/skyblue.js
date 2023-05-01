@@ -37,7 +37,7 @@ module.exports = {
         500: primary.toString(),
         600: primary.lighten(0.2).toString(),
         700: primary.lighten(0.35).toString(),
-        transparent: primary.alpha(0.5).toString(),
+        transparent: primary.alpha(0.35).toString(),
         text: '#fff',
     },
     secondary: {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useResizeObserver } from 'ui/hooks/useResizeObserver';
-import { debounce } from 'ui/utils/debounce';
+import { debounce } from 'ui/utils/functions';
 
 interface Size {
     width: number;
