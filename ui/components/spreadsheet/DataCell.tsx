@@ -2,11 +2,27 @@ import { KeyboardEvent, MouseEvent } from 'react';
 import { GridChildComponentProps } from 'react-window';
 import classnames from 'classnames';
 import type { CellProps } from './Cell';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 
 const isBetween = (value: number, start: number, end: number) => value >= Math.min(start, end) && value <= Math.max(start, end);
 
 export function DataCell({ rowIndex, columnIndex, data, style }: GridChildComponentProps<CellProps>) {
-    const { rows, columns, onCellClick, onKeyboardNavigation, rangeStart, rangeEnd } = data;
+    const dndData = {
+        row: rowIndex,
+        column: columnIndex,
+    };
+
+    const { setNodeRef: createDroppableRef } = useDroppable({
+        id: `drop-${rowIndex}-${columnIndex}`,
+        data: dndData,
+    });
+
+    const { attributes, listeners, setNodeRef: createDraggableRef } = useDraggable({
+        id: `cell-${rowIndex}-${columnIndex}`,
+        data: dndData,
+    });
+
+    const { rows, columns, onKeyboardNavigation, rangeStart, rangeEnd } = data;
     const column = columns[columnIndex - 1].name;
 
     const isRowActive = rangeStart && rangeEnd && isBetween(rowIndex, rangeStart.row, rangeEnd.row);
@@ -21,20 +37,26 @@ export function DataCell({ rowIndex, columnIndex, data, style }: GridChildCompon
         'bg-surface-500 border-br': !isActive,
     });
 
+    if (listeners) {
+        delete listeners.onKeyDown;
+    }
+
     return (
         <div
-            className={cellClass} style={style} tabIndex={0}
+            ref={ref => {
+                createDraggableRef(ref);
+                createDroppableRef(ref);
+            }}
+            className={cellClass} style={style}
             data-row={rowIndex}
             data-col={columnIndex}
-            onKeyDown={handleKeyDown} onClick={onClick}
+            onKeyDown={handleKeyDown}
+            {...attributes}
+            {...listeners}
         >
             {String(rows[rowIndex - 1][column])}
         </div>
     );
-
-    function onClick(e: MouseEvent) {
-        onCellClick(e, rowIndex, columnIndex);
-    }
 
     function handleKeyDown(e: KeyboardEvent) {
         e.preventDefault();

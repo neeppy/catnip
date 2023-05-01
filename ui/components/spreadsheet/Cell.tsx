@@ -1,4 +1,4 @@
-import { KeyboardEvent, MouseEvent } from 'react';
+import { KeyboardEvent } from 'react';
 import type { GridChildComponentProps } from 'react-window';
 import type { GridProps, RangePoint } from './DynamicGrid';
 import { RowHeader } from './RowHeader';
@@ -8,7 +8,6 @@ import { DataCell } from './DataCell';
 export interface CellProps extends GridProps {
     rangeStart: RangePoint | null;
     rangeEnd: RangePoint | null;
-    onCellClick: (event: MouseEvent, row: number, col: number) => void;
     onKeyboardNavigation: (event: KeyboardEvent) => void;
 }
 
