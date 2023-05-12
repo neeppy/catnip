@@ -8,6 +8,7 @@ const text = color('#dfe0e0ff');
 
 module.exports = {
     transparent: {
+        200: '#fff3',
         300: '#fff2',
         400: '#fff1',
         500: '#fff0',
@@ -35,8 +36,8 @@ module.exports = {
         300: primary.darken(0.35).toString(),
         400: primary.darken(0.2).toString(),
         500: primary.toString(),
-        600: primary.lighten(0.2).toString(),
-        700: primary.lighten(0.35).toString(),
+        600: primary.lighten(0.1).toString(),
+        700: primary.lighten(0.15).toString(),
         transparent: primary.alpha(0.5).toString(),
         text: text.toString(),
     },

@@ -8,7 +8,7 @@ const getSSHFields = (name: string, register: UseFormReturn['register']) => (
             {...register(`${name}.hostname`)}
             label="Hostname"
             placeholder="example.com"
-            containerClassName="col-span-3"
+            className="col-span-3"
         />
         <Input
             {...register(`${name}.port`)}
@@ -18,13 +18,13 @@ const getSSHFields = (name: string, register: UseFormReturn['register']) => (
         <Input
             {...register(`${name}.username`)}
             label="Username"
-            containerClassName="col-span-2"
+            className="col-span-2"
         />
         <Input
             {...register(`${name}.password`)}
             label="Password"
             type="password"
-            containerClassName="col-span-2"
+            className="col-span-2"
             selectOnFocus
         />
     </>

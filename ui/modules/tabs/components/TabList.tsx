@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useQuery } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
 import { AllConnections, ConnectionDriver } from 'common/models/Connection';
-import { Button, Dropdown } from '$components';
+import { Button, DropdownActions } from '$components';
 import { AnyTab, createEmptyTableView, getConnectionTabs, newTabContextMenuConfig, resumeTabActivity, TabHeader, useTabActivity } from '$module:tabs';
 import { isMultiDatabaseConnection, useConnections } from '$module:connections';
 import { TAB_CONTEXT_MENU } from '$module:globals';
@@ -60,7 +60,7 @@ export function TabList() {
                 />
             )) ?? []}
             {connection && (
-                <Dropdown options={newTabContextMenuConfig} dropdownData={newTabProps} trigger={(
+                <DropdownActions options={newTabContextMenuConfig} dropdownData={newTabProps} trigger={(
                     <Button size="sm" shape="square" className="self-center rounded-md text-xs" onClick={onNewTab}>
                         <FaPlus/>
                     </Button>

@@ -1,8 +1,9 @@
 import { MouseEvent, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
+import { SiMysql, SiSqlite } from 'react-icons/si';
 import { FaPlus } from 'react-icons/fa';
-import { AnyConnection } from 'common/models/Connection';
+import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
 import { Button } from '$components';
 import { randomColor } from 'ui/utils/random';
 import { createEmptyTableView, getConnectionTabs, resumeTabActivity } from '$module:tabs';
@@ -11,6 +12,16 @@ import { useConnections } from '../state';
 import ConnectionForm, { fetchConnections } from '../form';
 import storage from '$storage';
 import { useAtomValue } from 'jotai';
+import { DropdownMenu } from 'ui/components/DropdownMenu';
+
+const driverOptions = [
+    {
+        key: ConnectionDriver.MySQL,
+        label: 'MySQL',
+        icon: SiMysql,
+        onClick: () => null
+    }
+];
 
 export function Connections() {
     const theme = useAtomValue(themeState);
@@ -48,9 +59,11 @@ export function Connections() {
                         </Button>
                     ))}
                 </div>
-                <Button size="sm" shape="square" className="ml-auto font-bold" onClick={openModalForm}>
-                    <FaPlus/>
-                </Button>
+                <DropdownMenu
+                    label={<FaPlus />}
+                    triggerProps={{ size: 'sm' }}
+                    options={driverOptions}
+                />
             </footer>
         </>
     );

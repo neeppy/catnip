@@ -1,82 +1,99 @@
-import { cloneElement, ElementType, MouseEvent, ReactElement, useId } from 'react';
-import { Item, ItemParams, Menu, Separator, Submenu, useContextMenu } from 'react-contexify';
+import { Fragment, PropsWithChildren, ReactElement, useRef, useState } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import { equals } from 'ramda';
+import classNames from 'classnames';
+import { Input } from './Input';
 
-type Separator = 'separator';
+type StringKeys<T> = { [K in keyof T]-?: T[K] extends string ? K : never }[keyof T];
 
-interface Option<T = any> {
-    key: string;
-    icon?: ElementType,
-    label: string;
+export interface DropdownProps<T> {
+    uniqueKey: StringKeys<T>;
+    labelKey: StringKeys<T>;
+    options: T[];
     value?: T;
-    onClick: (params: ItemParams, value?: T) => void;
+    hideSearch?: boolean;
+    labelSearch?: string;
+    placeholderSearch?: string;
+    renderOption?: (option: T) => ReactElement | null;
+    onChange?: (value: T) => void;
 }
 
-interface Submenu<T = any> {
-    key: string;
-    icon?: ElementType,
-    label: string;
-    options: Array<Option<T> | Separator | Submenu<T>>;
-}
+export function Dropdown<T>({
+    uniqueKey,
+    labelKey,
+    options,
+    value,
+    onChange,
+    hideSearch,
+    labelSearch = 'Search',
+    placeholderSearch = 'Type to search...',
+    renderOption,
+    children
+}: PropsWithChildren<DropdownProps<T>>) {
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [filterBy, setFilter] = useState('');
 
-export type OptionType<T = any> = Option<T> | Separator | Submenu<T>;
-
-interface OwnProps {
-    id?: string;
-    label?: string;
-    dropdownData?: any;
-    trigger: ReactElement;
-    options?: OptionType[];
-}
-
-export function Dropdown({
-    id,
-    label,
-    dropdownData,
-    trigger: rawTrigger,
-    options = []
-}: OwnProps) {
-    const defaultId = useId();
-    const menuId = useId();
-    const { show } = useContextMenu({ id: menuId });
-
-    const onClick = (event: MouseEvent) => show({ event, props: dropdownData });
-
-    const trigger = cloneElement(rawTrigger, { onClick });
+    const filteredOptions = filterBy ? options.filter(option => String(option[labelKey]).toLowerCase().includes(filterBy.toLowerCase())) : options;
 
     return (
-        <>
-            {label && <label htmlFor={id ?? defaultId}>{label}</label>}
-            {trigger}
-            <Menu theme="dark" id={menuId} animation="scale">
-                {options.map(renderOption)}
-            </Menu>
-        </>
+        <Listbox value={value} onChange={onChange} by={equals}>
+            <div className="relative">
+                {children}
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-300"
+                    enterFrom="opacity-0 -translate-y-2"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-out duration-300"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 -translate-y-2"
+                >
+                    <Listbox.Options className="absolute top-100% mt-2 p-4 bg-surface-300/80 border border-surface-700 shadow-lg backdrop-blur-sm overflow-hidden flex flex-col max-h-[24rem] w-[20rem] z-[2000] rounded-xl">
+                        {({ open }) => {
+                            if (open && !hideSearch && inputRef.current) {
+                                inputRef.current.focus();
+                            }
+
+                            return (
+                                <>
+                                    {!hideSearch && (
+                                        <div className="pt-2 pb-6">
+                                            <Input
+                                                ref={inputRef}
+                                                size="sm"
+                                                value={filterBy} onChange={e => setFilter(e.target.value)}
+                                                label={labelSearch}
+                                                placeholder={placeholderSearch}
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="overflow-auto">
+                                        {filteredOptions.length === 0 && (
+                                            <div className="text-center">
+                                                No results matching your filter.
+                                            </div>
+                                        )}
+                                        {filteredOptions.map(option => (
+                                            <Listbox.Option
+                                                key={option[uniqueKey] as string}
+                                                className={({ active, selected }) => classNames('px-2 py-3 text-sm rounded-md cursor-pointer truncate', {
+                                                    'bg-primary-500/50': active,
+                                                    'bg-primary-500/75 shadow-lg': selected,
+                                                })}
+                                                value={option}
+                                            >
+                                                {renderOption?.(option) || option[labelKey] as string}
+                                            </Listbox.Option>
+                                        ))}
+                                    </div>
+                                </>
+                            );
+                        }}
+                    </Listbox.Options>
+                </Transition>
+            </div>
+        </Listbox>
     );
 }
 
-const renderLabel = (option: Option | Submenu) => (
-    <span className="inline-flex gap-3 items-center">
-        {option.icon && <option.icon />}
-        {option.label}
-    </span>
-);
-
-const renderOption = (option: OptionType, idx: number): ReactElement => {
-    if (option === 'separator') {
-        return <Separator key={idx} />;
-    }
-
-    if ('options' in option) {
-        return (
-            <Submenu key={option.key} label={renderLabel(option)}>
-                {option.options.map(renderOption)}
-            </Submenu>
-        );
-    }
-
-    return (
-        <Item key={option.key} onClick={params => option.onClick(params, option.value)}>
-            {renderLabel(option)}
-        </Item>
-    );
-};
+Dropdown.Trigger = Listbox.Button;

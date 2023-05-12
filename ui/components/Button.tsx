@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, PropsWithChildren } from 'react';
+import { ComponentProps, forwardRef, PropsWithChildren } from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 
 const intentSchemeCompound = (intent: any, scheme: any, className: string) => ({ intent, scheme, className });
@@ -13,7 +13,7 @@ const getButtonClassName = cva('transition-colors duration-200 select-none curso
             custom: null,
             primary: null,
             secondary: null,
-            transparent: 'bg-transparent-500 hover:bg-transparent-400 active:bg-transparent-300 text-transparent-text'
+            transparent: 'bg-transparent-500 hover:bg-transparent-400 focus:bg-transparent-400 active:bg-transparent-300 text-transparent-text'
         },
         shape: {
             flat: 'rounded-none',
@@ -30,10 +30,10 @@ const getButtonClassName = cva('transition-colors duration-200 select-none curso
         }
     },
     compoundVariants: [
-        intentSchemeCompound('solid', 'primary', 'bg-primary-500 hover:bg-primary-400 active:bg-primary-300 text-primary-text'),
-        intentSchemeCompound('solid', 'secondary', 'bg-secondary-500 hover:bg-secondary-400 active:bg-secondary-300 text-secondary-text'),
-        intentSchemeCompound('ghost', 'primary', 'border bg-transparent border-primary-500 hover:bg-primary-500 text-primary-text'),
-        intentSchemeCompound('ghost', 'secondary', 'border bg-transparent border-secondary-500 hover:bg-secondary-500 text-secondary-text')
+        intentSchemeCompound('solid', 'primary', 'bg-primary-500 hover:bg-primary-400 focus:bg-primary-400 active:bg-primary-300 text-primary-text'),
+        intentSchemeCompound('solid', 'secondary', 'bg-secondary-500 hover:bg-secondary-400 focus:bg-secondary-400 active:bg-secondary-300 text-secondary-text'),
+        intentSchemeCompound('ghost', 'primary', 'border bg-transparent border-primary-500 hover:bg-primary-500 focus:bg-primary-500 text-primary-text'),
+        intentSchemeCompound('ghost', 'secondary', 'border bg-transparent border-secondary-500 hover:bg-secondary-500 focus:bg-primary-500 text-secondary-text')
     ],
     defaultVariants: {
         intent: 'solid',
@@ -43,7 +43,7 @@ const getButtonClassName = cva('transition-colors duration-200 select-none curso
     }
 });
 
-interface OwnProps extends VariantProps<typeof getButtonClassName>, HTMLAttributes<HTMLButtonElement> {
+interface OwnProps extends VariantProps<typeof getButtonClassName>, ComponentProps<'button'> {
     className?: string;
 }
 

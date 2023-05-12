@@ -4,6 +4,7 @@ import { themeState } from '$module:globals';
 import { Header } from './Header';
 import { MainScreen } from './MainScreen';
 import { useEffect } from 'react';
+import { Input } from '$components';
 
 export const App = () => {
     const [theme, setTheme] = useAtom(themeState);

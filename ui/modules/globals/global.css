@@ -12,6 +12,34 @@
         -moz-osx-font-smoothing: grayscale;
     }
 
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-button {
+        display: none;
+    }
+
+    ::-webkit-scrollbar-corner {
+        display: none;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: theme(colors.transparent-400);
+        @apply rounded-md;
+    }
+
+    ::-webkit-scrollbar-thumb  {
+        transition: background 200ms;
+        background: theme(colors.transparent-300);
+        @apply rounded-md;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: theme(colors.transparent-200);
+    }
+
     code { font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; }
 
     #title-bar { -webkit-app-region: drag; }
@@ -24,4 +52,5 @@
 @layer utilities {
     .flex-center { @apply flex items-center justify-center; }
     .border-br { @apply border-b border-r; }
+    .fatten { scale: 2 1; };
 }

@@ -2,7 +2,7 @@ import { AnyConnection } from './Connection';
 import { DatabaseColumn, DatabaseRow, QueryResult } from './Database';
 
 export interface Interop {
-    platform: string;
+    platform: 'win32' | 'darwin';
     control: {
         close: () => unknown;
         minimize: () => unknown;

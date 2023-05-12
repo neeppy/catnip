@@ -11,16 +11,16 @@ export function ConnectionDetailsSection() {
                 Connection Details
             </SectionTitle>
             <div className="grid grid-cols-4 gap-5 p-6">
-                <Input label="Hostname" containerClassName="col-span-3" {...register('hostname')} />
+                <Input label="Hostname" className="col-span-3" {...register('hostname')} />
                 <Input label="Port" placeholder="3306" {...register('port')} />
             </div>
             <SectionTitle className="mt-5">
                 Database Parameters
             </SectionTitle>
             <div className="grid grid-cols-4 gap-5 p-6">
-                <Input label="Database Name" containerClassName="col-span-4" {...register('databaseName')} />
-                <Input label="Username" containerClassName="col-span-2" {...register('username')} />
-                <Input label="Password" type="password" containerClassName="col-span-2" {...register('password')} selectOnFocus />
+                <Input label="Database Name" className="col-span-4" {...register('databaseName')} />
+                <Input label="Username" className="col-span-2" {...register('username')} />
+                <Input label="Password" type="password" className="col-span-2" {...register('password')} selectOnFocus />
             </div>
         </div>
     );

@@ -8,6 +8,7 @@ const text = color('#363636ee');
 
 module.exports = {
     transparent: {
+        200: '#0003',
         300: '#0002',
         400: '#0001',
         500: '#0000',

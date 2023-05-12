@@ -1,12 +1,11 @@
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
-import { Button, Input, Select, Tabs, Typography } from '$components';
+import { Button, Input, Tabs, Typography } from '$components';
 import { insertConnection, updateConnection } from './queries';
 import { useAtom } from 'jotai';
 import { appModeState } from '$module:globals';
 import { getMySQLTabsConfig } from './config/mysql.tabs.config';
 import { getSQLiteTabs } from './config/sqlite.tabs.config';
-import enum2opt from 'ui/utils/enum2opt';
 
 interface OwnProps {
     initialValues?: AnyConnection;
@@ -38,18 +37,7 @@ export const ConnectionForm = ({ initialValues }: OwnProps) => {
                         Add connection
                     </Typography>
                     <div className="grid grid-cols-4 gap-5 p-6">
-                        <Input label="Connection Name" containerClassName="col-span-2" {...form.register('name')} />
-                        <Controller
-                            name="driver"
-                            render={({ field }) => (
-                                <Select
-                                    label="Driver"
-                                    containerClassName="col-span-2"
-                                    options={enum2opt(ConnectionDriver)}
-                                    {...field}
-                                />
-                            )}
-                        />
+                        <Input label="Connection Name" className="col-span-2" {...form.register('name')} />
                     </div>
                     <div className="px-6">
                         <Tabs key={driver} layout="horizontal" tabs={tabs} />

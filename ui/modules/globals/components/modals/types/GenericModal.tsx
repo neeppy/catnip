@@ -1,7 +1,9 @@
-import { Modal } from '$module:globals';
-import classnames from 'classnames';
-import { useModalAnimationState } from 'ui/hooks';
+import { Dialog } from '@headlessui/react';
 import { VscChromeClose } from 'react-icons/vsc';
+import classnames from 'classnames';
+import { Modal } from '$module:globals';
+import { useModalAnimationState } from 'ui/hooks';
+import { Button } from '$components';
 
 interface OwnProps {
     modal: Modal;
@@ -29,16 +31,16 @@ export default function GenericModal({ modal }: OwnProps) {
     } = modal.settings;
 
     return (
-        <div key={modal.key} role="dialog" className={modalClassName}>
-            <div className="absolute inset-0 bg-[#000a] z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
+        <Dialog open onClose={handleAnimatedClose} key={modal.key} role="dialog" className={modalClassName}>
+            <Dialog.Overlay className="absolute inset-0 bg-[#000a] z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
             <div className={contentContainerClassName}>
                 {showCloseButton && (
-                    <button className="absolute top-2 right-2" onClick={handleAnimatedClose}>
+                    <Button scheme="transparent" className="absolute top-2 right-2" onClick={handleAnimatedClose}>
                         <VscChromeClose/>
-                    </button>
+                    </Button>
                 )}
                 <Component {...modal.props} close={handleAnimatedClose} />
             </div>
-        </div>
+        </Dialog>
     );
 }

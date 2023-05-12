@@ -12,7 +12,7 @@ export const ConnectionDetailsSection = () => {
                 Connection Details
             </SectionTitle>
             <div className="grid grid-cols-4 gap-5 p-6 items-end">
-                <Input label="SQLite File Path" containerClassName="col-span-3" {...register('path')} />
+                <Input label="SQLite File Path" className="col-span-3" {...register('path')} />
                 <Button size="md" scheme="transparent" onClick={browseFileSystem}>
                     Browse...
                 </Button>

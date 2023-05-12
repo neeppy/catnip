@@ -3,27 +3,25 @@ import { DropdownSelect } from '$components';
 import { useQuery } from '@tanstack/react-query';
 import { FaChevronRight } from 'react-icons/fa';
 import { appModeState } from '$module:globals';
-import { isMultiDatabaseConnection, useConnections } from '$module:connections';
+import { useConnections } from '$module:connections';
 import { getDatabaseList, getTablesList } from '../queries';
 import { TableView, updateTabs, useTabActivity } from '$module:tabs';
+import { Select } from 'ui/components/Select';
 
 export default function Breadcrumbs(tab: TableView) {
     const [isAdvanced] = useAtom(appModeState);
     const connection = useConnections(state => state.currentActiveConnection!);
     const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
 
-    const isMultiDatabase = isMultiDatabaseConnection(connection);
-
     const { data: databases } = useQuery<string[]>({
         queryKey: ['databases', connection.id, isAdvanced],
         queryFn: () => getDatabaseList(connection.id, isAdvanced),
-        enabled: isMultiDatabase
     });
 
     const { data: tables } = useQuery<string[]>({
         queryKey: ['tables', connection.id, tab.currentDatabase],
-        queryFn: () => getTablesList(connection.id, tab.currentDatabase as string, isMultiDatabase),
-        enabled: Boolean(tab.currentDatabase) || !isMultiDatabase
+        queryFn: () => getTablesList(connection.id, tab.currentDatabase as string),
+        enabled: Boolean(tab.currentDatabase)
     });
 
     const databaseOptions = databases?.map(dbName => ({
@@ -54,19 +52,36 @@ export default function Breadcrumbs(tab: TableView) {
         updateCurrentTab(updatedTab);
     }
 
+    const initialTable = tableOptions.find(option => option.value === tab.currentTable);
+    const initialDatabase = databaseOptions.find(option => option.value === tab.currentDatabase);
+
     return (
         <div className="inline-flex items-center gap-2 p-2 rounded-br-2xl">
             <div className="px-4">
                 {connection.name}
             </div>
-            {isMultiDatabase && (
+            {databaseOptions.length > 0 && (
                 <>
-                    <FaChevronRight/>
-                    <DropdownSelect initialValue={tab.currentDatabase} placeholder="Choose a database" options={databaseOptions} onChange={onDatabaseChange}/>
+                    <FaChevronRight />
+                    <Select
+                        initialValue={initialDatabase}
+                        labelKey="label"
+                        options={databaseOptions ?? []}
+                        onChange={({ value }) => onDatabaseChange(value)}
+                    />
                 </>
             )}
-            <FaChevronRight/>
-            <DropdownSelect initialValue={tab.currentTable} placeholder="Choose a table" options={tableOptions ?? []} onChange={onTableChange}/>
+            {tableOptions.length > 0 && (
+                <>
+                    <FaChevronRight />
+                    <Select
+                        initialValue={initialTable}
+                        labelKey="label"
+                        options={tableOptions ?? []}
+                        onChange={({ value }) => onTableChange(value)}
+                    />
+                </>
+            )}
         </div>
     );
 }
