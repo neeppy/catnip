@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
-import { FaPlus } from 'react-icons/fa';
 import classnames from 'classnames';
 import { useQuery } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
 import { AllConnections, ConnectionDriver } from 'common/models/Connection';
-import { Button, DropdownActions } from '$components';
-import { AnyTab, createEmptyTableView, getConnectionTabs, newTabContextMenuConfig, resumeTabActivity, TabHeader, useTabActivity } from '$module:tabs';
+import { AnyTab, getConnectionTabs, newTabContextMenuConfig, resumeTabActivity, TabHeader, useTabActivity } from '$module:tabs';
 import { isMultiDatabaseConnection, useConnections } from '$module:connections';
 import { TAB_CONTEXT_MENU } from '$module:globals';
+import { FaPlus } from '$components/icons';
+import { DropdownMenu } from '$components';
 
 const DB_NAME_FIELDS: Record<ConnectionDriver, keyof AllConnections> = {
     [ConnectionDriver.MySQL]: 'databaseName',
@@ -60,24 +60,17 @@ export function TabList() {
                 />
             )) ?? []}
             {connection && (
-                <DropdownActions options={newTabContextMenuConfig} dropdownData={newTabProps} trigger={(
-                    <Button size="sm" shape="square" className="self-center rounded-md text-xs" onClick={onNewTab}>
-                        <FaPlus/>
-                    </Button>
-                )}/>
+                <DropdownMenu
+                    className="self-center"
+                    label={<FaPlus />}
+                    triggerProps={{ size: 'sm' }}
+                    options={newTabContextMenuConfig(newTabProps)}
+                />
             )}
         </div>
     );
 
     function setActiveTab(tab: AnyTab) {
-        setCurrentTab(tab);
-    }
-
-    async function onNewTab() {
-        if (!connection) return;
-
-        const tab = await createEmptyTableView(connection.id);
-
         setCurrentTab(tab);
     }
 }

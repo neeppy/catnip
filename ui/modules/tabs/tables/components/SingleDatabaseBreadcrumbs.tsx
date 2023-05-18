@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { FaChevronRight } from 'react-icons/fa';
-import { DropdownSelect } from '$components';
+import { FaChevronRight } from '$components/icons';
+import { Select } from '$components';
 import { useConnections } from '$module:connections';
-import { TableView, updateTabs, useTabActivity } from '$module:tabs';
+import { TableView, updateTab } from '$module:tabs';
 import { getTablesList } from '../queries';
 
 export default function SingleDatabaseBreadcrumbs(tab: TableView) {
     const connection = useConnections(state => state.currentActiveConnection!);
-    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
 
     const { data: tables } = useQuery<string[]>({
         queryKey: ['tables', tab.connectionId],
@@ -22,9 +21,10 @@ export default function SingleDatabaseBreadcrumbs(tab: TableView) {
     async function onTableChange(table: string) {
         const updatedTab = { ...tab, currentTable: table };
 
-        await updateTabs([updatedTab]);
-        updateCurrentTab(updatedTab);
+        await updateTab(updatedTab);
     }
+
+    const initialTable = tableOptions.find(option => option.value === tab.currentTable);
 
     return (
         <div className="inline-flex items-center gap-2 p-2 rounded-br-2xl">
@@ -32,7 +32,13 @@ export default function SingleDatabaseBreadcrumbs(tab: TableView) {
                 {connection.name}
             </div>
             <FaChevronRight/>
-            <DropdownSelect initialValue={tab.currentTable} placeholder="Choose a table" options={tableOptions ?? []} onChange={onTableChange}/>
+            <Select
+                uniqueKey="value"
+                initialValue={initialTable}
+                labelKey="label"
+                options={tableOptions ?? []}
+                onChange={({ value }) => onTableChange(value)}
+            />
         </div>
     );
 }

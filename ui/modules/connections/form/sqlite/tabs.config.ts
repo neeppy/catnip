@@ -1,6 +1,6 @@
-import { ConnectionDetailsSection } from '../sections/sqlite';
+import { ConnectionDetailsSection } from './tabs/ConnectionDetailsSection';
 
-export function getSQLiteTabs(isAdvanced: boolean) {
+export default function getFormTabs(isAdvanced: boolean) {
     return [
         {
             key: 'connection',

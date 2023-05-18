@@ -4,11 +4,9 @@ export * from './utils';
 export * from './list/ConnectionContextMenu';
 
 import { Connections as ConnectionsList } from './list/Connections';
-import { ConnectionForm } from './form/ConnectionForm';
 
 const Connections = {
-    List: ConnectionsList,
-    Form: ConnectionForm
+    List: ConnectionsList
 };
 
 export default Connections;

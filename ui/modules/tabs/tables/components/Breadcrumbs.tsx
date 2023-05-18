@@ -1,17 +1,15 @@
 import { useAtom } from 'jotai';
-import { DropdownSelect } from '$components';
 import { useQuery } from '@tanstack/react-query';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight } from '$components/icons';
 import { appModeState } from '$module:globals';
 import { useConnections } from '$module:connections';
 import { getDatabaseList, getTablesList } from '../queries';
-import { TableView, updateTabs, useTabActivity } from '$module:tabs';
+import { TableView, updateTab } from '$module:tabs';
 import { Select } from 'ui/components/Select';
 
 export default function Breadcrumbs(tab: TableView) {
     const [isAdvanced] = useAtom(appModeState);
     const connection = useConnections(state => state.currentActiveConnection!);
-    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
 
     const { data: databases } = useQuery<string[]>({
         queryKey: ['databases', connection.id, isAdvanced],
@@ -41,15 +39,13 @@ export default function Breadcrumbs(tab: TableView) {
             currentTable: null
         };
 
-        await updateTabs([updatedTab]);
-        updateCurrentTab(updatedTab);
+        await updateTab(updatedTab);
     }
 
     async function onTableChange(table: string) {
         const updatedTab = { ...tab, currentTable: table };
 
-        await updateTabs([updatedTab]);
-        updateCurrentTab(updatedTab);
+        await updateTab(updatedTab);
     }
 
     const initialTable = tableOptions.find(option => option.value === tab.currentTable);
@@ -64,6 +60,7 @@ export default function Breadcrumbs(tab: TableView) {
                 <>
                     <FaChevronRight />
                     <Select
+                        uniqueKey="value"
                         initialValue={initialDatabase}
                         labelKey="label"
                         options={databaseOptions ?? []}
@@ -75,6 +72,7 @@ export default function Breadcrumbs(tab: TableView) {
                 <>
                     <FaChevronRight />
                     <Select
+                        uniqueKey="value"
                         initialValue={initialTable}
                         labelKey="label"
                         options={tableOptions ?? []}

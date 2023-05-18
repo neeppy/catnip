@@ -1,6 +1,5 @@
-import { BiCommand } from 'react-icons/bi';
-import { BsShift } from 'react-icons/bs';
 import { KeyCombo } from '$components';
+import { BsShift, BiCommand } from '$components/icons';
 
 type Platform = 'win32' | 'darwin';
 

@@ -2,14 +2,12 @@ import * as monaco from 'monaco-editor';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import classnames from 'classnames';
-import { FaDatabase, FaPlay } from 'react-icons/fa';
-import { ConnectionDriver } from 'common/models/Connection';
-import { Button, DropdownSelect, DynamicGrid, Editor } from '$components';
+import { FaDatabase, FaPlay } from '$components/icons';
+import { Button, DynamicGrid, Editor, Select } from '$components';
 import { useBoolean } from 'ui/hooks';
 import { appModeState } from '$module:globals';
-import { useConnections } from '$module:connections';
 import { getDatabaseList } from '$module:tabs/tables';
-import { EditorView, updateTabs, useTabActivity } from '$module:tabs';
+import { EditorView, updateTab } from '$module:tabs';
 import { runUserQuery } from '../queries';
 import { getCurrentQueries } from '../utils';
 import { EditorCommands } from './EditorCommands';
@@ -21,15 +19,13 @@ interface IMutationData {
 }
 
 export function EditorViewTab(tab: EditorView) {
-    const connection = useConnections(state => state.currentActiveConnection!);
     const [isAdvanced] = useAtom(appModeState);
-    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
     const { boolean: isEditorFocused, on, off } = useBoolean(true);
 
     const { data: databases } = useQuery<string[]>(['databases', tab.connectionId, isAdvanced], () => getDatabaseList(tab.connectionId, isAdvanced));
     const { data: queryResult, ...mutation } = useMutation({
         mutationKey: ['query', tab.connectionId, tab.currentDatabase, tab.currentQuery],
-        mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query, data.database),
+        mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query, data.database)
     });
 
     const editorClasses = classnames('transition-all duration-200 relative shadow-right', {
@@ -39,19 +35,23 @@ export function EditorViewTab(tab: EditorView) {
 
     const dbOptions = databases?.map(db => ({
         label: db,
-        value: db,
+        value: db
     })) ?? [];
+
+    const initialDatabase = dbOptions.find(option => option.value === tab.currentDatabase);
 
     return (
         <div className="flex flex-col bg-surface-400 w-full h-full">
             <div className="flex items-center gap-2 p-2 text-foreground-default bg-surface-500 shadow-xl z-10">
-                {connection.driver !== ConnectionDriver.SQLite && (
+                {dbOptions.length > 0 && (
                     <div className="flex items-center gap-2">
                         <FaDatabase/>
-                        <DropdownSelect
-                            placeholder="Choose a database"
-                            initialValue={tab.currentDatabase}
-                            options={dbOptions}
+                        <Select
+                            uniqueKey="value"
+                            initialValue={initialDatabase}
+                            labelKey="label"
+                            options={dbOptions ?? []}
+                            onChange={({ value }) => onDatabaseChange(value)}
                         />
                     </div>
                 )}
@@ -80,6 +80,10 @@ export function EditorViewTab(tab: EditorView) {
         </div>
     );
 
+    async function onDatabaseChange(database: string) {
+        await updateTab({ ...tab, currentDatabase: database });
+    }
+
     async function handleSubmitByButton() {
         const [activeEditor] = monaco.editor.getEditors();
 
@@ -89,15 +93,7 @@ export function EditorViewTab(tab: EditorView) {
     async function handleSave(query: string) {
         if (query === tab.currentQuery) return;
 
-        updateCurrentTab({
-            ...tab,
-            currentQuery: query
-        });
-
-        await updateTabs([{
-            ...tab,
-            currentQuery: query
-        }]);
+        await updateTab({ ...tab, currentQuery: query });
     }
 
     async function handlePartialSubmit(query: string, selection: monaco.Selection | null) {
@@ -108,7 +104,7 @@ export function EditorViewTab(tab: EditorView) {
         mutation.mutate({
             connectionId: tab.connectionId,
             database: tab.currentDatabase,
-            query: queriesToExecute[0],
+            query: queriesToExecute[0]
         });
 
         await handleSave(query);

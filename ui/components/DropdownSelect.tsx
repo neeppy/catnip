@@ -3,12 +3,14 @@ import { cva } from 'class-variance-authority';
 import { Combobox } from '@headlessui/react';
 import classnames from 'classnames';
 import { Button } from './Button';
-import { IOption } from './Select';
 
 interface OwnProps {
     placeholder?: string;
     initialValue?: string | null;
-    options: IOption[];
+    options: {
+        label: string;
+        value: string;
+    }[];
     onChange?: (value: string) => void;
     format?: (value: string) => string;
 }

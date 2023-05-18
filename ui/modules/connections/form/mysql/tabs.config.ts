@@ -1,10 +1,12 @@
-import { ConnectionDetailsSection, SSHTunnelSection } from '$module:connections/form/sections/mysql';
+import { ConnectionDetailsSection } from './tabs/ConnectionDetailsSection';
+import { SSHTunnelSection } from './tabs/SSHTunnelSection';
 
-export function getMySQLTabsConfig(isAdvanced: boolean) {
+export default function getFormTabs(isAdvanced: boolean) {
     const config = [
         {
             key: 'connection',
             label: 'Connection',
+            collapsedWidth: 100,
             component: ConnectionDetailsSection,
         },
     ];
@@ -13,6 +15,7 @@ export function getMySQLTabsConfig(isAdvanced: boolean) {
         config.push({
             key: 'ssh',
             label: 'SSH Tunneling',
+            collapsedWidth: 140,
             component: SSHTunnelSection,
         });
     }

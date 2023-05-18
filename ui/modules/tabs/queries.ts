@@ -59,11 +59,10 @@ export async function createEditorViewFromQuery(connectionId: string, query: str
     return tab;
 }
 
-export async function updateTabs(tabs: AnyTab[]) {
-    if (tabs.length === 0) return;
-
-    return storage.tabs.bulkPut(tabs)
-        .then(() => client.refetchQueries(['tabs', tabs[0].connectionId]));
+export async function updateTab(tab: AnyTab) {
+    return storage.tabs.bulkPut([tab])
+        .then(() => client.refetchQueries(['tabs', tab.connectionId]))
+        .then(() => useTabActivity.getState().updateCurrentTabDetails(tab));
 }
 
 export async function resumeTabActivity(connectionId: string) {

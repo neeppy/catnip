@@ -1,6 +1,6 @@
 import { BooleanPredicate, Item, Menu, Separator, Submenu } from 'react-contexify';
 import { useQuery } from '@tanstack/react-query';
-import { FaTable, FaTerminal } from 'react-icons/fa';
+import { FaTable, FaTerminal } from '$components/icons';
 import { TAB_CONTEXT_MENU } from '$module:globals';
 import { fetchConnections } from '$module:connections/form';
 import { AnyTab } from '$module:tabs';

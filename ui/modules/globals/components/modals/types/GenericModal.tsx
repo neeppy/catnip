@@ -1,8 +1,8 @@
 import { Dialog } from '@headlessui/react';
-import { VscChromeClose } from 'react-icons/vsc';
 import classnames from 'classnames';
 import { Modal } from '$module:globals';
 import { useModalAnimationState } from 'ui/hooks';
+import { VscChromeClose } from '$components/icons';
 import { Button } from '$components';
 
 interface OwnProps {
@@ -20,7 +20,7 @@ export default function GenericModal({ modal }: OwnProps) {
         'animate-fade-out': state === 'closing'
     });
 
-    const contentContainerClassName = classnames('relative text-foreground-default max-h-[80%] overflow-y-auto', {
+    const contentContainerClassName = classnames('relative text-foreground-default max-h-[80%]', {
         'animate-scale-in': state === 'opening',
         'animate-scale-out': state === 'closing'
     });

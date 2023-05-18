@@ -24,7 +24,7 @@ export const getInputClassName = cva([
 });
 
 export const getLabelClassName = cva([
-    'absolute transition-all duration-200',
+    'absolute transition-all duration-200 select-none cursor-text',
     'text-foreground-subtlest peer-hover:text-foreground-subtle peer-focus:text-foreground-default',
 ], {
     variants: {

@@ -5,7 +5,7 @@ interface ConstantProps {
     value: string | number;
 }
 
-export function Constant({ name, value }: ConstantProps) {
+export function Constant$({ name, value }: ConstantProps) {
     const form = useFormContext();
 
     return (

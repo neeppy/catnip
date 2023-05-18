@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc';
+import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from '$components/icons';
 import { Button } from '$components';
 import { appModeState } from '$module:globals';
 import { TabList } from '$module:tabs';

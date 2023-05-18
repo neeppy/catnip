@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
-import { FaChevronLeft } from 'react-icons/fa';
-import { Disclosure, Transition } from '@headlessui/react';
 import classnames from 'classnames';
+import { Disclosure, Transition } from '@headlessui/react';
+import { FaChevronLeft } from '$components/icons';
 
 interface OwnProps {
     title: string;
@@ -10,16 +10,16 @@ interface OwnProps {
 
 export function Collapse({ title, children, className }: PropsWithChildren<OwnProps>) {
     const buttonClass = classnames(className, [
-        'flex items-center w-full px-4 py-2',
+        'flex items-center px-4 py-2',
         'transition-all duration-200 select-none cursor-pointer rounded-md shadow-lg',
         'bg-surface-500 hover:bg-surface-600 active:bg-surface-700',
         'text-foreground-subtlest hover:text-foreground-subtle active:text-foreground-default text-sm',
     ]);
 
     return (
-        <Disclosure as="div" className="w-full">
+        <Disclosure as="div" className="w-full flex flex-col">
             {({ open }) => {
-                const chevronClass = classnames('ml-auto', {
+                const chevronClass = classnames('ml-auto transition-transform', {
                     'rotate-[-90deg]': open
                 });
 

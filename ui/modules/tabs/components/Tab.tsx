@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 import classnames from 'classnames';
-import { VscChromeClose } from 'react-icons/vsc';
+import { VscChromeClose } from '$components/icons';
 import { closeTabs } from '../queries';
 
 interface TabProps {

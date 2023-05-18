@@ -1,61 +1,76 @@
-import { ElementType, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import { Button, ButtonProps } from './Button';
 import classnames from 'classnames';
-import { Button } from './Button';
 
-interface Tab {
-    key: string;
-    label: string;
-    component: ElementType;
-    props?: any;
+interface ContextType {
+    currentTab: string;
+    setCurrentTab: (tab: string) => void;
 }
+
+const Context = createContext<ContextType>({
+    currentTab: '',
+    setCurrentTab: () => null,
+});
 
 interface OwnProps {
-    layout: 'vertical' | 'horizontal';
-    tabs: Tab[];
+    initial?: string;
 }
 
-export function Tabs({
-    layout = 'horizontal',
-    tabs = [],
-}: OwnProps) {
-    const [currentTab, setCurrentTab] = useState(0);
+export function Tabs({ initial, children }: PropsWithChildren<OwnProps>) {
+    const [currentTab, setCurrentTab] = useState<string>(initial || '');
 
-    const containerClass = classnames('flex', {
-        'flex-col': layout === 'vertical'
-    });
+    const ctx = useMemo(() => ({
+        currentTab,
+        setCurrentTab,
+    }), [currentTab]);
 
-    const listClass = classnames('flex', {
-        'flex-col border-r border-transparent-300': layout === 'horizontal',
-    });
+    return (
+        <Context.Provider value={ctx}>
+            {children}
+        </Context.Provider>
+    );
+}
 
-    const contentClass = classnames('flex-1');
+interface HeaderProps extends Omit<ButtonProps, 'ref'> {
+    id: string;
+    className?: string;
+    activeClassName?: string;
+    inactiveClassName?: string;
+}
 
-    const tabClass = (isActive: boolean) => classnames('text-right hover:bg-transparent-400 hover:text-foreground-subtle', {
-        'bg-transparent-300 text-foreground-default': isActive,
-        'text-foreground-subtlest': !isActive,
+function TabHeader({ id, className, activeClassName, inactiveClassName, ...rest }: HeaderProps) {
+    const ctx = useContext(Context);
+
+    const btnClass = classnames(className, {
+        [activeClassName || '']: ctx.currentTab === id,
+        [inactiveClassName || '']: ctx.currentTab !== id,
     });
 
     return (
-        <div className={containerClass}>
-            <div className={listClass}>
-                {tabs.map((tab, idx) => (
-                    <Button
-                        key={tab.key}
-                        size="sm" scheme="custom" shape="flat"
-                        className={tabClass(idx === currentTab)}
-                        onClick={() => setCurrentTab(idx)}
-                    >
-                        {tab.label}
-                    </Button>
-                ))}
-            </div>
-            <div className={contentClass}>
-                {tabs.map((tab, idx) => (
-                    <div key={tab.key} className={currentTab !== idx ? 'hidden' : ''}>
-                        <tab.component {...tab.props} />
-                    </div>
-                ))}
-            </div>
+        <Button
+            shape="flat"
+            scheme="custom"
+            className={btnClass}
+            onClick={() => ctx.setCurrentTab(id)} {...rest}
+        />
+    );
+}
+
+interface ContentProps {
+    id: string;
+}
+
+function TabContent({ id, children }: PropsWithChildren<ContentProps>) {
+    const ctx = useContext(Context);
+
+    if (ctx.currentTab !== id) return null;
+
+    return (
+        <div className="animate-fade-in-left">
+            {children}
         </div>
     );
 }
+
+Tabs.Header = TabHeader;
+Tabs.Content = TabContent;

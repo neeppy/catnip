@@ -1,10 +1,10 @@
 import * as monaco from 'monaco-editor';
 import { useMutation } from '@tanstack/react-query';
 import classnames from 'classnames';
-import { FaPlay } from 'react-icons/fa';
+import { FaPlay } from '$components/icons';
 import { useBoolean } from 'ui/hooks';
 import { Button, Editor, DynamicGrid } from '$components';
-import { EditorView, updateTabs, useTabActivity } from '$module:tabs';
+import { EditorView, updateTab } from '$module:tabs';
 import { getCurrentQueries } from '../utils';
 import { EditorCommands } from './EditorCommands';
 import { runUserQuery } from '../queries';
@@ -15,7 +15,6 @@ interface IMutationData {
 }
 
 export function SingleDatabaseEditorTab(tab: EditorView) {
-    const updateCurrentTab = useTabActivity(state => state.updateCurrentTabDetails);
     const { boolean: isEditorFocused, on, off } = useBoolean(true);
 
     const { data: queryResult, ...mutation } = useMutation({
@@ -65,15 +64,7 @@ export function SingleDatabaseEditorTab(tab: EditorView) {
     async function handleSave(query: string) {
         if (query === tab.currentQuery) return;
 
-        updateCurrentTab({
-            ...tab,
-            currentQuery: query
-        });
-
-        await updateTabs([{
-            ...tab,
-            currentQuery: query
-        }]);
+        await updateTab({ ...tab, currentQuery: query });
     }
 
     async function handlePartialSubmit(query: string, selection: monaco.Selection | null) {
@@ -92,7 +83,7 @@ export function SingleDatabaseEditorTab(tab: EditorView) {
     async function handleSubmit(query: string) {
         if (!tab.currentDatabase) return;
 
-        mutation.mutate({
+        await mutation.mutateAsync({
             connectionId: tab.connectionId,
             query
         });

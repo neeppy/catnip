@@ -1,32 +1,43 @@
 import { MouseEvent, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContextMenu } from 'react-contexify';
-import { SiMysql, SiSqlite } from 'react-icons/si';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, SiMysql, SiSqlite } from '$components/icons';
+import { useAtomValue } from 'jotai';
 import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
 import { Button } from '$components';
 import { randomColor } from 'ui/utils/random';
 import { createEmptyTableView, getConnectionTabs, resumeTabActivity } from '$module:tabs';
-import { useModalRegistry, CONNECTION_CONTEXT_MENU, themeState } from '$module:globals';
-import { useConnections } from '../state';
-import ConnectionForm, { fetchConnections } from '../form';
+import { CONNECTION_CONTEXT_MENU, themeState, useModalRegistry } from '$module:globals';
 import storage from '$storage';
-import { useAtomValue } from 'jotai';
 import { DropdownMenu } from 'ui/components/DropdownMenu';
+import { useConnections } from '../state';
+import { fetchConnections } from '../form';
+import { MySQLForm, SQLiteForm } from '../form';
 
 const driverOptions = [
     {
         key: ConnectionDriver.MySQL,
         label: 'MySQL',
         icon: SiMysql,
-        onClick: () => null
+        onClick: () => useModalRegistry.getState().open(MySQLForm, {
+            type: 'drawer',
+            settings: { placement: 'right' },
+        })
+    },
+    {
+        key: ConnectionDriver.SQLite,
+        label: 'SQLite',
+        icon: SiSqlite,
+        onClick: () => useModalRegistry.getState().open(SQLiteForm, {
+            type: 'drawer',
+            settings: { placement: 'right' },
+        })
     }
 ];
 
 export function Connections() {
     const theme = useAtomValue(themeState);
     const queryClient = useQueryClient();
-    const open = useModalRegistry(state => state.open);
     const setActiveConnection = useConnections(state => state.setActiveConnection);
     const { data, isLoading } = useQuery(['connections'], fetchConnections);
     const { show } = useContextMenu({ id: CONNECTION_CONTEXT_MENU });
@@ -60,6 +71,8 @@ export function Connections() {
                     ))}
                 </div>
                 <DropdownMenu
+                    placement="topRight"
+                    className="ml-auto"
                     label={<FaPlus />}
                     triggerProps={{ size: 'sm' }}
                     options={driverOptions}
@@ -68,12 +81,17 @@ export function Connections() {
         </>
     );
 
-    function openModalForm() {
-        open(ConnectionForm);
-    }
-
     function handleContextMenu(event: MouseEvent, connection: AnyConnection) {
-        show({ event, props: connection });
+        const { top, right } = event.currentTarget.getBoundingClientRect();
+
+        show({
+            event,
+            props: connection,
+            position: {
+                x: right + 4,
+                y: top
+            }
+        });
     }
 
     async function onConnectionClick(connection: AnyConnection) {

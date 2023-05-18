@@ -1,0 +1,27 @@
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar-corner {
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+    background: theme(colors.transparent-400);
+    @apply rounded-md;
+}
+
+::-webkit-scrollbar-thumb {
+    transition: background 200ms;
+    background: theme(colors.transparent-300);
+    @apply rounded-md;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.transparent-200);
+}

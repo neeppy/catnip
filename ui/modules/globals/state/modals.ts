@@ -4,11 +4,10 @@ import { create } from 'zustand';
 type PropsOf<T> = T extends ComponentType<infer P> ? P : never;
 type AnyComponent = ComponentType<any>;
 
-export enum ModalType {
-    Modal = 'modal',
-}
+type ModalType = 'modal' | 'drawer';
 
 interface ModalSettings {
+    placement: 'top' | 'left' | 'bottom' | 'right';
     closeOnBackdropClick: boolean;
     showCloseButton: boolean;
 }
@@ -35,8 +34,9 @@ interface ModalState {
 }
 
 const defaultModalSettings: ModalSettings = {
+    placement: 'left',
     closeOnBackdropClick: true,
-    showCloseButton: interop.platform === 'darwin',
+    showCloseButton: true,
 };
 
 export const useModalRegistry = create<ModalState>(set => ({
@@ -48,7 +48,7 @@ export const useModalRegistry = create<ModalState>(set => ({
                 contentComponent,
                 ...params,
                 key: params?.key || Math.random().toString(36),
-                type: params?.type || ModalType.Modal,
+                type: params?.type || 'modal',
                 settings: {
                     ...defaultModalSettings,
                     ...params?.settings,

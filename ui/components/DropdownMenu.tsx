@@ -1,6 +1,7 @@
 import { ComponentProps, ComponentType } from "react";
 import { Button } from "./Button";
 import { Dropdown, DropdownProps } from "./Dropdown";
+import { Typography } from './Typography';
 
 interface Item {
     key: string;
@@ -16,8 +17,10 @@ interface OwnProps<T> extends Omit<DropdownProps<T>, 'uniqueKey' | 'value' | 'on
 
 const getOption = (option: Item) => (
     <div className="flex items-center gap-2">
-        <option.icon/>
-        <span>{option.label}</span>
+        <span className="text-foreground-default text-lg">
+            <option.icon />
+        </span>
+        <Typography>{option.label}</Typography>
     </div>
 );
 
@@ -27,7 +30,7 @@ export function DropdownMenu({
     ...dropdownProps
 }: OwnProps<Item>) {
     return (
-        <Dropdown uniqueKey="key" labelKey="label" renderOption={getOption} {...dropdownProps} onChange={handleItemClick}>
+        <Dropdown value={null} hideSearch uniqueKey="key" labelKey="label" renderOption={getOption} {...dropdownProps} onChange={handleItemClick}>
             <Dropdown.Trigger as={Button} {...triggerProps}>
                 {label}
             </Dropdown.Trigger>
@@ -38,5 +41,3 @@ export function DropdownMenu({
         item.onClick(item);
     }
 }
-
-export type { Item as DropdownMenuItem };
