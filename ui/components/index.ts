@@ -6,6 +6,7 @@ export * from './Select';
 export * from './DropdownSelect';
 export * from './Key';
 export * from './KeyCombo';
+export * from './Dropdown';
 export * from './DropdownActions';
 export * from './DropdownMenu';
 export * from './Tabs';

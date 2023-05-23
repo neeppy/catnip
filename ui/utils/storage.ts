@@ -1,6 +1,7 @@
 import Dexie, { Table, Version } from 'dexie';
 import { AnyConnection } from 'common/models/Connection';
 import { AnyTab } from '$module:tabs';
+import { Group } from '$module:connections';
 
 const versioning = [
     {
@@ -8,7 +9,8 @@ const versioning = [
         migrate(version: Version) {
             version.stores({
                 connections: '&id',
-                tabs: '&id, connectionId, type'
+                tabs: '&id, connectionId, type',
+                groups: '&id',
             });
         }
     }
@@ -17,6 +19,7 @@ const versioning = [
 class CatnipDexie extends Dexie {
     connections!: Table<AnyConnection>;
     tabs!: Table<AnyTab>;
+    groups!: Table<Group>;
 
     constructor() {
         super('catnip');

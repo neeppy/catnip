@@ -2,7 +2,7 @@ import { BooleanPredicate, Item, Menu, Separator, Submenu } from 'react-contexif
 import { useQuery } from '@tanstack/react-query';
 import { FaTable, FaTerminal } from '$components/icons';
 import { TAB_CONTEXT_MENU } from '$module:globals';
-import { fetchConnections } from '$module:connections/form';
+import { fetchConnections } from '$module:connections/list';
 import { AnyTab } from '$module:tabs';
 
 export function TabContextMenu() {

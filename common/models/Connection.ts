@@ -18,6 +18,7 @@ export interface Connection<TDriver extends ConnectionDriver> {
     id: string;
     name: string;
     driver: TDriver;
+    groupId?: string;
 }
 
 export interface MySQLConnection extends Connection<ConnectionDriver.MySQL> {

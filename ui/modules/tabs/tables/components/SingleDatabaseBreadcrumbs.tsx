@@ -32,13 +32,15 @@ export default function SingleDatabaseBreadcrumbs(tab: TableView) {
                 {connection.name}
             </div>
             <FaChevronRight/>
-            <Select
-                uniqueKey="value"
-                initialValue={initialTable}
-                labelKey="label"
-                options={tableOptions ?? []}
-                onChange={({ value }) => onTableChange(value)}
-            />
+            {tableOptions.length > 0 && (
+                <Select
+                    uniqueKey="value"
+                    initialValue={initialTable}
+                    labelKey="label"
+                    options={tableOptions ?? []}
+                    onChange={({ value }) => onTableChange(value)}
+                />
+            )}
         </div>
     );
 }

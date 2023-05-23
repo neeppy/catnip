@@ -4,7 +4,6 @@ import { themeState } from '$module:globals';
 import { Header } from './Header';
 import { MainScreen } from './MainScreen';
 import { useEffect } from 'react';
-import { Input } from '$components';
 
 export const App = () => {
     const [theme, setTheme] = useAtom(themeState);
@@ -20,12 +19,14 @@ export const App = () => {
     return (
         <div className="bg-accent h-screen w-screen flex flex-col">
             <Header/>
-            <main className="bg-surface-300 flex-1 relative overflow-hidden flex-center">
-                <MainScreen/>
-            </main>
-            <footer>
-                <Connections.List/>
-            </footer>
+            <div className="flex h-full">
+                <aside>
+                    <Connections.List/>
+                </aside>
+                <main className="bg-surface-300 flex-1 rounded-tl-xl relative overflow-hidden flex-center">
+                    <MainScreen/>
+                </main>
+            </div>
         </div>
     );
 };

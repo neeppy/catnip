@@ -1,4 +1,4 @@
-import { Fragment, PropsWithChildren, ReactElement, useRef, useState } from 'react';
+import { Fragment, PropsWithChildren, ReactElement, Ref, useRef, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { equals } from 'ramda';
 import classNames from 'classnames';
@@ -18,6 +18,7 @@ export interface DropdownProps<T> {
     hideSearch?: boolean;
     labelSearch?: string;
     placeholderSearch?: string;
+    containerRef?: Ref<any>;
     renderOption?: (option: T) => ReactElement | null;
     onChange?: (value: T) => void;
 }
@@ -53,6 +54,7 @@ export function Dropdown<T>({
     labelSearch = 'Search',
     placeholderSearch = 'Type to search...',
     renderOption,
+    containerRef,
     children
 }: PropsWithChildren<DropdownProps<T>>) {
     const inputRef = useRef<HTMLInputElement>(null);
@@ -62,7 +64,7 @@ export function Dropdown<T>({
 
     return (
         <Listbox value={value} onChange={onChange} by={equals}>
-            <div className={classNames('relative', className)}>
+            <div ref={containerRef} className={classNames('relative', className)}>
                 {children}
                 <Transition
                     as={Fragment}

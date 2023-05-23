@@ -5,7 +5,9 @@ export {
     FaTrash,
     FaTable,
     FaTerminal,
+    FaTimes,
     FaDatabase,
+    FaLayerGroup,
     FaPlay,
     FaPlus,
 } from 'react-icons/fa';

@@ -1,16 +1,15 @@
 import { AnyConnection } from 'common/models/Connection';
 import storage from '$storage';
+import { useConnectionOrder } from '../list';
 import { connectionDriverMappings, GenericMappingFunction } from './mappers';
-
-export async function fetchConnections(): Promise<AnyConnection[]> {
-    return storage.connections.toArray();
-}
 
 export async function insertConnection(connection: AnyConnection) {
     connection.id = window.crypto.randomUUID();
 
     const mappings = connectionDriverMappings[connection.driver] as GenericMappingFunction;
     connection = await mappings(connection);
+
+    useConnectionOrder.getState().push(connection.id);
 
     return storage.connections.add(connection);
 }

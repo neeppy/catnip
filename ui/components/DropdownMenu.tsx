@@ -1,6 +1,6 @@
-import { ComponentProps, ComponentType } from "react";
-import { Button } from "./Button";
-import { Dropdown, DropdownProps } from "./Dropdown";
+import { ComponentProps, ComponentType } from 'react';
+import { Button } from './Button';
+import { Dropdown, DropdownProps } from './Dropdown';
 import { Typography } from './Typography';
 
 interface Item {
@@ -12,13 +12,13 @@ interface Item {
 
 interface OwnProps<T> extends Omit<DropdownProps<T>, 'uniqueKey' | 'value' | 'onChange' | 'renderOption' | 'labelKey'> {
     label: any;
-    triggerProps: ComponentProps<typeof Button>;
+    triggerProps?: ComponentProps<typeof Button>;
 }
 
 const getOption = (option: Item) => (
     <div className="flex items-center gap-2">
         <span className="text-foreground-default text-lg">
-            <option.icon />
+            <option.icon/>
         </span>
         <Typography>{option.label}</Typography>
     </div>
