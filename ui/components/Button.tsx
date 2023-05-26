@@ -19,12 +19,13 @@ const getButtonClassName = cva('transition-all duration-200 select-none whitespa
             transparent: 'bg-transparent-500 hover:bg-transparent-400 focus:bg-transparent-400 active:bg-transparent-300 enabled:text-transparent-text'
         },
         shape: {
-            flat: 'rounded-none',
+            flat: null,
             default: 'rounded-md',
             square: 'aspect-square rounded-md',
             round: 'rounded-full'
         },
         size: {
+            custom: null,
             xs: 'p-1 text-xs',
             sm: 'p-1 text-sm',
             md: 'p-2',
@@ -57,6 +58,7 @@ type OwnProps = VariantProps<typeof getButtonClassName> & Omit<ComponentProps<'b
 export type { OwnProps as ButtonProps };
 
 const responsiveLoadingSize = {
+    custom: 16,
     xs: 10,
     sm: 12,
     md: 16,

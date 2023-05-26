@@ -6,10 +6,10 @@ import { FaPlus, SiMysql, SiSqlite } from '$components/icons';
 import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
 import { createEmptyTableView, getConnectionTabs, resumeTabActivity } from '$module:tabs';
 import { useModalRegistry } from '$module:globals';
-import { useConnections } from '../state';
-import { MySQLForm, SQLiteForm } from '../form';
-import { fetchGroupedConnections } from './queries';
-import { ConnectionBubbles } from './components/ConnectionBubbles';
+import { useConnections } from '../../state';
+import { MySQLForm, SQLiteForm } from '../../form';
+import { fetchGroupedConnections } from '../queries';
+import { ConnectionBubbles } from './ConnectionBubbles';
 
 const driverOptions = [
     {
@@ -47,7 +47,7 @@ export function Connections() {
     }, []);
 
     return (
-        <div className="flex flex-col h-full p-2 pb-2 pt-0 justify-start items-center z-20 py-1">
+        <div className="flex flex-col h-full px-2 py-4 justify-start z-20">
             <ConnectionBubbles
                 groups={data?.groups ?? []}
                 connections={data?.connections ?? []}
@@ -57,6 +57,7 @@ export function Connections() {
                 placement="topLeft"
                 className="mt-auto"
                 label={<FaPlus/>}
+                triggerProps={{ className: 'w-full flex-center' }}
                 options={driverOptions}
             />
         </div>

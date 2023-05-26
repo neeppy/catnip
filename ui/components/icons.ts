@@ -29,4 +29,5 @@ export {
 
 export {
     BsShift,
+    BsFillFolderSymlinkFill,
 } from 'react-icons/bs';

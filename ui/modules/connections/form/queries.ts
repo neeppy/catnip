@@ -9,7 +9,7 @@ export async function insertConnection(connection: AnyConnection) {
     const mappings = connectionDriverMappings[connection.driver] as GenericMappingFunction;
     connection = await mappings(connection);
 
-    useConnectionOrder.getState().push(connection.id);
+    useConnectionOrder.getState().push([connection.id]);
 
     return storage.connections.add(connection);
 }

@@ -1,9 +1,10 @@
-import { Item, ItemParams, Menu, Separator, Submenu } from 'react-contexify';
+import { BooleanPredicate, Item, ItemParams, Menu, Separator, Submenu } from 'react-contexify';
 import { FaEdit, FaPlus, FaTrash } from '$components/icons';
 import { useModalRegistry, CONNECTION_CONTEXT_MENU } from '$module:globals';
 import { AnyConnection, ConnectionDriver } from 'common/models/Connection';
-import { MySQLForm, SQLiteForm } from '../form';
-import { ConnectionGroupForm } from '$module:connections/list/components/ConnectionGroupForm';
+import { MySQLForm, SQLiteForm } from '../../form';
+import { ConnectionGroupForm } from './ConnectionGroupForm';
+import { ungroupConnections } from '$module:connections';
 
 const driverComponent = {
     [ConnectionDriver.MySQL]: MySQLForm,
@@ -12,6 +13,12 @@ const driverComponent = {
 
 export function ConnectionContextMenu() {
     const open = useModalRegistry(state => state.open);
+
+    function isRootLevel() {
+        return function ({ props }) {
+            return !Boolean(props?.groupId);
+        } as BooleanPredicate;
+    }
 
     return (
         <Menu id={CONNECTION_CONTEXT_MENU} theme="dark" animation="scale">
@@ -36,6 +43,9 @@ export function ConnectionContextMenu() {
                     </span>
                 </Item>
             </Submenu>
+            <Item hidden={isRootLevel()} onClick={removeFromGroup}>
+                Remove from group
+            </Item>
         </Menu>
     );
 
@@ -51,5 +61,11 @@ export function ConnectionContextMenu() {
 
     function openGroupModal({ props }: ItemParams<AnyConnection>) {
         open(ConnectionGroupForm);
+    }
+
+    function removeFromGroup({ props }: ItemParams<AnyConnection>) {
+        if (!props) return;
+
+        return ungroupConnections(props);
     }
 }

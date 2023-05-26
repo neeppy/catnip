@@ -1,5 +1,5 @@
 .contexify {
-    @apply bg-surface-600 border border-surface-800;
+    @apply bg-surface-600 border border-surface-800 z-[2000];
 }
 
 .contexify .contexify_separator {

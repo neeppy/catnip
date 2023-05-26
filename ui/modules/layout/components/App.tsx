@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import Connections from '$module:connections';
 import { themeState } from '$module:globals';
 import { Header } from './Header';
+import { Sidebar } from './Sidebar';
 import { MainScreen } from './MainScreen';
-import { useEffect } from 'react';
 
 export const App = () => {
     const [theme, setTheme] = useAtom(themeState);
@@ -20,9 +20,7 @@ export const App = () => {
         <div className="bg-accent h-screen w-screen flex flex-col">
             <Header/>
             <div className="flex h-full">
-                <aside>
-                    <Connections.List/>
-                </aside>
+                <Sidebar/>
                 <main className="bg-surface-300 flex-1 rounded-tl-xl relative overflow-hidden flex-center">
                     <MainScreen/>
                 </main>

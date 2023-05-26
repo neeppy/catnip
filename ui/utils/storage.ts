@@ -8,7 +8,7 @@ const versioning = [
         version: 1,
         migrate(version: Version) {
             version.stores({
-                connections: '&id',
+                connections: '&id, groupId',
                 tabs: '&id, connectionId, type',
                 groups: '&id',
             });

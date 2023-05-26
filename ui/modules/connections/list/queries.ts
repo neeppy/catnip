@@ -12,11 +12,6 @@ export async function fetchGroupedConnections() {
     const connections = await storage.connections.toArray();
     const groups = await storage.groups.toArray();
 
-    // const ungrouped = connections.map(({ groupId, ...rest }) => ({ ...rest }));
-    //
-    // await storage.connections.bulkPut(ungrouped);
-    // await storage.groups.bulkDelete(groups.map(group => group.id));
-
     const groupedConnections: ConnectionGroup[] = groups.map(group => ({
         ...group,
         connections: connections.filter(conn => conn.groupId === group.id),
@@ -52,13 +47,48 @@ export async function groupConnections(...connections: AnyConnection[]) {
     const groupNo = await storage.groups.count();
     const group = await createEmptyGroup(`Group #${groupNo + 1}`);
 
+    await addToGroup(group.id, ...connections);
+}
+
+export async function ungroupConnections(...connections: AnyConnection[]) {
     await storage.connections.bulkPut(
-        connections.map(conn => ({ ...conn, groupId: group.id }))
+        connections.map(({ groupId, ...conn }) => conn)
     );
 
+    useConnectionOrder.getState().push(connections.map(conn => conn.id));
+
+    await Promise.all([
+        client.refetchQueries(['connections', 'grouped']),
+        client.refetchQueries(['connections']),
+    ]);
+}
+
+export async function addToGroup(groupId: string, ...connections: AnyConnection[]) {
     const ids = connections.map(conn => conn.id);
 
     useConnectionOrder.getState().drop(ids);
+
+    await storage.connections.bulkPut(
+        connections.map(conn => ({ ...conn, groupId }))
+    );
+
+    await Promise.all([
+        client.refetchQueries(['connections', 'grouped']),
+        client.refetchQueries(['connections']),
+    ]);
+}
+
+export async function deleteGroup(groupId: string) {
+    const connections = await storage.connections.where('groupId')
+        .equals(groupId)
+        .toArray();
+
+    await Promise.all([
+        storage.groups.delete(groupId),
+        storage.connections.bulkPut(connections.map(({ groupId, ...conn }) => conn)),
+    ]);
+
+    useConnectionOrder.getState().push(connections.map(conn => conn.id));
 
     await Promise.all([
         client.refetchQueries(['connections', 'grouped']),

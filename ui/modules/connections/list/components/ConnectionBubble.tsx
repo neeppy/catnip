@@ -1,16 +1,18 @@
 import { MouseEvent } from 'react';
+import { useAtomValue } from 'jotai';
+import Color from 'color';
+import classnames from 'classnames';
 import { useContextMenu } from 'react-contexify';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import Color from 'color';
-import classnames from 'classnames';
 import { CONNECTION_CONTEXT_MENU } from '$module:globals';
+import { sidebarExpansionState } from '$module:layout';
 import { AnyConnection } from 'common/models/Connection';
 import { Button } from '$components';
 import { FaTimes } from '$components/icons';
 import { useBoolean } from 'ui/hooks';
 import { useGrouping } from '../utils/useGrouping';
-import { groupConnections } from '$module:connections/list';
+import { groupConnections } from '../queries';
 
 interface OwnProps {
     connection: AnyConnection;
@@ -22,6 +24,7 @@ interface OwnProps {
 }
 
 export function ConnectionBubble({ connection, color, onClick, isActive, hasFocus, isDragging }: OwnProps) {
+    const isMenuExpanded = useAtomValue(sidebarExpansionState);
     const { show } = useContextMenu({ id: CONNECTION_CONTEXT_MENU });
     const { boolean: hasConnectionError, on, off } = useBoolean(false);
     const { shouldAllowTransform, isGrouping } = useGrouping(connection.id, async (conn1, conn2) => {
@@ -40,45 +43,53 @@ export function ConnectionBubble({ connection, color, onClick, isActive, hasFocu
 
     const isAnyDragging = !!active;
 
-    const activeBubbleClass = classnames('absolute bottom-0 h-1 rounded-full shadow-top border-t border-black/25', {
+    const activeIndicatorClass = classnames('absolute bottom-0 h-1 rounded-full shadow-top border-t border-black/25', {
         'inset-x-0 bg-green-300': isActive,
-        'hidden': !isActive || hasConnectionError
+        'hidden': !isActive || hasConnectionError,
     });
 
-    const buttonClass = classnames('h-10 overflow-hidden text-white font-bold', {
-        'ring-[2px] ring-white/50': hasFocus
+    const bubbleClass = classnames('h-8 aspect-square flex-center relative rounded-md overflow-hidden text-white font-bold truncate', {
+        'ring-[2px] ring-white/50': hasFocus,
+    });
+
+    const buttonClass = classnames('w-full transition-all text-left', {
+        'opacity-0': isDragging,
+        'scale-90': isGrouping && isMenuExpanded,
+        'scale-75': isGrouping && !isMenuExpanded,
     });
 
     const textColor = Color(color).isLight() ? '#000' : '#fff';
 
     return (
         <Button
-            key={connection.id}
+            scheme="transparent" size="custom" className={buttonClass}
             ref={setNodeRef}
-            shape="square" scheme="custom"
-            className={buttonClass}
+            onClick={onBubbleClick}
+            onContextMenu={event => handleContextMenu(event, connection)}
             style={{
-                backgroundColor: color,
-                color: textColor,
-                opacity: isDragging ? '0' : '1',
-                ...isGrouping && {
-                    scale: '0.75'
-                },
                 ...(shouldAllowTransform || isDragging) && {
                     transform: CSS.Transform.toString(transform)
                 },
                 transitionProperty: isDragging ? 'none' : isAnyDragging ? 'all' : 'none'
             }}
-            onClick={onBubbleClick}
-            onContextMenu={event => handleContextMenu(event, connection)}
             {...attributes}
             {...listeners}
         >
-            {connection.name.charAt(0).toUpperCase()}
-            <span className={activeBubbleClass}/>
-            {hasConnectionError && (
-                <FaTimes className="absolute top-0.5 right-0.5 w-3 h-3 text-red-400"/>
-            )}
+            <div className="flex items-center gap-2">
+                <div
+                    className={bubbleClass}
+                    style={{ backgroundColor: color, color: textColor }}
+                >
+                    {connection.name.charAt(0).toUpperCase()}
+                    <span className={activeIndicatorClass}/>
+                    {hasConnectionError && (
+                        <FaTimes className="absolute top-0.5 right-0.5 w-3 h-3 text-red-400"/>
+                    )}
+                </div>
+                {isMenuExpanded && (
+                    <span className="flex-1 text-foreground-default animate-fade-in truncate">{connection.name}</span>
+                )}
+            </div>
         </Button>
     );
 

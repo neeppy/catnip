@@ -5,7 +5,7 @@ interface UseConnectionOrder {
     order: string[];
     reorder: (old: string, replaceWith: string) => void;
     drop: (ids: string[]) => void;
-    push: (id: string) => void;
+    push: (ids: string[]) => void;
     reset: (ids: string[]) => void;
 }
 
@@ -32,14 +32,14 @@ export const useConnectionOrder = create<UseConnectionOrder>(set => ({
 
         localStorage.setItem(KEY, JSON.stringify(newOrder));
 
-        return newOrder;
+        return { order: newOrder };
     }),
-    push: id => set(prev => {
-        const newOrder = [...prev.order, id];
+    push: ids => set(prev => {
+        const newOrder = [...prev.order, ...ids];
 
         localStorage.setItem(KEY, JSON.stringify(newOrder));
 
-        return newOrder;
+        return { order: newOrder };
     }),
     reset: ids => {
         localStorage.setItem(KEY, JSON.stringify(ids));

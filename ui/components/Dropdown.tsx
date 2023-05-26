@@ -34,6 +34,10 @@ const getDropdownClassNames = cva([
             topRight: 'bottom-[100%] right-0 mb-2',
             bottomLeft: 'top-[100%] left-0 mt-2',
             bottomRight: 'top-[100%] right-0 mt-2',
+            rightTop: 'left-[100%] top-0 ml-2',
+            rightBottom: 'left-[100%] bottom-0 ml-2',
+            leftTop: 'right-[100%] top-0 mr-2',
+            leftBottom: 'right-[100%] bottom-0 mr-2',
         }
     },
     defaultVariants: {
