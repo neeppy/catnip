@@ -54,7 +54,7 @@ function forwardDatabaseConnection(client: Client, configuration: DatabaseTunnel
 export async function createSSHTunnel(dbHost: string, dbPort: number, configuration: TunnelConfiguration) {
     let mainSSHConnection;
 
-    if (configuration.jumpConfiguration.hostname) {
+    if (configuration.jumpConfiguration?.hostname) {
         console.log('Connecting to jump...');
         const jumpServerConnection = await connectToServer(configuration.jumpConfiguration);
         console.log('Success! Forwarding output...');

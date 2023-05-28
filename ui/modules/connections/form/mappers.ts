@@ -29,10 +29,10 @@ async function mysqlConnectionMappings(submittedConnection: MySQLConnection, exi
         );
     }
 
-    if (existingConnection?.sshTunnelConfiguration.jumpConfiguration.password !== submittedConnection.sshTunnelConfiguration.jumpConfiguration.password) {
+    if (existingConnection?.sshTunnelConfiguration.jumpConfiguration?.password !== submittedConnection.sshTunnelConfiguration.jumpConfiguration?.password) {
         passwordUpdatePromises.push(
-            interop.data.encrypt(submittedConnection.sshTunnelConfiguration.jumpConfiguration.password)
-                .then(hashed => (submittedConnection.sshTunnelConfiguration.jumpConfiguration.password = hashed))
+            interop.data.encrypt(submittedConnection.sshTunnelConfiguration.jumpConfiguration!.password)
+                .then(hashed => (submittedConnection.sshTunnelConfiguration.jumpConfiguration!.password = hashed))
         );
     }
 

@@ -5,6 +5,7 @@ interface Tab {
     connectionId: string;
     name: string;
     type: 'table' | 'editor';
+    order: number;
 }
 
 export interface TableView extends Tab {

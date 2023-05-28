@@ -11,7 +11,7 @@ export interface SSHConnection {
 }
 
 export interface TunnelConfiguration extends SSHConnection {
-    jumpConfiguration: SSHConnection;
+    jumpConfiguration?: SSHConnection;
 }
 
 export interface Connection<TDriver extends ConnectionDriver> {

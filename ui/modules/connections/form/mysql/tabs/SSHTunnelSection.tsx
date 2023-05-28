@@ -4,12 +4,12 @@ import { SectionTitle } from '../../components/SectionTitle';
 
 const getSSHFields = (name: string) => (
     <>
-        <String$ name={`${name}.hostname`} className="col-span-3" />
-        <Number$ name={`${name}.port`} />
-        <String$ name={`${name}.username`} className="col-span-2" />
-        <String$ name={`${name}.password`} className="col-span-2" />
+        <String$ name={`${name}.hostname`} className="col-span-3"/>
+        <Number$ name={`${name}.port`}/>
+        <String$ name={`${name}.username`} className="col-span-2"/>
+        <String$ name={`${name}.password`} className="col-span-2"/>
     </>
-)
+);
 
 export const SSHTunnelSection = () => (
     <div className="p-3 pl-0">

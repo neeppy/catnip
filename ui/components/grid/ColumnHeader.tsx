@@ -27,7 +27,7 @@ export function ColumnHeader({ columnIndex, data, style }: GridChildComponentPro
 
     const isActive = allRanges.some(range => isBetween(columnIndex, range.start.column, range.end.column));
 
-    const cellClass = classnames('text-sm flex-center font-semibold border-surface-700 border-t border-br px-3', {
+    const cellClass = classnames('text-foreground-default text-sm flex-center font-semibold border-surface-700 border-t border-br px-3', {
         'bg-primary-500/50': isActive,
         'bg-surface-500 text-foreground-default': !isActive,
     });

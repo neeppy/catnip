@@ -63,10 +63,13 @@ interface ContentProps {
 function TabContent({ id, children }: PropsWithChildren<ContentProps>) {
     const ctx = useContext(Context);
 
-    if (ctx.currentTab !== id) return null;
+    const className = classnames({
+        'animate-fade-in-left': ctx.currentTab === id,
+        'hidden': ctx.currentTab !== id,
+    });
 
     return (
-        <div className="animate-fade-in-left">
+        <div className={className}>
             {children}
         </div>
     );

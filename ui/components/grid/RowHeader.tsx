@@ -26,7 +26,7 @@ export function RowHeader({ rowIndex, data, style }: GridChildComponentProps<Cel
 
     const isActive = allRanges.some(range => isBetween(rowIndex, range.start.row, range.end.row));
 
-    const cellClass = classnames('text-sm flex-center font-semibold border-surface-700 border-l border-br cursor-pointer', {
+    const cellClass = classnames('text-foreground-default text-sm flex-center font-semibold border-surface-700 border-l border-br cursor-pointer', {
         'border-t': rowIndex === 0,
         'bg-primary-500/50': isActive,
         'bg-surface-500 text-foreground-default': !isActive,

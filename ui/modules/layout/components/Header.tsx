@@ -2,14 +2,14 @@ import { useAtom } from 'jotai';
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from '$components/icons';
 import { Button } from '$components';
 import { appModeState } from '$module:globals';
-import { TabList } from '$module:tabs';
+import { ConnectionTabs } from '$module:tabs';
 
 export function Header() {
     const [isAdvancedMode, setAdvancedMode] = useAtom(appModeState);
 
     return (
         <header id="title-bar" className="flex pl-4 h-[2.5rem]">
-            <TabList/>
+            <ConnectionTabs/>
             <Button
                 scheme={isAdvancedMode ? 'primary' : 'secondary'} size="xs"
                 className={`border ml-auto mr-4 self-center ${isAdvancedMode ? 'border-primary-500' : 'border-secondary-500'}`}

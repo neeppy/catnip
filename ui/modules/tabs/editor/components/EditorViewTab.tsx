@@ -71,7 +71,7 @@ export function EditorViewTab(tab: EditorView) {
                     />
                     <EditorCommands/>
                 </div>
-                <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
+                <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-hidden">
                     {queryResult && (
                         <DynamicGrid {...queryResult} />
                     )}

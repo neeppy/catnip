@@ -1,11 +1,33 @@
+import { arrayMove } from '@dnd-kit/sortable';
 import storage from '$storage';
-import { AnyTab, EditorView, TableView, useTabActivity } from './state';
 import client from 'ui/utils/query';
+import { AnyTab, EditorView, TableView, useTabActivity } from './state';
+
+async function getDefaultOrder(connectionId: string) {
+    const defaultOrder = await storage.tabs.where('connectionId')
+        .equals(connectionId)
+        .count();
+
+    return defaultOrder + 1;
+}
 
 export async function getConnectionTabs(connectionId: string) {
     return storage.tabs.where('connectionId')
         .equals(connectionId)
-        .toArray();
+        .sortBy('order');
+}
+
+export async function reorderTabs(connectionId: string, fromIndex: number, toIndex: number) {
+    const tabs = await getConnectionTabs(connectionId);
+
+    const reordered = arrayMove(tabs, fromIndex, toIndex)
+        .map((tab, idx) => ({
+            ...tab,
+            order: idx + 1
+        }));
+
+    await storage.tabs.bulkPut(reordered);
+    await client.refetchQueries(['tabs', connectionId]);
 }
 
 export async function createEmptyTableView(connectionId: string, initialDatabase?: string) {
@@ -14,6 +36,7 @@ export async function createEmptyTableView(connectionId: string, initialDatabase
         connectionId: connectionId,
         name: 'New Tab',
         type: 'table',
+        order: await getDefaultOrder(connectionId),
         currentDatabase: initialDatabase ?? null,
         currentTable: null,
     };
@@ -31,25 +54,9 @@ export async function createEmptyEditorView(connectionId: string, initialDatabas
         connectionId,
         name: 'New Tab',
         type: 'editor',
+        order: await getDefaultOrder(connectionId),
         currentDatabase: initialDatabase || null,
         currentQuery: null
-    };
-
-    await storage.tabs.add(tab);
-    await client.refetchQueries(['tabs', connectionId]);
-    useTabActivity.getState().setCurrentTab(tab);
-
-    return tab;
-}
-
-export async function createEditorViewFromQuery(connectionId: string, query: string, database?: string) {
-    const tab: EditorView = {
-        id: window.crypto.randomUUID(),
-        connectionId,
-        name: 'New Tab',
-        type: 'editor',
-        currentDatabase: database || null,
-        currentQuery: query
     };
 
     await storage.tabs.add(tab);
