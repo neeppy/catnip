@@ -31,7 +31,7 @@ export function ConnectionTabs() {
         return null;
     }
 
-    const tabContainerClass = classnames('flex gap-2 select-none z-20', {
+    const tabContainerClass = classnames('flex py-2 gap-2 select-none z-20', {
         'ml-24': interop.platform === 'darwin'
     });
 

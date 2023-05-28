@@ -1,4 +1,5 @@
 export {
+    FaCheckCircle,
     FaChevronLeft,
     FaChevronRight,
     FaEdit,

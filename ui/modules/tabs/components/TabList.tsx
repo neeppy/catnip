@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
+import { equals } from 'ramda';
+import { shallow } from 'zustand/shallow';
+import { useContextMenu } from 'react-contexify';
 import { closestCenter, DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { AnyTab, reorderTabs, TabHeader, useTabActivity } from '$module:tabs';
-import { shallow } from 'zustand/shallow';
-import { useContextMenu } from 'react-contexify';
 import { TAB_CONTEXT_MENU } from '$module:globals';
-import { equals } from 'ramda';
 
 interface OwnProps {
     tabs: AnyTab[];
@@ -18,7 +18,7 @@ export function TabList({ tabs }: OwnProps) {
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                delay: 100,
+                delay: 200,
                 tolerance: {
                     x: 10,
                     y: 10,
@@ -29,7 +29,6 @@ export function TabList({ tabs }: OwnProps) {
 
     useEffect(() => {
         if (!equals(currentConnectionTabs, tabs)) {
-            console.log('new tabs', tabs);
             setCurrentConnectionTabs(tabs);
         }
     }, [tabs]);

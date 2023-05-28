@@ -9,7 +9,7 @@ import { CONNECTION_CONTEXT_MENU } from '$module:globals';
 import { sidebarExpansionState } from '$module:layout';
 import { AnyConnection } from 'common/models/Connection';
 import { Button } from '$components';
-import { FaTimes } from '$components/icons';
+import { FaCheckCircle, FaTimes } from '$components/icons';
 import { useBoolean } from 'ui/hooks';
 import { useGrouping } from '../utils/useGrouping';
 import { groupConnections } from '../queries';
@@ -43,13 +43,8 @@ export function ConnectionBubble({ connection, color, onClick, isActive, hasFocu
 
     const isAnyDragging = !!active;
 
-    const activeIndicatorClass = classnames('absolute bottom-0 h-1 rounded-full shadow-top border-t border-black/25', {
-        'inset-x-0 bg-green-300': isActive,
-        'hidden': !isActive || hasConnectionError,
-    });
-
-    const bubbleClass = classnames('h-8 aspect-square flex-center relative rounded-md overflow-hidden text-white font-bold truncate', {
-        'ring-[2px] ring-white/50': hasFocus,
+    const bubbleClass = classnames('h-8 aspect-square flex-center relative rounded-md overflow-hidden text-white font-bold truncate transition-transform', {
+        'scale-125': hasFocus,
     });
 
     const buttonClass = classnames('w-full transition-all text-left', {
@@ -81,7 +76,9 @@ export function ConnectionBubble({ connection, color, onClick, isActive, hasFocu
                     style={{ backgroundColor: color, color: textColor }}
                 >
                     {connection.name.charAt(0).toUpperCase()}
-                    <span className={activeIndicatorClass}/>
+                    {isActive && (
+                        <FaCheckCircle className={`absolute top-0.5 right-0.5 w-2 h-2 bg-[#0009] rounded-full ${hasFocus ? 'text-green-300' : 'text-yellow-200'}`} />
+                    )}
                     {hasConnectionError && (
                         <FaTimes className="absolute top-0.5 right-0.5 w-3 h-3 text-red-400"/>
                     )}

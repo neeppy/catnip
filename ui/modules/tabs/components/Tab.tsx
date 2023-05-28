@@ -43,8 +43,8 @@ export function TabHeader({ isActive, connectionId, tabId, label, onClick, onCon
             {...listeners}
         >
             <div
+                className="flex items-center flex-1 text-left overflow-hidden"
                 onClick={onClick}
-                className="flex flex-col h-full flex-1 items-start justify-center text-left overflow-hidden"
             >
                 <span className="text-xs max-w-full truncate">
                     {label || '(Empty Tab)'}

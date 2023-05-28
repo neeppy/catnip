@@ -8,7 +8,7 @@ import Color from 'color';
 import { sidebarExpansionState } from '$module:layout';
 import { CONNECTION_CONTEXT_MENU, GROUP_CONTEXT_MENU } from '$module:globals';
 import { Button, Dropdown } from '$components';
-import { BsFillFolderSymlinkFill, FaPlus } from '$components/icons';
+import { BsFillFolderSymlinkFill, FaCheckCircle, FaPlus } from '$components/icons';
 import { AnyConnection } from 'common/models/Connection';
 import { useBoolean } from 'ui/hooks';
 import { randomColor } from 'ui/utils/random';
@@ -23,11 +23,19 @@ interface OwnProps {
 
 type ShowFn = (params: ShowContextMenuParams) => void;
 
-const renderOption = (theme: string, activeConnection: AnyConnection | null, show: ShowFn) => (option: AnyConnection) => {
+interface OptionRendererParams {
+    theme: string;
+    currentConnection: AnyConnection | null;
+    activeConnections: AnyConnection[];
+    show: ShowFn;
+}
+
+const renderOption = ({ theme, activeConnections, currentConnection, show }: OptionRendererParams) => (option: AnyConnection) => {
     const bgColor = randomColor(theme + option.name);
     const textColor = Color(bgColor).isLight() ? '#000' : '#fff';
 
-    const isActive = option.id === activeConnection?.id;
+    const isActive = activeConnections.some(conn => conn.id === option.id);
+    const hasFocus = option.id === currentConnection?.id;
 
     return (
         <div className="flex items-center gap-4 select-none" onContextMenu={handleContextMenu}>
@@ -39,11 +47,11 @@ const renderOption = (theme: string, activeConnection: AnyConnection | null, sho
                 }}
             >
                 {option.name.charAt(0).toUpperCase()}
-                {isActive && (
-                    <span className="absolute bottom-0 h-1 rounded-full shadow-top border-t border-black/25 inset-x-0 bg-green-300"/>
-                )}
             </div>
             <span className="text-foreground-default">{option.name}</span>
+            {isActive && (
+                <FaCheckCircle className={`ml-auto w-5 h-5 bg-black rounded-full ${hasFocus ? 'text-green-300' : 'text-yellow-200'}`}/>
+            )}
         </div>
     );
 
@@ -89,8 +97,8 @@ export function ConnectionGroupBubble({ theme, group, onActivate }: OwnProps) {
 
     const triggerClass = classnames('h-8 w-full justify-start');
 
-    const bubbleClass = classnames('relative h-8 aspect-square rounded-md flex-center', {
-        'ring-[2px] ring-white/25': !!focusedConnection
+    const bubbleClass = classnames('relative h-8 aspect-square rounded-md flex-center transition-transform', {
+        'scale-150': !!focusedConnection,
     });
 
     return (
@@ -102,7 +110,7 @@ export function ConnectionGroupBubble({ theme, group, onActivate }: OwnProps) {
             className="w-full"
             onChange={onActivate}
             containerRef={setNodeRef}
-            renderOption={renderOption(theme, currentConnection, show)}
+            renderOption={renderOption({ theme, currentConnection, activeConnections, show })}
         >
             <Dropdown.Trigger as={Button} scheme="transparent" shape="square" size="custom" className={triggerClass} onContextMenu={handleContextMenu}>
                 <div className="flex items-center gap-2">
@@ -111,8 +119,11 @@ export function ConnectionGroupBubble({ theme, group, onActivate }: OwnProps) {
                         <span className="absolute -bottom-0.5 inset-x-0 text-2xs pointer-events-none" style={{ color: '#fffc' }}>
                             {group.name.substring(0, 2).toUpperCase()}
                         </span>
+                        {isActive && (
+                            <span className={`absolute inset-2.5 -z-10 ${!!focusedConnection ? 'bg-green-300' : 'bg-yellow-200'}`} />
+                        )}
                         {isHoveringAdd && (
-                            <span className="absolute flex-center inset-0 animate-scale-in bg-green-600 rounded-md pointer-events-none">
+                            <span className="absolute flex-center inset-0.5 animate-scale-in bg-green-600 rounded-md pointer-events-none">
                                 <FaPlus className="text-white"/>
                             </span>
                         )}
