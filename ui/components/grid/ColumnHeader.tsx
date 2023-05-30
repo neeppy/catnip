@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import classnames from 'classnames';
 import { GridChildComponentProps } from 'react-window';
 import { CellProps } from './Cell';
@@ -22,7 +23,7 @@ export function ColumnHeader({ columnIndex, data, style }: GridChildComponentPro
         data: dndData,
     });
 
-    const { allRanges, columns } = data;
+    const { allRanges, rows, select, columns } = data;
     const column = columns[columnIndex - 1];
 
     const isActive = allRanges.some(range => isBetween(columnIndex, range.start.column, range.end.column));
@@ -36,10 +37,15 @@ export function ColumnHeader({ columnIndex, data, style }: GridChildComponentPro
         <div
             ref={fnMerge(createDragRef, createDropRef)}
             className={cellClass} style={style}
+            onMouseDown={onColumnSelection}
             {...attributes}
             {...listeners}
         >
             <code className="truncate">{column.name}</code>
         </div>
     );
+
+    function onColumnSelection(event: MouseEvent) {
+        select('column', rows.length, columnIndex, event.ctrlKey || event.metaKey, event.shiftKey);
+    }
 }

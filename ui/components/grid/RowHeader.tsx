@@ -1,8 +1,9 @@
+import { MouseEvent } from 'react';
 import { GridChildComponentProps } from 'react-window';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import classnames from 'classnames';
-import { CellProps } from './Cell';
 import { fnMerge } from 'ui/utils/functions';
+import { CellProps } from './Cell';
 
 const isBetween = (value: number, start: number, end: number) => value >= Math.min(start, end) && value <= Math.max(start, end);
 
@@ -22,7 +23,7 @@ export function RowHeader({ rowIndex, data, style }: GridChildComponentProps<Cel
         data: dndData,
     });
 
-    const { allRanges, selectAll } = data;
+    const { allRanges, columns, select, selectAll } = data;
 
     const isActive = allRanges.some(range => isBetween(rowIndex, range.start.row, range.end.row));
 
@@ -36,10 +37,17 @@ export function RowHeader({ rowIndex, data, style }: GridChildComponentProps<Cel
         <div
             ref={rowIndex > 0 ? fnMerge(createDragRef, createDropRef) : undefined}
             className={cellClass} style={style}
-            {...rowIndex > 0 && { ...attributes, ...listeners }}
+            {...rowIndex > 0 && {
+                ...attributes, ...listeners,
+                onMouseDown: onRowSelection,
+            }}
             {...rowIndex === 0 && { onClick: selectAll }}
         >
             <code>{rowIndex === 0 ? '' : rowIndex}</code>
         </div>
     );
+
+    function onRowSelection(event: MouseEvent) {
+        select('row', rowIndex, columns.length, event.ctrlKey || event.metaKey, event.shiftKey);
+    }
 }

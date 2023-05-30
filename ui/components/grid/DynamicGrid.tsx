@@ -1,14 +1,12 @@
 import { KeyboardEvent, useRef } from 'react';
 import { VariableSizeGrid } from 'react-window';
-import { DndContext, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragOverEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { DatabaseColumn, DatabaseRow, QueryField } from 'common/models/Database';
-import { useNodeSize } from 'ui/hooks';
-import { Cell, SelectionData } from './Cell';
+import { useCollection, useNodeSize } from 'ui/hooks';
+import { Cell, SelectionData, SelectionType } from './Cell';
 import { arrowNavigationMap, Direction, focusCell, getRangeByTypeAndCoords } from './utils';
 import { useRangeCollection } from './useRangeCollection';
-
-const KEY_CTRL_CMD = 1;
-const KEY_SHIFT = 2;
+import { CellChange } from './DataCell';
 
 export interface GridProps {
     columns: Array<QueryField | DatabaseColumn>;
@@ -25,27 +23,13 @@ export function DynamicGrid({ rows, columns }: GridProps) {
     const gridRef = useRef<VariableSizeGrid>(null);
     const focusTimeoutRef = useRef<any>(null);
     const lastSelectionType = useRef<SelectionData['type']>('cell');
-    const controlKeysRef = useRef<number>(0);
     const [allRanges, lastRange, range] = useRangeCollection();
+    const [changes, collection] = useCollection<CellChange>([]);
 
-    const customPointerSensor = useSensor(PointerSensor, {
-        onActivation({ event }: { event: PointerEvent }) {
-            controlKeysRef.current = 0;
-
-            if (event.ctrlKey || event.metaKey) {
-                controlKeysRef.current |= KEY_CTRL_CMD;
-            }
-
-            if (event.shiftKey) {
-                controlKeysRef.current |= KEY_SHIFT;
-            }
-        }
-    });
-
-    const sensors = useSensors(customPointerSensor);
+    const sensors = useSensors(useSensor(PointerSensor));
 
     return (
-        <DndContext onDragStart={onDragStart} onDragOver={onDragOver} sensors={sensors}>
+        <DndContext onDragOver={onDragOver} sensors={sensors}>
             <div className="w-full h-full" ref={parentRef}>
                 {size && (
                     <VariableSizeGrid
@@ -57,7 +41,7 @@ export function DynamicGrid({ rows, columns }: GridProps) {
                         rowHeight={() => 40}
                         columnCount={columns.length + 1}
                         rowCount={rows.length + 1}
-                        itemData={{ allRanges, rows, columns, onKeyboardNavigation, selectAll }}
+                        itemData={{ allRanges, rows, columns, select, changes, collection, onKeyboardNavigation, selectAll }}
                     >
                         {Cell}
                     </VariableSizeGrid>
@@ -78,10 +62,29 @@ export function DynamicGrid({ rows, columns }: GridProps) {
         return Math.min(columnName.length * 10 + 24, 240);
     }
 
+    function select(type: SelectionType, row: number, column: number, isCtrlPressed?: boolean, isShiftPressed?: boolean) {
+        lastSelectionType.current = type;
+
+        if (!isCtrlPressed && !isShiftPressed) {
+            const newRange = getRangeByTypeAndCoords(type, row, column, rows, columns);
+
+            range.reset(newRange);
+        } else if (isShiftPressed) {
+            range.update({
+                start: lastRange?.start || { row: 1, column: 1 },
+                end: { row, column }
+            });
+        } else if (isCtrlPressed) {
+            const newRange = getRangeByTypeAndCoords(type, row, column, rows, columns);
+
+            range.create(newRange);
+        }
+    }
+
     function selectAll() {
         range.reset({
             start: { row: 1, column: 1 },
-            end: { row: rows.length, column: columns.length },
+            end: { row: rows.length, column: columns.length }
         });
     }
 
@@ -101,7 +104,7 @@ export function DynamicGrid({ rows, columns }: GridProps) {
         if (!event.shiftKey || (event.shiftKey && !lastRange.start)) {
             range.reset({
                 start: { row, column },
-                end: { row, column },
+                end: { row, column }
             });
         } else {
             // navigation with SHIFT (trailing selection)
@@ -117,31 +120,14 @@ export function DynamicGrid({ rows, columns }: GridProps) {
         setTimeout(() => focusCell(row, column), 50);
     }
 
-    function onDragStart(event: DragStartEvent) {
-        const isCtrlPressed = (controlKeysRef.current & KEY_CTRL_CMD) !== 0;
-        const isShiftPressed = (controlKeysRef.current & KEY_SHIFT) !== 0;
-
-        const { type, row, column } = event.active.data.current as unknown as SelectionData;
-
-        lastSelectionType.current = type;
-
-        if (!isCtrlPressed && !isShiftPressed) {
-            const newRange = getRangeByTypeAndCoords(type, row, column, rows, columns);
-
-            range.reset(newRange);
-        } else if (isShiftPressed) {
-            range.update({
-                start: lastRange?.start || { row: 1, column: 1 },
-                end: { row, column },
-            });
-        } else if (isCtrlPressed) {
-            const newRange = getRangeByTypeAndCoords(type, row, column, rows, columns);
-
-            range.create(newRange);
-        }
-    }
-
     function onDragOver(event: DragOverEvent) {
+        const activeData = event.active.data.current as SelectionData;
+        const overData = event.over?.data.current as SelectionData;
+
+        if (overData?.row === activeData.row && overData?.column === activeData.column) {
+            return;
+        }
+
         const rangeStart = lastRange?.start;
 
         clearTimeout(focusTimeoutRef.current);

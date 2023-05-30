@@ -2,6 +2,8 @@ export {
     FaCheckCircle,
     FaChevronLeft,
     FaChevronRight,
+    FaChevronUp,
+    FaChevronDown,
     FaEdit,
     FaTrash,
     FaTable,

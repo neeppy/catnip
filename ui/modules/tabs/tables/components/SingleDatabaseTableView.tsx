@@ -31,7 +31,7 @@ export function SingleDatabaseTableView({ connectionId, currentDatabase, current
             {rows && columns && (
                 <div className="col-span-2 overflow-hidden">
                     <div className="w-full h-full overflow-auto">
-                        <DynamicGrid columns={columns} rows={rows} />
+                        <DynamicGrid key={currentTable} columns={columns} rows={rows} />
                     </div>
                 </div>
             )}

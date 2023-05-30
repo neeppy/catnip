@@ -19,7 +19,7 @@ export const App = () => {
     return (
         <div className="bg-accent h-screen w-screen flex flex-col">
             <Header/>
-            <div className="flex h-full">
+            <div className="flex h-full overflow-hidden">
                 <Sidebar/>
                 <main className="bg-surface-300 flex-1 rounded-tl-xl relative overflow-hidden flex-center">
                     <MainScreen/>

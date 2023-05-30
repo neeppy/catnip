@@ -7,19 +7,28 @@ import { COLUMN_TYPES } from './types';
 import { createSSHTunnel } from '../../ssh';
 
 interface ColumnRow {
-    COLUMN_NAME: string;
-    DATA_TYPE: string;
-    COLUMN_DEFAULT: unknown;
-    IS_NULLABLE: string;
+    CHARACTER_MAXIMUM_LENGTH: number;
     COLUMN_COMMENT: string;
+    COLUMN_DEFAULT: unknown;
     COLUMN_KEY: string;
+    COLUMN_NAME: string;
+    COLUMN_TYPE: string;
+    DATA_TYPE: string;
+    IS_NULLABLE: string;
 }
 
 interface TableRow {
-    TABLE_NAME: string;
-    TABLE_ROWS: number;
     DATA_LENGTH: number;
     TABLE_COMMENT: string;
+    TABLE_NAME: string;
+    TABLE_ROWS: number;
+}
+
+function getEnumOptions(columnType: string) {
+    const enumRegex = /enum\((.+)\)/;
+    const [, match] = columnType.match(enumRegex);
+
+    return eval(`[${match}]`);
 }
 
 export const createMySQLAdapter: AdapterFactory = async (parameters: MySQLConnection) => {
@@ -58,6 +67,10 @@ export const createMySQLAdapter: AdapterFactory = async (parameters: MySQLConnec
                 isNullable: column.IS_NULLABLE === 'YES',
                 isPrimaryKey: column.COLUMN_KEY === 'PRI',
                 comment: column.COLUMN_COMMENT ?? '',
+                restrictions: {
+                    length: column.CHARACTER_MAXIMUM_LENGTH,
+                    options: column.DATA_TYPE === 'enum' ? getEnumOptions(column.COLUMN_TYPE) : [],
+                }
             }));
         },
 

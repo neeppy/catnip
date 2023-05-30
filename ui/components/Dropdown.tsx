@@ -1,4 +1,4 @@
-import { Fragment, PropsWithChildren, ReactElement, Ref, useRef, useState } from 'react';
+import { Fragment, MouseEvent, PropsWithChildren, ReactElement, Ref, useRef, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { equals } from 'ramda';
 import classNames from 'classnames';
@@ -12,6 +12,7 @@ export interface DropdownProps<T> {
     labelKey: StringKeys<T>;
     options: T[];
     value?: T | null;
+    disabled?: boolean;
     className?: string;
     optionsContainerClassName?: string;
     placement?: VariantProps<typeof getDropdownClassNames>['placement'];
@@ -50,6 +51,7 @@ export function Dropdown<T>({
     labelKey,
     options,
     value,
+    disabled,
     className,
     optionsContainerClassName,
     onChange,
@@ -67,7 +69,7 @@ export function Dropdown<T>({
     const filteredOptions = filterBy ? options.filter(option => String(option[labelKey]).toLowerCase().includes(filterBy.toLowerCase())) : options;
 
     return (
-        <Listbox value={value} onChange={onChange} by={equals}>
+        <Listbox value={value} onChange={onChange} by={equals} disabled={disabled}>
             <div ref={containerRef} className={classNames('relative', className)}>
                 {children}
                 <Transition
@@ -111,6 +113,8 @@ export function Dropdown<T>({
                                                     'bg-primary-500/50': active,
                                                     'bg-primary-500/75 shadow-lg': selected,
                                                 })}
+                                                onMouseDown={stopPropagation}
+                                                onPointerDown={stopPropagation}
                                                 value={option}
                                             >
                                                 {renderOption?.(option) || option[labelKey] as string}
@@ -125,6 +129,10 @@ export function Dropdown<T>({
             </div>
         </Listbox>
     );
+
+    function stopPropagation(event: MouseEvent) {
+        event.stopPropagation();
+    }
 }
 
 Dropdown.Trigger = Listbox.Button;

@@ -5,11 +5,17 @@ export interface QueryField {
     type: string;
 }
 
+export interface ColumnRestrictions {
+    length: number;
+    options: unknown[];
+}
+
 export interface DatabaseColumn extends QueryField {
     defaultValue: unknown;
     isNullable: boolean;
     isPrimaryKey: boolean;
     comment?: string;
+    restrictions: ColumnRestrictions;
 }
 
 export interface DatabaseTable {

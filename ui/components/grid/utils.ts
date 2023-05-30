@@ -1,5 +1,5 @@
 import { Range } from './useRangeCollection';
-import { SelectionData } from '$components/grid/Cell';
+import { SelectionType } from './Cell';
 
 export type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 type DirectionalFunction = (params: {
@@ -34,7 +34,7 @@ export const arrowNavigationMap: Record<Direction, DirectionalFunction> = {
 };
 
 export function focusCell(rowIndex: number, colIndex: number) {
-    const element = document.querySelector(`[data-row='${rowIndex}'][data-col='${colIndex}']`) as HTMLElement;
+    const element = document.querySelector(`[data-row='${rowIndex || 1}'][data-col='${colIndex || 1}']`) as HTMLElement;
 
     element.focus();
 }
@@ -50,7 +50,7 @@ export function isInRange(row: number, column: number, range: Range) {
     return isRowActive && isColActive;
 }
 
-export function getRangeByTypeAndCoords(type: SelectionData['type'], row: number, column: number, rows: unknown[], columns: unknown[]): Range {
+export function getRangeByTypeAndCoords(type: SelectionType, row: number, column: number, rows: unknown[], columns: unknown[]): Range {
     switch (type) {
         case 'cell':
             return {
