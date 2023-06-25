@@ -1,5 +1,6 @@
 import { KeyboardEvent } from 'react';
 import type { GridChildComponentProps } from 'react-window';
+import { Settings } from 'common/models/Settings';
 import type { Collection } from 'ui/hooks';
 import type { GridProps } from './DynamicGrid';
 import type { Range } from './useRangeCollection';
@@ -10,6 +11,7 @@ import { CellChange, DataCell } from './DataCell';
 export interface CellProps extends GridProps {
     allRanges: Range[];
     selectAll: () => void;
+    settings: Settings;
     onKeyboardNavigation: (event: KeyboardEvent) => void;
     changes: CellChange[];
     collection: Collection<CellChange>;

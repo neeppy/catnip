@@ -1,16 +1,19 @@
-import { KeyboardEvent, useRef } from 'react';
+import { KeyboardEvent, useEffect, useRef } from 'react';
 import { VariableSizeGrid } from 'react-window';
 import { DndContext, DragOverEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { DatabaseColumn, DatabaseRow, QueryField } from 'common/models/Database';
-import { useCollection, useNodeSize } from 'ui/hooks';
+import { useBoolean, useCollection, useNodeSize, useSettings } from 'ui/hooks';
 import { Cell, SelectionData, SelectionType } from './Cell';
 import { arrowNavigationMap, Direction, focusCell, getRangeByTypeAndCoords } from './utils';
 import { useRangeCollection } from './useRangeCollection';
 import { CellChange } from './DataCell';
+import { Changes } from './Changes';
+import { Button } from '../Button';
 
 export interface GridProps {
     columns: Array<QueryField | DatabaseColumn>;
     rows: DatabaseRow[];
+    onPersist?: (changes: Change[]) => unknown;
 }
 
 export interface RangePoint {
@@ -18,19 +21,62 @@ export interface RangePoint {
     column: number;
 }
 
-export function DynamicGrid({ rows, columns }: GridProps) {
+export interface Change {
+    row: Record<string, any>;
+    column: string;
+    value: any;
+}
+
+export function DynamicGrid({ rows, columns, onPersist }: GridProps) {
     const [parentRef, size] = useNodeSize();
+    const { settings } = useSettings();
+    const { boolean: isManualEnabled, on: enableManualMode, off: disableManualMode } = useBoolean(false);
+    const { boolean: isScheduled, on: startScheduledPersistTimer, off: stopScheduledPersistTimer } = useBoolean(false);
     const gridRef = useRef<VariableSizeGrid>(null);
     const focusTimeoutRef = useRef<any>(null);
+    const smartTimerRef = useRef<any>(null);
     const lastSelectionType = useRef<SelectionData['type']>('cell');
     const [allRanges, lastRange, range] = useRangeCollection();
     const [changes, collection] = useCollection<CellChange>([]);
 
     const sensors = useSensors(useSensor(PointerSensor));
 
+    useEffect(() => {
+        if (changes.length === 0) {
+            smartTimerRef.current && clearTimeout(smartTimerRef.current);
+            isManualEnabled && disableManualMode();
+            return;
+        } else switch (settings.behaviour.persistence) {
+            case 'auto':
+                doPersist();
+                return;
+
+            case 'smart':
+                if (!smartTimerRef.current) {
+                    startScheduledPersistTimer();
+                    smartTimerRef.current = setTimeout(doPersist, settings.behaviour.autoPersistDelay * 1000);
+                } else if (!isManualEnabled && changes.length === 1) {
+                    clearTimeout(smartTimerRef.current);
+                    stopScheduledPersistTimer();
+
+                    smartTimerRef.current = setTimeout(doPersist, settings.behaviour.autoPersistDelay * 1000);
+                } else if (changes.length > 1) {
+                    clearTimeout(smartTimerRef.current);
+                    enableManualMode();
+                    stopScheduledPersistTimer();
+                }
+
+                return;
+
+            case 'manual':
+                enableManualMode();
+                return;
+        }
+    }, [changes]);
+
     return (
         <DndContext onDragOver={onDragOver} sensors={sensors}>
-            <div className="w-full h-full" ref={parentRef}>
+            <div className="w-full h-full relative" ref={parentRef}>
                 {size && (
                     <VariableSizeGrid
                         className="select-none"
@@ -41,14 +87,58 @@ export function DynamicGrid({ rows, columns }: GridProps) {
                         rowHeight={() => 40}
                         columnCount={columns.length + 1}
                         rowCount={rows.length + 1}
-                        itemData={{ allRanges, rows, columns, select, changes, collection, onKeyboardNavigation, selectAll }}
+                        itemData={{
+                            allRanges,
+                            rows,
+                            columns,
+                            select,
+                            settings,
+                            changes,
+                            collection,
+                            onKeyboardNavigation,
+                            selectAll
+                        }}
                     >
                         {Cell}
                     </VariableSizeGrid>
                 )}
+                {isManualEnabled && (
+                    <div className="absolute bottom-10 right-10">
+                        <Changes changes={changes} onPersist={doPersist} />
+                    </div>
+                )}
+                {isScheduled && (
+                    <div className="absolute bottom-10 right-10 w-96 h-12 bg-surface-400 flex items-center gap-2 p-2 rounded-sm">
+                        <span className="mr-auto">Persisting...</span>
+                        <div className="w-48 h-4 rounded-full relative bg-surface-500">
+                            <div
+                                className="absolute rounded-full inset-y-0 left-0 bg-primary-500 animate-shrink"
+                                style={{ animationDuration: `${settings.behaviour.autoPersistDelay}s` }}
+                            />
+                        </div>
+                        <Button scheme="transparent">
+                            Undo
+                        </Button>
+                    </div>
+                )}
             </div>
         </DndContext>
     );
+
+    async function doPersist() {
+        const mappedChanges: Change[] = changes.map(change => ({
+            row: rows[change.rowIndex - 1],
+            column: change.column,
+            value: change.newValue,
+        }));
+
+        await onPersist?.(mappedChanges);
+
+        disableManualMode();
+        stopScheduledPersistTimer();
+        collection.clear();
+        smartTimerRef.current = null;
+    }
 
     function getColumnWidth(index: number) {
         let columnName;

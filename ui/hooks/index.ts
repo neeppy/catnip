@@ -5,3 +5,4 @@ export * from './useAutoFocus';
 export * from './useControlledEffect';
 export * from './useCollection';
 export * from './useClickOutside';
+export * from './useSettings';

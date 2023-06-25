@@ -3,6 +3,10 @@ import { Interop } from 'common/models/Interop';
 
 contextBridge.exposeInMainWorld('interop', {
     platform: process.platform,
+    settings: {
+        fetch: () => ipcRenderer.invoke('@@settings/fetch'),
+        update: updates => ipcRenderer.invoke('@@settings/update', updates),
+    },
     control: {
         close: () => ipcRenderer.invoke('@@app/close'),
         minimize: () => ipcRenderer.invoke('@@app/minimize'),

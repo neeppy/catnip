@@ -17,7 +17,7 @@ export interface CellChange {
 }
 
 export function DataCell({ rowIndex, columnIndex, data, style }: GridChildComponentProps<CellProps>) {
-    const { allRanges, rows, columns, select, changes, collection, onKeyboardNavigation } = data;
+    const { allRanges, rows, columns, select, settings, changes, collection, onKeyboardNavigation } = data;
     const column = columns[columnIndex - 1];
     const key = column.name;
 
@@ -77,10 +77,14 @@ export function DataCell({ rowIndex, columnIndex, data, style }: GridChildCompon
     );
 
     function handleCellChange(value: unknown) {
-        if (valueFromChanges) {
-            collection.update(changeIndex, { rowIndex, column: key, oldValue: currentValue, newValue: value });
+        const initialValue = rows[rowIndex - 1][key];
+
+        if (value === initialValue) {
+            collection.drop(changeIndex);
+        } else if (valueFromChanges) {
+            collection.update(changeIndex, { rowIndex, column: key, oldValue: initialValue, newValue: value });
         } else {
-            collection.push({ rowIndex, column: key, oldValue: currentValue, newValue: value });
+            collection.push({ rowIndex, column: key, oldValue: initialValue, newValue: value });
         }
     }
 
@@ -105,7 +109,6 @@ export function DataCell({ rowIndex, columnIndex, data, style }: GridChildCompon
 
     function handleCellClick(e: MouseEvent) {
         console.debug('[Generic Cell]', 'focused', column);
-        console.debug('[Generic Cell]', valueFromChanges, rows[rowIndex - 1][key]);
 
         select('cell', rowIndex, columnIndex, e.ctrlKey || e.metaKey, e.shiftKey);
     }

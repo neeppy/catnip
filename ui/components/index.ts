@@ -14,3 +14,4 @@ export { default as Editor } from './editor';
 export * from './grid';
 export * from './Loader';
 export * from './NumberSelect';
+export * from './RadioGroup';

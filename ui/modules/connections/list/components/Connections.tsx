@@ -10,6 +10,7 @@ import { useConnections } from '../../state';
 import { MySQLForm, SQLiteForm } from '../../form';
 import { fetchGroupedConnections } from '../queries';
 import { ConnectionBubbles } from './ConnectionBubbles';
+import { useSettings } from 'ui/hooks';
 
 const driverOptions = [
     {
@@ -34,15 +35,18 @@ const driverOptions = [
 
 export function Connections() {
     const queryClient = useQueryClient();
+    const { settings } = useSettings();
     const setActiveConnection = useConnections(state => state.setActiveConnection);
     const { data } = useQuery(['connections', 'grouped'], fetchGroupedConnections);
 
-    useEffect(() => {
-        const lastActiveConnection = localStorage.getItem('activeConnection');
-
-        if (lastActiveConnection) {
-            storage.connections.get(lastActiveConnection)
-                .then(connection => connection && onConnectionClick(connection));
+    useEffect(() => {       
+        if (settings.behaviour.newSessionActivity === 'restore') {
+            const lastActiveConnection = localStorage.getItem('activeConnection');
+    
+            if (lastActiveConnection) {
+                storage.connections.get(lastActiveConnection)
+                    .then(connection => connection && onConnectionClick(connection));
+            }
         }
     }, []);
 

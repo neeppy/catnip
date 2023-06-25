@@ -35,11 +35,14 @@ module.exports = {
             boxShadow: {
                 top: '0 -3px 10px 0 #0004',
                 right: '2px 0 20px 0 #0004',
+                neon: "0 0 5px theme('colors.primary.500'), 0 0 20px theme('colors.primary.400')",
             },
             animation: {
                 'fade-in': 'fade-in 200ms ease-out forwards',
                 'fade-in-left': 'fade-in-left 300ms ease-out forwards',
+                'fade-in-bottom': 'fade-in-bottom 300ms ease-out forwards',
                 'fade-out': 'fade-in 200ms ease-out reverse',
+                'shrink': 'shrink 200ms linear forwards',
                 'scale-in': 'scale-in 200ms ease-out forwards',
                 'scale-out': 'scale-in 200ms ease-out reverse',
                 'slide-in-left': 'slide-in-left 0.2s ease-out forwards',
@@ -63,6 +66,20 @@ module.exports = {
                         translate: '0',
                         opacity: 1
                     }
+                },
+                'fade-in-bottom': {
+                    '0%': {
+                        translate: '0 8px',
+                        opacity: 0,
+                    },
+                    '100%': {
+                        translate: '0',
+                        opacity: 1,
+                    },
+                },
+                'shrink': {
+                    '0%': { width: '100%' },
+                    '100%': { width: 0 },
                 },
                 'slide-in-left': {
                     '0%': { translate: '-100% 0' },
@@ -125,5 +142,23 @@ module.exports = {
                 }
             );
         }),
+        plugin(({ theme, addUtilities }) => {
+            // TODO: custom theme colors are not supported - should probably drop the themes plugin in favor of css variables
+            const neonUtilities = {};
+            const colors = theme('colors');
+
+            for (const color in colors) {
+                if (typeof colors[color] === 'object') {
+                    const firstColor = colors[color]['500'];
+                    const secondColor = colors[color]['700'];
+
+                    neonUtilities[`.neon-${color}`] = {
+                        boxShadow: `0 0  5px ${firstColor}, 0 0 20px ${secondColor}`,
+                    };
+                }
+            }
+
+            addUtilities(neonUtilities);
+        })
     ],
 };

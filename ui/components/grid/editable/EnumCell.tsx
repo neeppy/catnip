@@ -7,7 +7,7 @@ interface OwnProps extends CellProps {}
 
 export function EnumCell({ isEditable, column, currentValue, disableEditing, onChange }: OwnProps) {
     const triggerRef = useRef<HTMLButtonElement>(null);
-    const options = column.restrictions.options.map(opt => ({ value: opt as string }));
+    const options = column.restrictions?.options.map(opt => ({ value: opt as string })) ?? [];
 
     useControlledEffect(() => {
         setTimeout(() => {

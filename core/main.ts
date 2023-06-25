@@ -1,6 +1,7 @@
 import { app, ipcMain } from 'electron';
 import { release } from 'os';
 import { join } from 'path';
+import 'common/globals';
 import registerInteropMessages from './routes';
 import createWindow from './window';
 import registerAppEventListeners from './events';

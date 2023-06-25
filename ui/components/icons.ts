@@ -1,9 +1,15 @@
 export {
+    AiFillControl,
+    AiOutlineControl
+} from 'react-icons/ai';
+
+export {
     FaCheckCircle,
     FaChevronLeft,
     FaChevronRight,
     FaChevronUp,
     FaChevronDown,
+    FaCog,
     FaEdit,
     FaTrash,
     FaTable,
@@ -11,6 +17,7 @@ export {
     FaTimes,
     FaDatabase,
     FaLayerGroup,
+    FaPalette,
     FaPlay,
     FaPlus,
 } from 'react-icons/fa';
@@ -33,4 +40,11 @@ export {
 export {
     BsShift,
     BsFillFolderSymlinkFill,
+    BsArrowRight,
 } from 'react-icons/bs';
+
+export {
+    MdRadioButtonChecked,
+    MdRadioButtonUnchecked,
+    MdSend,
+} from 'react-icons/md';

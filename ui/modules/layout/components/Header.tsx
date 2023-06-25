@@ -1,22 +1,28 @@
 import { useAtom } from 'jotai';
-import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from '$components/icons';
+import { FaCog, VscChromeClose, VscChromeMaximize, VscChromeMinimize } from '$components/icons';
 import { Button } from '$components';
-import { appModeState } from '$module:globals';
+import { appModeState, useModalRegistry, SettingsModal } from '$module:globals';
 import { ConnectionTabs } from '$module:tabs';
 
 export function Header() {
     const [isAdvancedMode, setAdvancedMode] = useAtom(appModeState);
+    const open = useModalRegistry(state => state.open);
 
     return (
         <header id="title-bar" className="flex pl-4 h-[2.5rem]">
             <ConnectionTabs/>
-            <Button
-                scheme={isAdvancedMode ? 'primary' : 'secondary'} size="xs"
-                className={`border ml-auto mr-4 self-center ${isAdvancedMode ? 'border-primary-500' : 'border-secondary-500'}`}
-                onClick={toggleAppMode}
-            >
-                {isAdvancedMode ? 'Advanced View' : 'Simplified View'}
-            </Button>
+            <div className="flex gap-4 items-center mr-4 ml-auto">
+                <Button
+                    scheme={isAdvancedMode ? 'primary' : 'secondary'} size="xs"
+                    className={`border self-center ${isAdvancedMode ? 'border-primary-500' : 'border-secondary-500'}`}
+                    onClick={toggleAppMode}
+                >
+                    {isAdvancedMode ? 'Advanced View' : 'Simplified View'}
+                </Button>
+                <Button scheme="transparent" onClick={() => open(SettingsModal)}>
+                    <FaCog/>
+                </Button>
+            </div>
             {interop.platform === 'win32' && (
                 <>
                     <button className="text-foreground-default flex-center aspect-square h-full hover:bg-[#fff1] ml-6"

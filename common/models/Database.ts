@@ -15,7 +15,7 @@ export interface DatabaseColumn extends QueryField {
     isNullable: boolean;
     isPrimaryKey: boolean;
     comment?: string;
-    restrictions: ColumnRestrictions;
+    restrictions?: ColumnRestrictions;
 }
 
 export interface DatabaseTable {

@@ -16,7 +16,11 @@ interface DropAction {
     index: number;
 }
 
-type Action<T> = PushAction<T> | DropAction | Update<T>;
+interface ClearAction {
+    type: 'clear';
+}
+
+type Action<T> = PushAction<T> | DropAction | Update<T> | ClearAction;
 
 function init<T>(initialState: T[]): T[] {
     return initialState;
@@ -32,6 +36,8 @@ function reducer<T>(state: T[], action: Action<T>): T[] {
         case 'update':
             // @ts-ignore: with added in chromium 110
             return state.with(action.index, action.payload);
+        case 'clear':
+            return [];
     }
 }
 
@@ -39,6 +45,7 @@ export interface Collection<T> {
     push: (payload: T) => void;
     drop: (index: number) => void;
     update: (index: number, payload: T) => void;
+    clear: () => void;
 }
 
 export function useCollection<T>(initialState: T[] = []) {
@@ -56,5 +63,9 @@ export function useCollection<T>(initialState: T[] = []) {
         dispatch({ type: 'update', index, payload });
     }, []);
 
-    return [state, { push, drop, update } as Collection<T>] as const;
+    const clear = useCallback(() => {
+        dispatch({ type: 'clear' });
+    }, []);
+
+    return [state, { push, drop, update, clear } as Collection<T>] as const;
 }

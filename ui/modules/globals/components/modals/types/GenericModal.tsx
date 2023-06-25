@@ -32,10 +32,10 @@ export default function GenericModal({ modal }: OwnProps) {
 
     return (
         <Dialog open onClose={handleAnimatedClose} key={modal.key} role="dialog" className={modalClassName}>
-            <Dialog.Overlay className="absolute inset-0 bg-[#000a] z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
+            <Dialog.Overlay className="absolute inset-0 bg-[#000a] z-[-1] backdrop-blur-sm" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
             <div className={contentContainerClassName}>
                 {showCloseButton && (
-                    <Button scheme="transparent" className="absolute top-2 right-2" onClick={handleAnimatedClose}>
+                    <Button scheme="transparent" className="absolute top-2 right-2 z-10" onClick={handleAnimatedClose}>
                         <VscChromeClose/>
                     </Button>
                 )}

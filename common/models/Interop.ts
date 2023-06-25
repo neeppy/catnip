@@ -1,8 +1,13 @@
 import { AnyConnection } from './Connection';
 import { DatabaseColumn, DatabaseRow, QueryResult } from './Database';
+import { SettingChange, Settings } from './Settings';
 
 export interface Interop {
     platform: 'win32' | 'darwin';
+    settings: {
+        fetch: () => Promise<Settings>;
+        update: <T extends Leaves<Settings>>(updates: SettingChange<T>[]) => Promise<void>;
+    };
     control: {
         close: () => unknown;
         minimize: () => unknown;
