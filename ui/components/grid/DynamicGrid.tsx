@@ -1,5 +1,6 @@
-import { KeyboardEvent, useEffect, useRef } from 'react';
+import { KeyboardEvent, MouseEvent, useEffect, useRef } from 'react';
 import { VariableSizeGrid } from 'react-window';
+import { useContextMenu } from 'react-contexify';
 import { DndContext, DragOverEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { DatabaseColumn, DatabaseRow, QueryField } from 'common/models/Database';
 import { useBoolean, useCollection, useNodeSize, useSettings } from 'ui/hooks';
@@ -60,6 +61,7 @@ export function DynamicGrid({ rows, columns, onPersist }: GridProps) {
                     stopScheduledPersistTimer();
 
                     smartTimerRef.current = setTimeout(doPersist, settings.behaviour.autoPersistDelay * 1000);
+                    setTimeout(startScheduledPersistTimer, 20);
                 } else if (changes.length > 1) {
                     clearTimeout(smartTimerRef.current);
                     enableManualMode();
@@ -116,7 +118,7 @@ export function DynamicGrid({ rows, columns, onPersist }: GridProps) {
                                 style={{ animationDuration: `${settings.behaviour.autoPersistDelay}s` }}
                             />
                         </div>
-                        <Button scheme="transparent">
+                        <Button scheme="transparent" onClick={undoChanges}>
                             Undo
                         </Button>
                     </div>
@@ -134,6 +136,10 @@ export function DynamicGrid({ rows, columns, onPersist }: GridProps) {
 
         await onPersist?.(mappedChanges);
 
+        undoChanges();
+    }
+
+    function undoChanges() {
         disableManualMode();
         stopScheduledPersistTimer();
         collection.clear();

@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, MouseEvent } from 'react';
 import type { GridChildComponentProps } from 'react-window';
 import { Settings } from 'common/models/Settings';
 import type { Collection } from 'ui/hooks';

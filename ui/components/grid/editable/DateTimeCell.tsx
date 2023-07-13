@@ -37,10 +37,16 @@ export function DateTimeCell({ currentValue, isEditable, onChange, disableEditin
         return () => window.removeEventListener('pointerdown', onClickOutside);
     }, isEditable);
 
+    let displayValue = '';
+
+    if (currentValue !== null && !isNaN(asDate.getTime())) {
+        displayValue = format(asDate, formats[driver]);
+    }
+
     return (
         <>
             <div className={previewClass}>
-                {isNaN(asDate.getTime()) ? '' : format(asDate, 'dd MMM yyyy, HH:mm:ss')}
+                {displayValue}
             </div>
             {isEditable && (
                 <div ref={calendarContainerRef} className="absolute bg-surface-600/50 border border-surface-700 shadow-lg p-4 left-2 top-[calc(100%_+_0.5rem)] backdrop-blur-md rounded-md animate-fade-in-left">
