@@ -5,6 +5,7 @@ import { DatabaseColumn, DatabaseRow, DatabaseTable, QueryField, QueryResult } f
 import { AdapterFactory, QueryOptions } from '../createConnection';
 import { COLUMN_TYPES } from './types';
 import { createSSHTunnel } from '../../ssh';
+import { getColumnType } from '../getColumnType';
 
 interface ColumnRow {
     CHARACTER_MAXIMUM_LENGTH: number;
@@ -62,15 +63,16 @@ export const createMySQLAdapter: AdapterFactory = async (parameters: MySQLConnec
 
             return (rows as ColumnRow[]).map(column => ({
                 name: column.COLUMN_NAME,
-                type: column.DATA_TYPE,
+                type: getColumnType(parameters.driver, column.COLUMN_TYPE),
                 defaultValue: column.COLUMN_DEFAULT,
                 isNullable: column.IS_NULLABLE === 'YES',
                 isPrimaryKey: column.COLUMN_KEY === 'PRI',
                 comment: column.COLUMN_COMMENT ?? '',
-                restrictions: {
-                    length: column.CHARACTER_MAXIMUM_LENGTH,
-                    options: column.DATA_TYPE === 'enum' ? getEnumOptions(column.COLUMN_TYPE) : [],
-                }
+                ...column.DATA_TYPE === 'enum' && {
+                    details: {
+                        options: column.DATA_TYPE === 'enum' ? getEnumOptions(column.COLUMN_TYPE) : [],
+                    },
+                },
             }));
         },
 

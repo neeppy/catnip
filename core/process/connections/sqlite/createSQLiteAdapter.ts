@@ -2,6 +2,7 @@ import SQLiteDatabase from 'better-sqlite3';
 import { SQLiteConnection } from 'common/models/Connection';
 import { AdapterFactory, QueryOptions } from '../createConnection';
 import { DatabaseColumn, DatabaseRow } from '../../../../common/models/Database';
+import { getColumnType } from '../getColumnType';
 
 interface SQLiteRowWithName {
     name: string;
@@ -28,7 +29,7 @@ export const createSQLiteAdapter: AdapterFactory = async(parameters: SQLiteConne
 
                 const columns: DatabaseColumn[] = rawColumns.map(row => ({
                     name: row.name,
-                    type: row.type,
+                    type: getColumnType(parameters.driver, row.type),
                     defaultValue: row.dflt_value,
                     isNullable: row.notnull === 1,
                     isPrimaryKey: row.pk === 1,
@@ -71,9 +72,12 @@ export const createSQLiteAdapter: AdapterFactory = async(parameters: SQLiteConne
                 const columnMetadata = results.columns();
                 const rows = results.all();
 
-                const fields = columnMetadata.map(field => ({
+                const fields: DatabaseColumn[] = columnMetadata.map(field => ({
                     name: field.name,
-                    type: field.type || 'NVARCHAR',
+                    type: getColumnType(parameters.driver, field.type || 'NVARCHAR'),
+                    isNullable: true,
+                    isPrimaryKey: false,
+                    defaultValue: null,
                 }));
 
                 resolve({

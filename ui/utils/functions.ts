@@ -12,6 +12,6 @@ export function debounce(duration: number, fn: Function) {
 
 export function fnMerge(...functions: Function[]) {
     return function(...args: any) {
-        functions.forEach(fn => fn(...args));
+        functions.forEach(fn => fn?.(...args));
     };
 }

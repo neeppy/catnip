@@ -3,7 +3,8 @@ import { DatabaseColumn, DatabaseRow } from 'common/models/Database';
 import { TableView } from '$module:tabs';
 import { getTableColumns, getTableRows } from '../queries';
 import SingleDatabaseBreadcrumbs from './SingleDatabaseBreadcrumbs';
-import { Change, DynamicGrid } from '$components';
+import { Change } from '$components';
+import { Table } from '$components/table';
 
 export function SingleDatabaseTableView({ connectionId, currentDatabase, currentTable, ...rest }: TableView) {
     const { data: columns } = useQuery<DatabaseColumn[]>({
@@ -31,7 +32,7 @@ export function SingleDatabaseTableView({ connectionId, currentDatabase, current
             {rows && columns && (
                 <div className="col-span-2 overflow-hidden">
                     <div className="w-full h-full overflow-auto">
-                        <DynamicGrid key={currentTable} columns={columns} rows={rows} onPersist={doPersist} />
+                        <Table key={currentTable} columns={columns} rows={rows} onPersist={doPersist} />
                     </div>
                 </div>
             )}

@@ -55,10 +55,11 @@ export function BehaviourSettings({ settings, onChangeSetting }: OwnProps) {
             {settings.persistence === 'smart' && (
                 <Input
                     type="number"
-                    label="A single cell change will be automatically persisted after (seconds)"
+                    min={0} step={100}
+                    label="A single cell change will be automatically persisted after (milliseconds)"
                     defaultValue={settings.autoPersistDelay || defaultSettings.autoPersistDelay}
                     className="mt-10 animate-fade-in-left"
-                    onBlur={e => onChangeSetting('behaviour.autoPersistDelay', Math.floor(e.target.valueAsNumber) || 10)}
+                    onBlur={e => onChangeSetting('behaviour.autoPersistDelay', Math.floor(e.target.valueAsNumber) || 10000)}
                 />
             )}
         </div>

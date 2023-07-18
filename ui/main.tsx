@@ -15,6 +15,8 @@ declare global {
         submit?: any;
     };
 
+    type VoidFn = () => void;
+
     interface Window {
         interop: Interop;
         theme: (theme: any) => void;

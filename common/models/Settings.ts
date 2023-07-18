@@ -25,6 +25,6 @@ export const getDefaultSettings = (): Settings => ({
     behaviour: {
         newSessionActivity: 'restore',
         persistence: 'smart',
-        autoPersistDelay: 10,
+        autoPersistDelay: 10000,
     },
 });

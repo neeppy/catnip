@@ -1,12 +1,21 @@
+export enum ColumnType {
+    String = 'string',
+    Text = 'text',
+    Number = 'number',
+    Date = 'date',
+    DateTime = 'datetime',
+    Enum = 'enum',
+    Boolean = 'bool',
+}
+
 export type DatabaseRow = Record<string, unknown>;
 
 export interface QueryField {
     name: string;
-    type: string;
+    type: ColumnType;
 }
 
-export interface ColumnRestrictions {
-    length: number;
+export interface ColumnDetails {
     options: unknown[];
 }
 
@@ -15,7 +24,7 @@ export interface DatabaseColumn extends QueryField {
     isNullable: boolean;
     isPrimaryKey: boolean;
     comment?: string;
-    restrictions?: ColumnRestrictions;
+    details?: Partial<ColumnDetails>;
 }
 
 export interface DatabaseTable {
@@ -24,6 +33,6 @@ export interface DatabaseTable {
 }
 
 export interface QueryResult {
-    columns: QueryField[];
+    columns: DatabaseColumn[];
     rows: DatabaseRow[];
 }

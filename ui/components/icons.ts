@@ -11,6 +11,7 @@ export {
     FaChevronDown,
     FaCog,
     FaEdit,
+    FaInfoCircle,
     FaTrash,
     FaTable,
     FaTerminal,

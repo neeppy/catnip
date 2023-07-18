@@ -4,7 +4,7 @@ import { isMultiDatabaseConnection, useConnections } from '$module:connections';
 import { TableView } from '$module:tabs';
 import { getTableColumns, getTableRows } from '../queries';
 import Breadcrumbs from './Breadcrumbs';
-import { DynamicGrid } from '$components';
+import { Change, Table } from 'ui/components/table';
 
 export function TableViewTab({ connectionId, currentDatabase, currentTable, ...rest }: TableView) {
     const connection = useConnections(state => state.currentActiveConnection!);
@@ -35,10 +35,14 @@ export function TableViewTab({ connectionId, currentDatabase, currentTable, ...r
             {rows && columns && (
                 <div className="col-span-2 overflow-hidden">
                     <div className="w-full h-full overflow-auto">
-                        <DynamicGrid key={currentTable} columns={columns} rows={rows} />
+                        <Table key={currentTable} columns={columns} rows={rows} onPersist={handleChangePersist} />
                     </div>
                 </div>
             )}
         </div>
     );
+
+    async function handleChangePersist(changes: Change[]) {
+        console.debug('[Table] Persisting changes', changes);
+    }
 }

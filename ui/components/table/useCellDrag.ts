@@ -1,7 +1,7 @@
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { fnMerge } from 'ui/utils/functions';
 
-export function useCellDrag(rowIndex: number, columnIndex: number, isEditable?: boolean) {
+export function useCellDrag(rowIndex: number, columnIndex: number, isEditable: boolean = false) {
     const dndData = {
         type: 'cell',
         row: rowIndex,
@@ -9,7 +9,7 @@ export function useCellDrag(rowIndex: number, columnIndex: number, isEditable?: 
     };
 
     const { setNodeRef: createDroppableRef } = useDroppable({
-        id: `drop-${rowIndex}-${columnIndex}`,
+        id: `cell-${rowIndex}-${columnIndex}-drop`,
         data: dndData,
     });
 

@@ -2,8 +2,7 @@ import * as monaco from 'monaco-editor';
 import { useMutation } from '@tanstack/react-query';
 import classnames from 'classnames';
 import { FaPlay } from '$components/icons';
-import { useBoolean } from 'ui/hooks';
-import { Button, Editor, DynamicGrid } from '$components';
+import { Button, Editor, Change, Table } from '$components';
 import { EditorView, updateTab } from '$module:tabs';
 import { getCurrentQueries } from '../utils';
 import { EditorCommands } from './EditorCommands';
@@ -15,21 +14,19 @@ interface IMutationData {
 }
 
 export function SingleDatabaseEditorTab(tab: EditorView) {
-    const { boolean: isEditorFocused, on, off } = useBoolean(true);
-
     const { data: queryResult, ...mutation } = useMutation({
         mutationKey: ['query', tab.connectionId, tab.currentQuery],
         mutationFn: (data: IMutationData) => runUserQuery(data.connectionId, data.query),
     });
 
-    const editorClasses = classnames('transition-all duration-200 relative shadow-right', {
-        'w-[30%]': !isEditorFocused,
-        'w-[70%]': isEditorFocused
+    const editorClasses = classnames('transition-all h-full duration-200 relative shadow-right', {
+        'w-1/3': queryResult,
+        'w-2/3': !queryResult,
     });
 
     return (
         <div className="flex flex-col bg-surface-400 w-full h-full">
-            <div className="flex items-center gap-2 p-2 text-foreground-default bg-surface-500 shadow-xl z-10">
+            <div className="h-12 flex items-center gap-2 px-2 text-foreground-default bg-surface-500 shadow-xl z-10">
                 <Button shape="square" className="ml-auto rounded-md" onClick={handleSubmitByButton}>
                     <FaPlay/>
                 </Button>
@@ -38,22 +35,26 @@ export function SingleDatabaseEditorTab(tab: EditorView) {
                 <div className={editorClasses}>
                     <Editor
                         defaultValue={tab.currentQuery ?? ''}
-                        onFocus={on}
-                        onBlur={off}
                         onSave={handleSave}
                         onPartialSubmit={handlePartialSubmit}
                         onSubmit={handleSubmit}
                     />
                     <EditorCommands/>
                 </div>
-                <div className="flex-1 empty:w-0 duration-200 transition-all p-4 overflow-auto">
-                    {queryResult && (
-                        <DynamicGrid {...queryResult} />
-                    )}
+                <div className="relative flex-1">
+                    <div className="absolute inset-4">
+                        {queryResult && (
+                            <Table {...queryResult} onPersist={handleManualCellChangePersist} />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     );
+
+    async function handleManualCellChangePersist(changes: Change[]) {
+        console.log('persisting changes', changes);
+    }
 
     async function handleSubmitByButton() {
         const [activeEditor] = monaco.editor.getEditors();

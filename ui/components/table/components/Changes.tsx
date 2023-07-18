@@ -1,8 +1,7 @@
 import { useBoolean } from 'ui/hooks';
-import { Button } from '../Button';
-import { BsArrowRight, FaChevronUp, MdSend } from '../icons';
-import { CellChange } from './DataCell';
-import { Collapse } from '../Collapse';
+import { Button, Collapse } from '$components';
+import { BsArrowRight, FaChevronUp, MdSend } from '$components/icons';
+import { CellChange } from '..';
 
 interface OwnProps {
     changes: CellChange[];
@@ -13,10 +12,10 @@ export function Changes({ changes, onPersist }: OwnProps) {
     const { boolean: isExpanded, toggle } = useBoolean(false);
 
     const grouped = changes.reduce<Record<number, CellChange[]>>((temp, change) => {
-        if (!temp.hasOwnProperty(change.rowIndex)) {
-            temp[change.rowIndex] = [change];
+        if (!temp.hasOwnProperty(change.rowIndex + 1)) {
+            temp[change.rowIndex + 1] = [change];
         } else {
-            temp[change.rowIndex].push(change);
+            temp[change.rowIndex + 1].push(change);
         }
 
         return temp;

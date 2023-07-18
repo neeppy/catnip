@@ -2,6 +2,7 @@ import MonacoEditor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useAtomValue } from 'jotai';
 import { themeState } from '$module:globals';
+import { useEffect } from 'react';
 
 loader.config({ monaco });
 
@@ -29,6 +30,18 @@ export function Editor({
     onEscape
 }: OwnProps) {
     const theme = useAtomValue(themeState);
+
+    useEffect(() => {
+        function resizeHandler() {
+            const [activeEditor] = monaco.editor.getEditors();
+
+            activeEditor.layout({} as unknown as monaco.editor.IDimension);
+        }
+
+        window.addEventListener('resize', resizeHandler);
+
+        return () => window.removeEventListener('resize', resizeHandler);
+    }, []);
 
     return (
         <MonacoEditor
@@ -62,7 +75,7 @@ export function Editor({
                 hideCursorInOverviewRuler: true,
                 wordWrap: 'on',
                 wrappingIndent: 'indent',
-                cursorBlinking: 'smooth'
+                cursorBlinking: 'smooth',
             }}
         />
     );
