@@ -1,8 +1,7 @@
 import MonacoEditor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { useAtomValue } from 'jotai';
-import { themeState } from '$module:globals';
 import { useEffect } from 'react';
+import { useSettings } from 'ui/hooks';
 
 loader.config({ monaco });
 
@@ -29,7 +28,7 @@ export function Editor({
     onSave,
     onEscape
 }: OwnProps) {
-    const theme = useAtomValue(themeState);
+    const { settings } = useSettings();
 
     useEffect(() => {
         function resizeHandler() {
@@ -45,19 +44,10 @@ export function Editor({
 
     return (
         <MonacoEditor
-            theme={theme !== 'dark' ? 'light' : 'vs-dark'}
+            theme={settings.appearance.theme !== 'dark' ? 'light' : 'vs-dark'}
             language="sql"
             defaultValue={defaultValue}
             onMount={editor => {
-                editor.focus();
-                editor.setSelection(new monaco.Selection(999, 999, 999, 999));
-
-                if (submitOnEnter) {
-                    editor.addCommand(monaco.KeyCode.Enter, () => onSubmit?.(editor.getValue()));
-                } else {
-                    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => onSubmit?.(editor.getValue()));
-                }
-
                 onBlur && editor.onDidBlurEditorWidget(onBlur);
                 onFocus && editor.onDidFocusEditorWidget(onFocus);
                 onChange && editor.onDidChangeModelContent(onChange);
