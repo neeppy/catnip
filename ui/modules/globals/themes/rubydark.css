@@ -1,0 +1,27 @@
+[data-theme="rubydark"] {
+    --base-100: 20 20 30;
+    --base-200: 25 25 36;
+    --base-300: 30 30 42;
+    --base-400: 35 35 48;
+    --base-500: 40 40 54;
+    --base-content: 232 232 232;
+
+    --primary: 236 54 54;
+    --primary-dark: 212 42 42;
+    --primary-darker: 188 30 30;
+    --primary-light: 248 60 60;
+    --primary-lighter: 255 66 66;
+    --primary-content: 232 232 232;
+
+    --accent: 20 20 40;
+
+    --content: var(--base-content);
+    --content-subtle: 200 200 200;
+    --content-subtlest: 160 160 160;
+
+    --transparent-100: #fff4;
+    --transparent-200: #fff3;
+    --transparent-300: #fff2;
+    --transparent-400: #fff1;
+}
+

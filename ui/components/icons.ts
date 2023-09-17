@@ -4,6 +4,7 @@ export {
 } from 'react-icons/ai';
 
 export {
+    FaBars,
     FaCheckCircle,
     FaChevronLeft,
     FaChevronRight,
@@ -13,6 +14,7 @@ export {
     FaEdit,
     FaInfoCircle,
     FaTrash,
+    FaFolder,
     FaTable,
     FaTerminal,
     FaTimes,

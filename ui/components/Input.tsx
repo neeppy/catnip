@@ -4,12 +4,12 @@ import classnames from 'classnames';
 
 export const getInputClassName = cva([
     'peer rounded-sm transition-all duration-200',
-    'placeholder:text-transparent focus:placeholder:text-foreground-subtle placeholder:duration-200',
-    'shadow-sm shadow-surface-300 focus:shadow-surface-500'
+    'placeholder:text-transparent focus:placeholder:text-content-subtle placeholder:duration-200',
+    'shadow-sm shadow-base-200 focus:shadow-base-400'
 ], {
     variants: {
         variant: {
-            default: 'bg-surface-600 focus:bg-surface-800 hover:bg-surface-700 text-foreground-default',
+            default: 'bg-base-300 focus:bg-base-500 hover:bg-base-400',
         },
         size: {
             sm: 'px-2 py-1.5 text-sm',
@@ -25,7 +25,7 @@ export const getInputClassName = cva([
 
 export const getLabelClassName = cva([
     'absolute transition-all duration-200 select-none cursor-text',
-    'text-foreground-subtlest peer-hover:text-foreground-subtle peer-focus:text-foreground-default',
+    'text-content-subtlest peer-hover:text-content-subtle peer-focus:text-content',
 ], {
     variants: {
         size: {

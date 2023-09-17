@@ -5,7 +5,7 @@ interface OwnProps extends SettingsSectionProps {
     settings: Settings['appearance'];
 }
 
-const themes = ['dark', 'skyblue'] as const;
+const themes = ['rubydark', 'skyblue'] as const;
 
 export function AppearanceSettings({ settings, onChangeSetting }: OwnProps) {
     return (
@@ -18,7 +18,7 @@ export function AppearanceSettings({ settings, onChangeSetting }: OwnProps) {
                 {themes.map(theme => (
                     <button
                         key={theme} data-theme={theme}
-                        className={`w-16 h-16 shrink-0 bg-gradient-to-br rounded-full from-accent from-50% to-50% to-primary-500 ${settings.theme === theme ? 'ring-2 ring-foreground-default' : ''}`}
+                        className={`w-16 h-16 shrink-0 bg-gradient-to-br rounded-full from-accent from-50% to-50% to-primary ${settings.theme === theme ? 'ring-2 ring-base-content' : ''}`}
                         onClick={() => onChangeSetting('appearance.theme', theme)}
                     />
                 ))}

@@ -27,7 +27,7 @@ export interface DropdownProps<T> {
 const getDropdownClassNames = cva([
     'absolute p-4 overflow-hidden flex flex-col z-[2000]',
     'max-h-[24rem] w-[20rem]',
-    'bg-surface-300/90 border border-surface-700 backdrop-blur-sm shadow-lg rounded-xl',
+    'bg-base-100/90 border border-base-500 backdrop-blur-sm shadow-lg rounded-xl',
 ], {
     variants: {
         placement: {
@@ -110,8 +110,8 @@ export function Dropdown<T>({
                                             <Listbox.Option
                                                 key={option[uniqueKey] as string}
                                                 className={({ active, selected }) => classNames('px-2 py-3 text-sm rounded-md cursor-pointer truncate', {
-                                                    'bg-primary-500/50': active,
-                                                    'bg-primary-500/75 shadow-lg': selected,
+                                                    'bg-primary/50': active,
+                                                    'bg-primary/75 shadow-lg': selected,
                                                 })}
                                                 onMouseDown={stopPropagation}
                                                 onPointerDown={stopPropagation}

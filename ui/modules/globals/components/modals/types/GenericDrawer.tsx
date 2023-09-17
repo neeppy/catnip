@@ -1,5 +1,5 @@
+import { useEffect, useRef } from 'react';
 import classnames from 'classnames';
-import { Dialog } from '@headlessui/react';
 import { cva } from 'class-variance-authority';
 import { Button } from '$components';
 import { VscChromeClose } from '$components/icons';
@@ -71,8 +71,15 @@ const getDrawerClass = cva('', {
 });
 
 export default function GenericDrawer({ modal }: OwnProps) {
+    const dialogRef = useRef<HTMLDialogElement>(null);
     const [state, handleAnimatedClose] = useModalAnimationState(modal.key, 200);
     const { contentComponent: Component } = modal;
+
+    useEffect(() => {
+        if (dialogRef.current && !dialogRef.current.open) {
+            dialogRef.current.showModal();
+        }
+    }, []);
 
     const {
         placement,
@@ -80,7 +87,7 @@ export default function GenericDrawer({ modal }: OwnProps) {
         showCloseButton
     } = modal.settings;
 
-    const modalClassName = classnames('fixed top-0 left-0 w-full h-full z-[10000]', {
+    const modalClassName = classnames('relative w-screen h-screen z-[10000] bg-transparent text-base-content overflow-hidden', {
         'animate-fade-in': state === 'opening',
         'animate-fade-out': state === 'closing'
     });
@@ -88,8 +95,8 @@ export default function GenericDrawer({ modal }: OwnProps) {
     const contentContainerClassName = classnames('absolute text-foreground-default', getDrawerClass({ placement, state }));
 
     return (
-        <Dialog open onClose={handleAnimatedClose} key={modal.key} role="dialog" className={modalClassName}>
-            <Dialog.Overlay className="absolute inset-0 bg-[#000a] z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
+        <dialog key={modal.key} id={modal.key} role="dialog" ref={dialogRef} className={modalClassName}>
+            <div className="absolute inset-0 bg-base-100/75 z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
             <div className={contentContainerClassName}>
                 {showCloseButton && (
                     <Button scheme="transparent" className="absolute top-2 right-2" onClick={handleAnimatedClose}>
@@ -98,6 +105,6 @@ export default function GenericDrawer({ modal }: OwnProps) {
                 )}
                 <Component {...modal.props} close={handleAnimatedClose} />
             </div>
-        </Dialog>
+        </dialog>
     );
 }

@@ -1,15 +1,15 @@
 .contexify {
-    @apply bg-surface-600 border border-surface-800 z-[2000];
+    @apply bg-base-200 border border-base-300 z-[2000];
 }
 
 .contexify .contexify_separator {
-    @apply bg-foreground-subtlest;
+    @apply bg-base-content;
 }
 
 .contexify_item > .contexify_itemContent {
-    @apply text-sm text-foreground-default;
+    @apply text-sm text-base-content;
 }
 
 .contexify .contexify_item:not(.contexify_item-disabled):hover > .contexify_itemContent {
-    @apply bg-primary-500/75;
+    @apply bg-primary/75;
 }

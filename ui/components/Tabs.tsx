@@ -1,6 +1,6 @@
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
-import { Button, ButtonProps } from './Button';
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
+import { Button, ButtonProps } from './Button';
 
 interface ContextType {
     currentTab: string;
@@ -14,10 +14,17 @@ const Context = createContext<ContextType>({
 
 interface OwnProps {
     initial?: string;
+    tab?: string | null;
 }
 
-export function Tabs({ initial, children }: PropsWithChildren<OwnProps>) {
+export function Tabs({ initial, tab, children }: PropsWithChildren<OwnProps>) {
     const [currentTab, setCurrentTab] = useState<string>(initial || '');
+
+    useEffect(() => {
+        if (tab && tab !== currentTab) {
+            setCurrentTab(tab || '');
+        }
+    }, [tab]);
 
     const ctx = useMemo(() => ({
         currentTab,
@@ -58,18 +65,19 @@ function TabHeader({ id, className, activeClassName, inactiveClassName, ...rest 
 
 interface ContentProps {
     id: string;
+    className?: string;
 }
 
-function TabContent({ id, children }: PropsWithChildren<ContentProps>) {
+function TabContent({ id, className, children }: PropsWithChildren<ContentProps>) {
     const ctx = useContext(Context);
 
-    const className = classnames({
+    const containerClass = classnames(className, {
         'animate-fade-in-left': ctx.currentTab === id,
         'hidden': ctx.currentTab !== id,
     });
 
     return (
-        <div className={className}>
+        <div className={containerClass}>
             {children}
         </div>
     );

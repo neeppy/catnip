@@ -25,7 +25,7 @@ export function SQLiteForm({ initialValues, close }: OwnProps) {
 
     return (
         <Form initialValues={initialValues} config={formConfig}>
-            <div className="flex flex-col bg-surface-400 w-[32rem] h-full shadow-xl p-4 pt-6">
+            <div className="flex flex-col bg-base-200 w-[32rem] h-full shadow-xl p-4 pt-6">
                 <Typography as="h1" intent="h1" className="mb-8">
                     Connect to SQLite Database
                 </Typography>

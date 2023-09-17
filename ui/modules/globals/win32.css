@@ -12,16 +12,16 @@
 }
 
 ::-webkit-scrollbar-track {
-    background: theme(colors.transparent-400);
+    @apply bg-transparent;
     @apply rounded-md;
 }
 
 ::-webkit-scrollbar-thumb {
     transition: background 200ms;
-    background: theme(colors.transparent-300);
+    @apply bg-transparent;
     @apply rounded-md;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: theme(colors.transparent-200);
+    @apply bg-transparent;
 }

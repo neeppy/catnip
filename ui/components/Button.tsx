@@ -6,7 +6,7 @@ import { Loader } from './Loader';
 
 const intentSchemeCompound = (intent: any, scheme: any, className: string | string[]) => ({ intent, scheme, className });
 
-const getButtonClassName = cva('transition-all duration-200 select-none whitespace-nowrap cursor-pointer capitalize font-semibold disabled:cursor-not-allowed', {
+const getButtonClassName = cva('transition-all duration-200 select-none whitespace-nowrap cursor-pointer capitalize font-semibold disabled:cursor-not-allowed active:scale-95', {
     variants: {
         intent: {
             solid: null,
@@ -16,7 +16,7 @@ const getButtonClassName = cva('transition-all duration-200 select-none whitespa
             custom: null,
             primary: null,
             secondary: null,
-            transparent: 'bg-transparent-500 hover:bg-transparent-400 focus:bg-transparent-400 active:bg-transparent-300 enabled:text-transparent-text'
+            transparent: 'bg-transparent hover:bg-transparent-400 focus:bg-transparent-400 active:bg-transparent-300 enabled:text-transparent-text'
         },
         shape: {
             flat: null,
@@ -35,11 +35,11 @@ const getButtonClassName = cva('transition-all duration-200 select-none whitespa
     },
     compoundVariants: [
         intentSchemeCompound('solid', 'primary', [
-            'bg-primary-500 enabled:hover:bg-primary-400 enabled:focus:bg-primary-400 enabled:active:bg-primary-300 text-primary-text',
-            'disabled:bg-primary-600',
+            'bg-primary enabled:hover:bg-primary-dark enabled:focus:bg-primary-dark enabled:active:bg-primary-darker text-primary-text',
+            'disabled:bg-primary-light',
         ]),
         intentSchemeCompound('solid', 'secondary', 'bg-secondary-500 enabled:hover:bg-secondary-400 enabled:focus:bg-secondary-400 enabled:active:bg-secondary-300 text-secondary-text'),
-        intentSchemeCompound('ghost', 'primary', 'border bg-transparent border-primary-500 hover:bg-primary-500 focus:bg-primary-500 text-primary-text'),
+        intentSchemeCompound('ghost', 'primary', 'border bg-transparent border-primary hover:bg-primary focus:bg-primary text-primary-text'),
         intentSchemeCompound('ghost', 'secondary', 'border bg-transparent border-secondary-500 hover:bg-secondary-500 focus:bg-primary-500 text-secondary-text'),
     ],
     defaultVariants: {

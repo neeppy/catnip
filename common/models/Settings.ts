@@ -1,5 +1,5 @@
 interface AppearanceSettings {
-    theme: 'dark' | 'skyblue';
+    theme: 'rubydark' | 'skyblue';
 }
 
 interface BehaviourSettings {
@@ -20,7 +20,7 @@ export interface SettingChange<T extends Leaves<Settings> = Leaves<Settings>> {
 
 export const getDefaultSettings = (): Settings => ({
     appearance: {
-        theme: 'dark',
+        theme: 'rubydark',
     },
     behaviour: {
         newSessionActivity: 'restore',

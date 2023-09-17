@@ -1,4 +1,5 @@
 import './global.css';
+import './themes/rubydark.css';
 
 // windows scrollbar styles
 if (interop.platform === 'win32') {

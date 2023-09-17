@@ -3,23 +3,23 @@
 }
 
 .react-calendar__navigation > button {
-    @apply min-w-[1.5rem] hover:bg-transparent-400 active:bg-transparent-300 focus:bg-transparent-300;
+    @apply min-w-[1.5rem] hover:bg-transparent active:bg-transparent focus:bg-transparent;
 }
 
 .react-calendar__month-view__weekdays__weekday {
-    @apply text-center text-foreground-subtle my-3;
+    @apply text-center text-base-content my-3;
 }
 
 .react-calendar__tile {
     @apply h-10 w-10;
-    @apply hover:bg-transparent-400 active:bg-transparent-300 focus:bg-transparent-300;
+    @apply hover:bg-transparent active:bg-transparent focus:bg-transparent;
 }
 
 .react-calendar__tile--active {
-    @apply bg-primary-600 text-primary-text font-semibold;
-    @apply hover:bg-primary-600 active:bg-primary-600 focus:bg-primary-600;
+    @apply bg-primary text-primary-content font-semibold;
+    @apply hover:bg-primary-dark active:bg-primary-darker focus:bg-primary-dark;
 }
 
 .react-calendar__month-view__days__day--neighboringMonth {
-    @apply text-foreground-subtlest;
+    @apply text-base-content;
 }

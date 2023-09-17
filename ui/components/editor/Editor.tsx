@@ -2,12 +2,13 @@ import MonacoEditor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useEffect } from 'react';
 import { useSettings } from 'ui/hooks';
+import { PlaceholderContentWidget } from './widgets/PlaceholderContentWidget';
 
 loader.config({ monaco });
 
 interface OwnProps {
-    defaultValue: string;
-    submitOnEnter?: boolean;
+    defaultValue?: string;
+    placeholder?: string;
     onBlur?: () => unknown;
     onFocus?: () => unknown;
     onChange?: (event: monaco.editor.IModelContentChangedEvent) => unknown;
@@ -15,18 +16,19 @@ interface OwnProps {
     onSave?: (content: string) => unknown;
     onSubmit?: (query: string) => unknown;
     onEscape?: () => unknown;
+    onMount?: (editor: monaco.editor.IStandaloneCodeEditor) => unknown;
 }
 
 export function Editor({
-    defaultValue,
-    submitOnEnter = false,
+    defaultValue = '',
+    placeholder = '',
     onBlur,
     onChange,
     onFocus,
     onPartialSubmit,
-    onSubmit,
     onSave,
-    onEscape
+    onEscape,
+    onMount,
 }: OwnProps) {
     const { settings } = useSettings();
 
@@ -44,7 +46,7 @@ export function Editor({
 
     return (
         <MonacoEditor
-            theme={settings.appearance.theme !== 'dark' ? 'light' : 'vs-dark'}
+            theme={settings.appearance.theme.includes('dark') ? 'vs-dark' : 'light'}
             language="sql"
             defaultValue={defaultValue}
             onMount={editor => {
@@ -52,9 +54,17 @@ export function Editor({
                 onFocus && editor.onDidFocusEditorWidget(onFocus);
                 onChange && editor.onDidChangeModelContent(onChange);
 
+                if (placeholder && !defaultValue) {
+                    editor.addContentWidget(
+                        new PlaceholderContentWidget(placeholder, editor)
+                    );
+                }
+
                 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => onPartialSubmit?.(editor.getValue(), editor.getSelection()));
                 editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => onSave?.(editor.getValue()));
                 editor.addCommand(monaco.KeyCode.Escape, () => onEscape?.());
+
+                onMount?.(editor);
             }}
             options={{
                 lineNumbersMinChars: 3,
@@ -66,6 +76,7 @@ export function Editor({
                 wordWrap: 'on',
                 wrappingIndent: 'indent',
                 cursorBlinking: 'smooth',
+                renderLineHighlight: 'none',
             }}
         />
     );

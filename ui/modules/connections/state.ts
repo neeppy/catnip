@@ -15,3 +15,15 @@ export const useConnections = create<UseConnections>(set => ({
         activeConnections: [conn, ...prevState.activeConnections],
     })),
 }));
+
+interface UseActiveConnections {
+    activeConnections: Map<string, AnyConnection>;
+    markActive: (conn: AnyConnection) => void;
+}
+
+export const useActiveConnections = create<UseActiveConnections>(set => ({
+    activeConnections: new Map([]),
+    markActive: conn => set(prevState => ({
+        activeConnections: prevState.activeConnections.set(conn.id, conn),
+    })),
+}));

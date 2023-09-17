@@ -2,6 +2,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import storage from '$storage';
 import client from 'ui/utils/query';
 import { AnyTab, EditorView, TableView, useTabActivity } from './state';
+import { Tab } from './types';
 
 async function getDefaultOrder(connectionId: string) {
     const defaultOrder = await storage.tabs.where('connectionId')
@@ -9,6 +10,26 @@ async function getDefaultOrder(connectionId: string) {
         .count();
 
     return defaultOrder + 1;
+}
+
+export async function openNewTab(connectionId: string, initialContent: string, autoRun?: boolean) {
+    const tab: Tab = {
+        id: window.crypto.randomUUID(),
+        connectionId,
+        editorContent: initialContent,
+        autoRun: autoRun ?? false,
+        createdAt: Date.now(),
+    };
+
+    await storage.tabs.add(tab);
+    await client.refetchQueries(['tabs']);
+
+    return tab;
+}
+
+export async function fetchAllTabs() {
+    return storage.tabs.orderBy('createdAt')
+        .toArray();
 }
 
 export async function getConnectionTabs(connectionId: string) {

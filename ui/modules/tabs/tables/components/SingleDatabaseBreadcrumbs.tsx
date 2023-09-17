@@ -4,8 +4,10 @@ import { Select } from '$components';
 import { useConnections } from '$module:connections';
 import { TableView, updateTab } from '$module:tabs';
 import { getTablesList } from '../queries';
+import { useGlobalEditor } from 'ui/modules/globals';
 
 export default function SingleDatabaseBreadcrumbs(tab: TableView) {
+    const globalEditor = useGlobalEditor();
     const connection = useConnections(state => state.currentActiveConnection!);
 
     const { data: tables } = useQuery<string[]>({
@@ -22,6 +24,8 @@ export default function SingleDatabaseBreadcrumbs(tab: TableView) {
         const updatedTab = { ...tab, currentTable: table };
 
         await updateTab(updatedTab);
+
+        globalEditor.setValue(`SELECT * FROM ${table}`);
     }
 
     const initialTable = tableOptions.find(option => option.value === tab.currentTable);

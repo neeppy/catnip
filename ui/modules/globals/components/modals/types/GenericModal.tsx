@@ -1,4 +1,4 @@
-import { Dialog } from '@headlessui/react';
+import { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import { Modal } from '$module:globals';
 import { useModalAnimationState } from 'ui/hooks';
@@ -12,10 +12,17 @@ interface OwnProps {
 const optional = (check: boolean, value: any) => check ? value : undefined;
 
 export default function GenericModal({ modal }: OwnProps) {
+    const dialogRef = useRef<HTMLDialogElement>(null);
     const [state, handleAnimatedClose] = useModalAnimationState(modal.key, 200);
     const { contentComponent: Component } = modal;
 
-    const modalClassName = classnames('fixed top-0 left-0 w-full h-full flex-center z-[10000]', {
+    useEffect(() => {
+        if (dialogRef.current && !dialogRef.current.open) {
+            dialogRef.current.showModal();
+        }
+    }, []);
+
+    const modalClassName = classnames('relative w-screen h-screen flex-center z-[10000] bg-transparent text-base-content', {
         'animate-fade-in': state === 'opening',
         'animate-fade-out': state === 'closing'
     });
@@ -31,8 +38,8 @@ export default function GenericModal({ modal }: OwnProps) {
     } = modal.settings;
 
     return (
-        <Dialog open onClose={handleAnimatedClose} key={modal.key} role="dialog" className={modalClassName}>
-            <Dialog.Overlay className="absolute inset-0 bg-[#000a] z-[-1] backdrop-blur-sm" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
+        <dialog key={modal.key} id={modal.key} role="dialog" ref={dialogRef} className={modalClassName}>
+            <div className="absolute inset-0 bg-base-100/80 z-[-1]" onClick={optional(closeOnBackdropClick && state === 'open', handleAnimatedClose)} />
             <div className={contentContainerClassName}>
                 {showCloseButton && (
                     <Button scheme="transparent" className="absolute top-2 right-2 z-10" onClick={handleAnimatedClose}>
@@ -41,6 +48,6 @@ export default function GenericModal({ modal }: OwnProps) {
                 )}
                 <Component {...modal.props} close={handleAnimatedClose} />
             </div>
-        </Dialog>
+        </dialog>
     );
 }

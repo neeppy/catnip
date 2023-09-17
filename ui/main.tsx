@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Interop } from 'common/models/Interop';
-import { AppContextMenu, AppModals } from '$module:globals';
+import { AppContextMenu, AppModals, SettingsProvider } from '$module:globals';
 import { App } from '$module:layout';
 import client from 'ui/utils/query';
 import '$storage';
@@ -26,9 +26,11 @@ declare global {
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={client}>
-            <App/>
-            <AppContextMenu/>
-            <AppModals/>
+            <SettingsProvider>
+                <App/>
+                <AppContextMenu/>
+                <AppModals/>
+            </SettingsProvider>
         </QueryClientProvider>
     </React.StrictMode>
 );

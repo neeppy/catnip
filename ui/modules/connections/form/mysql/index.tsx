@@ -30,8 +30,8 @@ export function MySQLForm({ initialValues, close }: OwnProps) {
 
     const tabHeaderClass = classnames('border-r-8 rounded-l-md translate-x-2 py-4');
 
-    const inactiveHeaderClass = classnames('bg-surface-500 hover:bg-surface-400 border-surface-600');
-    const activeHeaderClass = classnames('bg-surface-800 border-primary-500');
+    const inactiveHeaderClass = classnames('bg-base-200 hover:bg-base-300 border-base-500');
+    const activeHeaderClass = classnames('bg-base-500 border-primary');
 
     return (
         <Form initialValues={initialValues} config={formConfig}>
@@ -46,7 +46,7 @@ export function MySQLForm({ initialValues, close }: OwnProps) {
                         </Tabs.Header>
                     )}
                 </div>
-                <div className="flex flex-col bg-surface-400 w-[32rem] h-full shadow-xl pt-6">
+                <div className="flex flex-col bg-base-200 w-[32rem] h-full shadow-xl pt-6">
                     <Typography as="h1" intent="h1" className="ml-4 mb-8">
                         Connect to MySQL Database
                     </Typography>

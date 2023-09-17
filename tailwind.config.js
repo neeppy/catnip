@@ -1,6 +1,7 @@
-const { createThemes } = require('tw-colors');
 const plugin = require('tailwindcss/plugin');
-const themes = require('./themes');
+
+const acvar = name => `rgb(var(--${name}) / <alpha-value>)`;
+const cvar = name => `var(--${name})`;
 
 /**
  * @type {import('tailwindcss').Config}
@@ -9,6 +10,42 @@ module.exports = {
     content: ['./ui/**/*.{ts,tsx}'],
     theme: {
         extend: {
+            colors: {
+                content: {
+                    DEFAULT: acvar('content'),
+                    subtle: acvar('content-subtle'),
+                    subtlest: acvar('content-subtlest'),
+                },
+                accent: {
+                    DEFAULT: acvar('accent'),
+                },
+                base: {
+                    100: acvar('base-100'),
+                    200: acvar('base-200'),
+                    300: acvar('base-300'),
+                    400: acvar('base-400'),
+                    500: acvar('base-500'),
+                    content: acvar('base-content'),
+                },
+                primary: {
+                    DEFAULT: acvar('primary'),
+                    dark: acvar('primary-dark'),
+                    darker: acvar('primary-darker'),
+                    light: acvar('primary-light'),
+                    lighter: acvar('primary-lighter'),
+                    content: acvar('primary-content'),
+                },
+                transparent: {
+                    DEFAULT: 'transparent',
+                    100: cvar('transparent-100'),
+                    200: cvar('transparent-200'),
+                    300: cvar('transparent-300'),
+                    400: cvar('transparent-400'),
+                },
+            },
+            width: {
+                '128': '32rem',
+            },
             gridTemplateRows: {
                 layout: '2.5rem minmax(0, 1fr)',
                 table: 'auto 1fr',
@@ -124,10 +161,6 @@ module.exports = {
         },
     },
     plugins: [
-        createThemes(({ dark, light }) => ({
-            dark: dark(themes.dark),
-            skyblue: light(themes.skyblue),
-        })),
         plugin(({ matchUtilities, theme }) => {
             matchUtilities(
                 {
@@ -142,23 +175,5 @@ module.exports = {
                 }
             );
         }),
-        plugin(({ theme, addUtilities }) => {
-            // TODO: custom theme colors are not supported - should probably drop the themes plugin in favor of css variables
-            const neonUtilities = {};
-            const colors = theme('colors');
-
-            for (const color in colors) {
-                if (typeof colors[color] === 'object') {
-                    const firstColor = colors[color]['500'];
-                    const secondColor = colors[color]['700'];
-
-                    neonUtilities[`.neon-${color}`] = {
-                        boxShadow: `0 0  5px ${firstColor}, 0 0 20px ${secondColor}`,
-                    };
-                }
-            }
-
-            addUtilities(neonUtilities);
-        })
     ],
 };
