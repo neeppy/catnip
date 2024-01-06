@@ -1,8 +1,7 @@
 import './global.css';
 import './themes/rubydark.css';
 
-// windows scrollbar styles
-if (interop.platform === 'win32') {
+if (interop.isWindows) {
     // @ts-ignore
     import('./win32.css');
 }
@@ -10,3 +9,4 @@ if (interop.platform === 'win32') {
 export * from './components';
 export * from './constants';
 export * from './state';
+export * from './commands';

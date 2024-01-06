@@ -1,9 +1,10 @@
 import classnames from 'classnames';
 import { Tabs } from '$components';
-import { AiFillControl, FaPalette } from '$components/icons';
+import { AiFillControl, FaPalette, FaKeyboard } from '$components/icons';
 import { AppearanceSettings } from './AppearanceSettings';
 import { BehaviourSettings } from './BehaviourSettings';
 import { useSettings } from 'ui/hooks';
+import { KeyboardShortcutsSettings } from './KeyboardShortcutsSettings';
 
 export function SettingsModal() {
     const { settings, updateSetting: changeSetting } = useSettings();
@@ -22,12 +23,18 @@ export function SettingsModal() {
                     <Tabs.Header id="behaviour" className={tabHeaderClass} activeClassName={activeTabClass} inactiveClassName={inactiveTabClass}>
                         <AiFillControl className="text-lg" />
                     </Tabs.Header>
+                    <Tabs.Header id="shortcuts" className={tabHeaderClass} activeClassName={activeTabClass} inactiveClassName={inactiveTabClass}>
+                        <FaKeyboard className="text-lg" />
+                    </Tabs.Header>
                 </div>
                 <Tabs.Content id="appearance">
                     <AppearanceSettings settings={settings.appearance} onChangeSetting={changeSetting} />
                 </Tabs.Content>
                 <Tabs.Content id="behaviour">
                     <BehaviourSettings settings={settings.behaviour} onChangeSetting={changeSetting} />
+                </Tabs.Content>
+                <Tabs.Content id="shortcuts">
+                    <KeyboardShortcutsSettings settings={settings.shortcuts} onChangeSetting={changeSetting} />
                 </Tabs.Content>
             </Tabs>
         </div>

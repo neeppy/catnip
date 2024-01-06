@@ -3,3 +3,4 @@ export * from './state';
 export * from './components/ConnectionContextMenu';
 export * from './components/GroupContextMenu';
 export * from './components/Connections';
+export * from './hooks';

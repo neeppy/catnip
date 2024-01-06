@@ -11,6 +11,7 @@ interface BehaviourSettings {
 export interface Settings {
     appearance: AppearanceSettings;
     behaviour: BehaviourSettings;
+    shortcuts: Record<string, string>;
 }
 
 export interface SettingChange<T extends Leaves<Settings> = Leaves<Settings>> {
@@ -26,5 +27,10 @@ export const getDefaultSettings = (): Settings => ({
         newSessionActivity: 'restore',
         persistence: 'smart',
         autoPersistDelay: 10000,
+    },
+    shortcuts: {
+        overview: 'alt+shift+f',
+        cmdbar: 'ctrl+t',
+        openSettings: 'alt+shift+s',
     },
 });

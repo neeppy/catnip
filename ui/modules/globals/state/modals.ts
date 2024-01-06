@@ -59,3 +59,6 @@ export const useModalRegistry = create<ModalState>(set => ({
     })),
     close: key => set(prevState => ({ registry: prevState.registry.filter(modal => modal.key !== key) })),
 }));
+
+export const isOpen = (contentComponent: AnyComponent) => useModalRegistry.getState()
+    .registry.some(modal => modal.contentComponent === contentComponent);

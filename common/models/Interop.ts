@@ -4,6 +4,9 @@ import { SettingChange, Settings } from './Settings';
 
 export interface Interop {
     platform: 'win32' | 'darwin';
+    isWindows: boolean;
+    isMacOS:  boolean;
+    isLinux: boolean;
     settings: {
         fetch: () => Promise<Settings>;
         update: <T extends Leaves<Settings>>(updates: SettingChange<T>[]) => Promise<void>;

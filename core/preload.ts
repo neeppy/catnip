@@ -3,6 +3,9 @@ import { Interop } from 'common/models/Interop';
 
 contextBridge.exposeInMainWorld('interop', {
     platform: process.platform,
+    isWindows: process.platform === 'win32',
+    isMacOS: process.platform === 'darwin',
+    isLinux: process.platform === 'linux',
     settings: {
         fetch: () => ipcRenderer.invoke('@@settings/fetch'),
         update: updates => ipcRenderer.invoke('@@settings/update', updates),

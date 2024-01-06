@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { atom, useAtom } from 'jotai';
 
 interface Tab {
     id: string;
@@ -23,15 +24,19 @@ export interface EditorView extends Tab {
 export type AnyTab = TableView | EditorView;
 
 interface UseTabActivity {
+    isOverview: boolean;
     currentActiveTab: AnyTab | null;
     previousActiveTab: AnyTab | null;
+    toggleOverview: () => void;
     setCurrentTab: (tab: AnyTab, reset?: boolean) => void;
     updateCurrentTabDetails: (tab: AnyTab) => void;
 }
 
 export const useTabActivity = create<UseTabActivity>(set => ({
+    isOverview: false,
     currentActiveTab: null,
     previousActiveTab: null,
+    toggleOverview: () => set(prev => ({ isOverview: !prev.isOverview })),
     setCurrentTab: (tab, reset) => {
         const activeTabMap = JSON.parse(localStorage.getItem('activeTab') || '{}');
 
@@ -51,3 +56,6 @@ export const useTabActivity = create<UseTabActivity>(set => ({
         },
     })),
 }));
+
+export const useIsOverview = () => useTabActivity(state => state.isOverview);
+export const toggleOverview = () => useTabActivity.getState().toggleOverview();

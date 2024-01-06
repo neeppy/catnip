@@ -15,9 +15,10 @@ const Context = createContext<ContextType>({
 interface OwnProps {
     initial?: string;
     tab?: string | null;
+    all?: boolean;
 }
 
-export function Tabs({ initial, tab, children }: PropsWithChildren<OwnProps>) {
+export function Tabs({ initial, tab, children, all }: PropsWithChildren<OwnProps>) {
     const [currentTab, setCurrentTab] = useState<string>(initial || '');
 
     useEffect(() => {

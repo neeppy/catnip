@@ -23,6 +23,8 @@ export {
     FaPalette,
     FaPlay,
     FaPlus,
+    FaRegKeyboard,
+    FaKeyboard,
 } from 'react-icons/fa';
 
 export {
